@@ -14,7 +14,7 @@
       <pubDate>Thu, 20  Aug 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-events/</guid>
       <author></author>
-      <description>&lt;p&gt;Основы работы с событиями: синтаксис, делегирование, создание событий и спобовы вызова и так далее. 
+      <description>&lt;p&gt;Основы работы с событиями: синтаксис, делегирование, создание событий, способы вызова и пр. 
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;h2 id=&quot;obtrusive-vs-unobtrusive&quot;&gt;Obtrusive vs. Unobtrusive&lt;/h2&gt;
 &lt;p&gt;Так делать нельзя:&lt;/p&gt;
