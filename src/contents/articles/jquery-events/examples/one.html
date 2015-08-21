@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+</head>
+<body>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam iure nulla odio quas totam.</p>
+
+<p>Dolore, error hic nam necessitatibus quasi unde. At cum labore, molestiae officiis placeat praesentium totam
+    unde.</p>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam iure nulla odio quas totam.</p>
+
+<p>Dolore, error hic nam necessitatibus quasi unde. At cum labore, molestiae officiis placeat praesentium totam
+    unde.</p>
+<script>
+    // Switching handlers using the `.one()` method
+    $("p").one("click", firstClick);
+
+    function firstClick() {
+        console.log("You just clicked this for the first time!");
+
+        // Now set up the new handler for subsequent clicks;
+        // omit this step if no further click responses are needed
+        $(this).click(function () {
+            console.log("You have clicked this before!");
+        });
+    }
+</script>
+
+<hr>
+
+<input type="text">
+<input type="text">
+
+<script>
+    // Несколько событий
+    $("input").one("focus mouseover keydown", firstEvent);
+
+    function firstEvent(eventObject) {
+        console.log("A " + eventObject.type + " event occurred for the first time on the input with id " + this.id);
+    }
+</script>
+</body>
+</html>

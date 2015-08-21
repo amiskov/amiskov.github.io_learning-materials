@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Занятия по фронтэнду</title>
+    <atom:link href="http://localhost:8080/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <link>http://localhost:8080</link>
+    <description>тезисы, примеры и домашние задания</description>
+    <pubDate>Thu, 20  Aug 2015 10:30:00 +0300</pubDate>
+    <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
+    <language>en</language>
+    <item>
+      <title>Работа с событиями в jQuery</title>
+      <link>http://localhost:8080/articles/jquery-events/</link>
+      <pubDate>Thu, 20  Aug 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/jquery-events/</guid>
+      <author></author>
+      <description>&lt;p&gt;Основы работы с событиями: синтаксис, делегирование, создание событий и спобовы вызова и так далее. 
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;obtrusive-vs-unobtrusive&quot;&gt;Obtrusive vs. Unobtrusive&lt;/h2&gt;
+&lt;p&gt;Так делать нельзя:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &amp;lt;button onclick=&lt;span class=&quot;string&quot;&gt;&quot;alert('Hello')&quot;&lt;/span&gt;&amp;gt;Say hello&amp;lt;&lt;span class=&quot;regexp&quot;&gt;/button&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Плохо поддерживать&lt;/li&gt;
+&lt;li&gt;Плохо расширять &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Нужно пользоваться только ивент-листнерами, хоть в Мадженте много где используются обработчики в атрибутах.&lt;/p&gt;
+&lt;h2 id=&quot;this&quot;&gt;this&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;this&lt;/code&gt; внутри функции обработчика — это кликнутый элемент. Функция получает объект события.&lt;/p&gt;
+&lt;h2 id=&quot;-on&quot;&gt;.on&lt;/h2&gt;
+&lt;p&gt;Основной способ навесить события — &lt;code&gt;.on()&lt;/code&gt;. У него есть удобные алиасы: &lt;code&gt;.click()&lt;/code&gt;, &lt;code&gt;.blur()&lt;/code&gt; и т. д. Некоторые из 
+них позволяют обработать похожие события минимальными усилиями. Например, &lt;code&gt;.hover()&lt;/code&gt;
+&lt;a href=&quot;https://api.jquery.com/hover/&quot;&gt;может сразу&lt;/a&gt; взять на себя &lt;code&gt;mouseenter&lt;/code&gt; и &lt;code&gt;mouseleave&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#menu li&quot;&lt;/span&gt; ).hover(
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        $( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; ).css( {
+             background: &lt;span class=&quot;string&quot;&gt;'red'&lt;/span&gt;
+         });
+     },
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        $( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; ).css( {
+             background: &lt;span class=&quot;string&quot;&gt;''&lt;/span&gt;
+         });
+     }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Если в &lt;code&gt;.hover()&lt;/code&gt; передать одну функцию, то она сработает и на &lt;code&gt;mouseenter&lt;/code&gt; и на &lt;code&gt;mouseleave&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Сами &lt;code&gt;jQuery&lt;/code&gt; &lt;a href=&quot;http://learn.jquery.com/events/introduction-to-events/#ways-to-listen-for-events&quot;&gt;рекомендуют&lt;/a&gt; всегда 
+использовать &lt;code&gt;.on&lt;/code&gt;, потому что так работает быстрее и код выглядит более консистентно (всегда однотипен).&lt;/p&gt;
+&lt;p&gt;Через &lt;code&gt;.on()&lt;/code&gt; можно:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;обработать разные события одной и той же функцией&lt;/li&gt;
+&lt;li&gt;передать данные в функцию обработчик&lt;/li&gt;
+&lt;li&gt;работать с кастомными событиями&lt;/li&gt;
+&lt;li&gt;или передать объект нескольких событий и обработчиков&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;.on()&lt;/code&gt; будет работать на элементах, которые уже существуют в документе на момент назначения. Новые аналогичные&lt;br&gt;элементы не будут иметь этого обработчика.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Неймспейсы событий&lt;/h2&gt;
+&lt;p&gt;Для того, чтобы снимать события пачками, можно им добавлять неймспейсы:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$(&lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt;).on(&lt;span class=&quot;string&quot;&gt;'mousemove.slider'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{});
+$(&lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt;).on(&lt;span class=&quot;string&quot;&gt;'mouseup.slider'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{});
+&lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+$(&lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt;).off(&lt;span class=&quot;string&quot;&gt;'.slider'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// Снять все события в неймспейсе&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Удаление обработчиков&lt;/h2&gt;
+&lt;p&gt;Удалить можно все обработчики события:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$(&lt;span class=&quot;string&quot;&gt;'p'&lt;/span&gt;).off(&lt;span class=&quot;string&quot;&gt;'click'&lt;/span&gt;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Или все события из неймспейса:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Создаем&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click.myNamespace&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;comment&quot;&gt;/* ... */&lt;/span&gt; } );
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;mouseenter.myNamespace&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;comment&quot;&gt;/* ... */&lt;/span&gt; } );
+&lt;span class=&quot;comment&quot;&gt;// Удаляем&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).off( &lt;span class=&quot;string&quot;&gt;&quot;click.myNamespace&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Только клики&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).off( &lt;span class=&quot;string&quot;&gt;&quot;.myNamespace&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Unbind all events in the namespace&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Удалить можно и обработчик, назначенный через именованную функцию:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; foo = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;foo&quot;&lt;/span&gt; ); };
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt; ); };
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, foo ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, bar );
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).off( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, bar ); &lt;span class=&quot;comment&quot;&gt;// foo is still bound to the click event&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Исполнить событие только раз&lt;/h2&gt;
+&lt;p&gt;Если нужно, чтобы событие сработало только один раз, а потом перестало работать или обработчик при последующих таких 
+же событиях был другим, можно использовать &lt;code&gt;.one()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Это бывает полезно, если нужно при первом действии выполнить какую-то инициализацию, которая сохраниться для 
+последующих манипуляций. Напирмер, сгеренить разметку для выпадалки кастомного селекта при первом клике и назначить 
+на него обработчики для последующих кликов. Если на него так ни разу и не кликнули, то и делать ничего не будем: DOM 
+не засоряем, ивенты не навешиваем.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/jquery-events/examples/one.html&quot;&gt;Пример&lt;/a&gt; сработает отдельно для каждого параграфа:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).one( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, firstClick );
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;firstClick&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;You just clicked this for the first time!&quot;&lt;/span&gt; );
+    $( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; ).click( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;You have clicked this before!&quot;&lt;/span&gt; ); } );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Если в обработчик навесить сразу на несколько событий, то он будет работать для каждого события в отдельности:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;input[id]&quot;&lt;/span&gt; ).one( &lt;span class=&quot;string&quot;&gt;&quot;focus mouseover keydown&quot;&lt;/span&gt;, firstEvent);
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;firstEvent&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; eventObject &lt;/span&gt;) &lt;/span&gt;{
+   &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;A &quot;&lt;/span&gt; + eventObject.type + &lt;span class=&quot;string&quot;&gt;&quot; event occurred for the first time on the input with id &quot;&lt;/span&gt; + &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.id );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Делегирование&lt;/h2&gt;
+&lt;p&gt;Есть 2 вида синтаксиса, работают инентично. Первый, где передается объект, в котором событие — свойство:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; ).on({
+    click: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+        alert( &lt;span class=&quot;string&quot;&gt;&quot;Hello.&quot;&lt;/span&gt; );
+    }
+}, &lt;span class=&quot;string&quot;&gt;&quot;button&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;И второй, где событие — строка:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;button&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+    alert( &lt;span class=&quot;string&quot;&gt;&quot;Hello.&quot;&lt;/span&gt; );
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Именованные функции-обработчики&lt;/h2&gt;
+&lt;p&gt;Нужно помнить, что &lt;a href=&quot;https://en.wikipedia.org/wiki/Don%27t_repeat_yourself&quot;&gt;повторять код — плохо&lt;/a&gt;. Если какие-то 
+действия нужно производить для разных событий, то лучше вынести обработчик в отдельную функцию вместо анонимной. Эта 
+функция получит объект события:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sayHello&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+    alert( &lt;span class=&quot;string&quot;&gt;&quot;Hello.&quot;&lt;/span&gt; );
+}
+$( &lt;span class=&quot;string&quot;&gt;&quot;#helloBtn&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, sayHello );
+$( &lt;span class=&quot;string&quot;&gt;&quot;#helloLink&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, sayHello );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Объект события&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/jquery-events/examples/event_object.html&quot;&gt;Расширенный объект события&lt;/a&gt; передается в функцию-обработчик. Он содиржит &lt;code&gt;event
+.originalEvent&lt;/code&gt; — 
+событие, которое генерит сам браузер (может быть иногда полезно, например, для тач-устройств).&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Передача данных&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, {
+    foo: &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt;
+}, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;event data: &quot;&lt;/span&gt; + event.data.foo + &lt;span class=&quot;string&quot;&gt;&quot; (should be 'bar')&quot;&lt;/span&gt; );
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Несколько событий, один обработчик&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/jquery-events/examples/multiple_events.html&quot;&gt;Пример&lt;/a&gt;
+Так будет оптимальнее, потому что экономятся ресурсы (?): &lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;div&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;mouseenter mouseleave&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;mouse hovered over or left a div&quot;&lt;/span&gt; );
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( e.type == &lt;span class=&quot;string&quot;&gt;'mouseenter'&lt;/span&gt;) { ... }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Несколько событий, много обработчиков&lt;/h2&gt;
+&lt;p&gt;Так более читаемо, но создаются методы, которые можно и не создавать:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;div&quot;&lt;/span&gt; ).on({
+        mouseenter: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;hovered over a div&quot;&lt;/span&gt; );
+        },
+        mouseleave: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;mouse left a div&quot;&lt;/span&gt; );
+        },
+        click: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+            &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;clicked on a div&quot;&lt;/span&gt; );
+        }
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Вызов события из кода&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;.trigger()&lt;/code&gt; позволяет имитировать событие на элементе с обработчиком &lt;code&gt;.on&lt;/code&gt;. Оне работает только с 
+jQuery-обработчиками, нативные событие триггерить так не получится:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&amp;lt;a href=&quot;http://learn.jquery.com&quot;&amp;gt;Learn jQuery&amp;lt;/a&amp;gt;
+&amp;lt;script&amp;gt;
+    // Ничего не произойдет
+    $( &quot;a&quot; ).trigger( &quot;click&quot; );
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Если надо вызвать нативное событие, то можно воспользоваться &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Document/createEvent&quot;&gt;document.createEvent&lt;/a&gt;.
+Есть еще плагин &lt;a href=&quot;https://github.com/jquery/jquery-simulate/&quot;&gt;jquery.simulate&lt;/a&gt;. Он триггерит и нативные и jQuery-события.&lt;/p&gt;
+&lt;h3 id=&quot;-trigger-vs-triggerhandler-&quot;&gt;.trigger() vs .triggerHandler()&lt;/h3&gt;
+&lt;p&gt;Отличия:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Запуск дефолтных обработчиков браузера (не те, которые мы пишем, а внутренние, типа сабмита формы).
+&lt;code&gt;triggerHandler&lt;/code&gt; их не запустит, &lt;code&gt;trigger&lt;/code&gt; запустит.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Запуск обработчика на коллекции:
+&lt;code&gt;triggerHandler&lt;/code&gt; запустит только на первом элементе, &lt;code&gt;trigger&lt;/code&gt; запустит на всех элементах коллекции.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Возвращаемое значение:
+&lt;code&gt;triggerHandler&lt;/code&gt; вернет результат обработчика, &lt;code&gt;trigger&lt;/code&gt; вернет элемент, на котором сработало событие (можно 
+использовать в цепочке).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Всплытие:
+&lt;code&gt;triggerHandler&lt;/code&gt; не запускает всплытие, &lt;code&gt;trigger&lt;/code&gt; запустит всплытие, сработают обработчики на парентах.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Вывод: используем &lt;code&gt;triggerHandler&lt;/code&gt;, если не нужны фишки &lt;code&gt;trigger&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Триггер события для запуска какого-то функционала&lt;/strong&gt;
+Так делать не рекомендуется. Если, например, на клик кнопки показывается попап, а нам его нужно показать программно, то
+не стоит просто триггерить событие на первой кнопке, для показа попапа. Нужно вынести этот код в отдельную функцию и 
+запускать отдельно.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/jquery-events/examples/triggers.html&quot;&gt;Пример&lt;/a&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Triggering an event handler the right way&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; foo = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+   &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( event ) {
+       &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( event );
+   } &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+       &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;this didn't come from an event!&quot;&lt;/span&gt; );
+   }
+};
+$( &lt;span class=&quot;string&quot;&gt;&quot;p&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;click&quot;&lt;/span&gt;, foo );
+foo(); &lt;span class=&quot;comment&quot;&gt;// instead of $( &quot;p&quot; ).trigger( &quot;click&quot; )&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Кастомные события&lt;/h2&gt;
+&lt;p&gt;Событийно-ориентированный подход к реализации интерфейсов сменяет фокус с элемента, который событие запускает, на 
+элемент, на котором оно срабатывает (над которым выполняется действие).&lt;/p&gt;
+&lt;p&gt;Преимущества:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Один раз пишем код для поведения, триггерим его из разным мест столько, сколько нужно.&lt;/li&gt;
+&lt;li&gt;За один подход можно запустить обработчик для разных, похожих и одиночных элементов (?)&lt;/li&gt;
+&lt;li&gt;Код закреплен за целевым элементом (а не за тем, который запускает обработку), таким образом код проще поддерживать.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В чистом JS есть конструктор &lt;code&gt;CustomEvent&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Домашнее задание&lt;/h2&gt;
+&lt;p&gt;Написать кастомный селект, который получает объект с опциями:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; select = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Select({
+    items: {
+            fish: &lt;span class=&quot;string&quot;&gt;'Рыбы'&lt;/span&gt;
+            birds: &lt;span class=&quot;string&quot;&gt;'Птицы'&lt;/span&gt;
+        },
+        value: &lt;span class=&quot;string&quot;&gt;'fish'&lt;/span&gt;
+    };
+    select.on(&lt;span class=&quot;string&quot;&gt;'change'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
+        alert(e.value);
+    });
+$(&lt;span class=&quot;string&quot;&gt;'#test'&lt;/span&gt;).append( select.getElement() );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Создавать элемент (разметку) нужно только тогда, когда он понадобиться. Не нужно в инициализации сразу создавать
+элементы. Создаем селект - генерим верстку только в методе, который за это отвечает.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/events/&quot;&gt;http://learn.jquery.com/events/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/events/&quot;&gt;http://api.jquery.com/category/events/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+  </channel>
+</rss>

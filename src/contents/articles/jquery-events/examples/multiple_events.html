@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+    <style>
+        p {
+            background: #EEE;
+            margin: 0 0 200px;
+        }
+    </style>
+</head>
+<body>
+<p id="oneHandler">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat, quaerat, veniam? Consequatur
+    deleniti ducimus, facere pariatur perspiciatis quod rerum temporibus tenetur voluptates? Atque consectetur explicabo
+    maiores, possimus rem repellendus unde?</p>
+<p id="manyHandlers">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat, quaerat, veniam? Consequatur
+    deleniti ducimus, facere pariatur perspiciatis quod rerum temporibus tenetur voluptates? Atque consectetur explicabo
+    maiores, possimus rem repellendus unde?</p>
+
+<script>
+    $("#oneHandler").on("click mouseenter mouseleave", function (e) {
+        switch (e.type) {
+            case 'mouseenter':
+                console.log('Mouse entered into <p>');
+                break;
+
+            case 'mouseleave':
+                console.log('Mouse left <p>');
+                break;
+
+            case 'click':
+                console.log('<p> is clicked');
+        }
+    });
+
+    $("#manyHandlers").on({
+        mouseenter: function () {
+            console.log("hovered over a p");
+        },
+        mouseleave: function () {
+            console.log("mouse left a p");
+        },
+        click: function () {
+            console.log("clicked on a div");
+        }
+    });
+
+    console.dir($('#oneHandler'));
+    console.dir($('#manyHandlers'));
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+</head>
+<body>
+
+<a href="http://learn.jquery.com">Learn jQuery</a>
+<script>
+    // Ничего не произойдет
+    $( "a" ).trigger( "click" );
+</script>
+
+<form action="http://ya.ru">
+    <input type="text">
+    <input type="submit" value="Submit">
+</form>
+
+<form action="http://go.gl">
+    <input type="text">
+    <input type="submit" value="Submit">
+</form>
+
+<hr>
+<div onclick="alert('DIV is clicked');">
+    <a id="link" href="#" onclick="alert('link is clicked'); return false;"></a>
+</div>
+
+<script>
+    var $f = $('form');
+    var $l = $('#link');
+
+    // 1. Нативные (встроенные, не назначенные руками) обработчики браузера
+    //$f.triggerHandler('submit'); // Ничего не будет, если не назначен обработчик (onsubmit или .on('submit')).
+                                   // Если назначен только .on('submit'), то родной submit() не сработает.
+    //$f.trigger('submit'); // Форма отправится, сработает нативный дефолтный (встроенный) сабмит.
+
+    // 2. Все формы или только первая
+    $f.on('submit', function(e) {
+//        e.preventDefault();
+        console.log(this.action);
+        return 'test'; // для №3
+    });
+//    $f.triggerHandler('submit'); // Отправиться только первая форма (сработает только на первом элементе)
+//    $f.trigger('submit'); // Отправятся все формы (отработает на всей коллекции)
+
+    // 3. Возвращаемое значение
+//    console.log('triggerHandler вернул ' + // вернет результат обработчика, chaining не получится
+//            $f.triggerHandler('submit'));
+//    console.log('trigger вернул ' + // вернет элемент формы, можно делать chaining
+//            $f.trigger('submit'));
+
+    // 4. Всплытие
+//    $l.triggerHandler('click'); // Всплытия не будет, сработает только конкретный обработчик на элементе
+//    $l.trigger('click'); // Будет всплытие, сработаю все обработчики на парентах
+
+</script>
+</body>
+</html>
