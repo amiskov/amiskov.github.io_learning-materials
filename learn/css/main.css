@@ -193,10 +193,6 @@ footer .copy a {
   font-weight: 700;
   padding-left: 0.3em;
 }
-.article .content img {
-  display: block;
-  width: 100%;
-}
 .more,
 .date {
   font-family: 'Merriweather', serif;

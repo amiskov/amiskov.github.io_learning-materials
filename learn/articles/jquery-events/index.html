@@ -22,7 +22,7 @@
     <div id="content">
       <div class="content-wrap">
         <article class="article">
-          <section class="content"><p>Основы работы с событиями: синтаксис, делегирование, создание событий, способы вызова и пр. 
+          <section class="content"><p>Синтаксис, делегирование, создание событий, способы вызова и пр. По этому материалу есть <a href="/learn/articles/jquery-events/#-homework-">домашнее задание</a>
 <span class="more"></span></p>
 <h2 id="obtrusive-vs-unobtrusive">Obtrusive vs.&nbsp;Unobtrusive</h2>
 <p>Так делать&nbsp;нельзя:</p>
@@ -219,22 +219,38 @@ foo(); <span class="comment">// instead of $( "p" ).trigger( "click" )</span>
 <li>Код закреплен за целевым элементом (а не за тем, который запускает обработку), таким образом код проще&nbsp;поддерживать.</li>
 </ul>
 <p>В чистом <span class="caps">JS</span> есть конструктор <code>CustomEvent</code>.</p>
-<h2 id="-">Домашнее&nbsp;задание</h2>
-<p>Написать кастомный селект, который получает объект с&nbsp;опциями:</p>
-<pre><code class="lang-javascript"><span class="keyword">var</span> select = <span class="keyword">new</span> Select({
-    items: {
-            fish: <span class="string">'Рыбы'</span>
-            birds: <span class="string">'Птицы'</span>
-        },
-        value: <span class="string">'fish'</span>
-    };
-    select.on(<span class="string">'change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>{
-        alert(e.value);
-    });
-$(<span class="string">'#test'</span>).append( select.getElement() );
+<h2 id="-homework-">Домашнее задание <a href="/learn/articles/jquery-events/#homework"></a></h2>
+<p>Имеется объект с названиями регионов и их&nbsp;идентификаторами:</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> regions = {
+    <span class="number">485</span>: <span class="string">"Москва"</span>,
+    <span class="number">523</span>: <span class="string">"Владимирская область"</span>,
+    <span class="number">530</span>: <span class="string">"Калужская область"</span>,
+    <span class="number">536</span>: <span class="string">"Ленинградская область"</span>,
+    <span class="number">486</span>: <span class="string">"Московская область"</span>,
+    <span class="number">549</span>: <span class="string">"Рязанская область"</span>,
+    <span class="number">563</span>: <span class="string">"Санкт-Петербург"</span>,
+    <span class="number">554</span>: <span class="string">"Смоленская область"</span>,
+    <span class="number">556</span>: <span class="string">"Тверская область"</span>,
+    <span class="number">558</span>: <span class="string">"Тульская область"</span>,
+    <span class="number">562</span>: <span class="string">"Ярославская область"</span>
+};
 </code></pre>
-<p>Создавать элемент (разметку) нужно только тогда, когда он понадобиться. Не нужно в инициализации сразу создавать
-элементы. Создаем селект - генерим верстку только в методе, который за это&nbsp;отвечает.</p>
+<p>Нужно написать компонент — кастомный селект, который получает этот объект и индентификатор текущего региона (он 
+должен быть выбран по в селекте по&nbsp;умолчанию).</p>
+<p>Пример&nbsp;инициализации:</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> select = <span class="keyword">new</span> Select(regions, selectedId);
+
+<span class="comment">// Компонент должен генерировать событие после смены региона</span>
+select.on(<span class="string">'change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>{
+    alert(e.value);
+});
+
+$(<span class="string">'#regions'</span>).append(select.getElement());
+</code></pre>
+<p>Примерный вид компонента, (см. <a href="http://shop.rockwool.ru">http://shop.rockwool.ru</a>):</p>
+<p><img src="/learn/articles/jquery-events/homework/regions_select.png" alt=""></p>
+<p>Никаких ограничений на внешний вид и синтаксис нет, делайте как считаете нужным. Главное, чтоб код был понятен и 
+удобен в&nbsp;использовании.</p>
 <h2 id="-">Материалы</h2>
 <ul>
 <li><a href="http://learn.jquery.com/events/">http://learn.jquery.com/events/</a></li>

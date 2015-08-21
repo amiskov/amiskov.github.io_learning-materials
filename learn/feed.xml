@@ -14,7 +14,7 @@
       <pubDate>Thu, 20  Aug 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-events/</guid>
       <author></author>
-      <description>&lt;p&gt;Основы работы с событиями: синтаксис, делегирование, создание событий, способы вызова и пр. 
+      <description>&lt;p&gt;Синтаксис, делегирование, создание событий, способы вызова и пр. По этому материалу есть &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-events/#-homework-&quot;&gt;домашнее задание&lt;/a&gt;
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;h2 id=&quot;obtrusive-vs-unobtrusive&quot;&gt;Obtrusive vs. Unobtrusive&lt;/h2&gt;
 &lt;p&gt;Так делать нельзя:&lt;/p&gt;
@@ -211,26 +211,660 @@ foo(); &lt;span class=&quot;comment&quot;&gt;// instead of $( &quot;p&quot; ).tr
 &lt;li&gt;Код закреплен за целевым элементом (а не за тем, который запускает обработку), таким образом код проще поддерживать.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;В чистом JS есть конструктор &lt;code&gt;CustomEvent&lt;/code&gt;.&lt;/p&gt;
-&lt;h2 id=&quot;-&quot;&gt;Домашнее задание&lt;/h2&gt;
-&lt;p&gt;Написать кастомный селект, который получает объект с опциями:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; select = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Select({
-    items: {
-            fish: &lt;span class=&quot;string&quot;&gt;'Рыбы'&lt;/span&gt;
-            birds: &lt;span class=&quot;string&quot;&gt;'Птицы'&lt;/span&gt;
-        },
-        value: &lt;span class=&quot;string&quot;&gt;'fish'&lt;/span&gt;
-    };
-    select.on(&lt;span class=&quot;string&quot;&gt;'change'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
-        alert(e.value);
-    });
-$(&lt;span class=&quot;string&quot;&gt;'#test'&lt;/span&gt;).append( select.getElement() );
+&lt;h2 id=&quot;-homework-&quot;&gt;Домашнее задание &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-events/#homework&quot;&gt;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Имеется объект с названиями регионов и их идентификаторами:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; regions = {
+    &lt;span class=&quot;number&quot;&gt;485&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Москва&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;523&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Владимирская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;530&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Калужская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;536&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Ленинградская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;486&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Московская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;549&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Рязанская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;563&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Санкт-Петербург&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;554&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Смоленская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;556&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Тверская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;558&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Тульская область&quot;&lt;/span&gt;,
+    &lt;span class=&quot;number&quot;&gt;562&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Ярославская область&quot;&lt;/span&gt;
+};
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Создавать элемент (разметку) нужно только тогда, когда он понадобиться. Не нужно в инициализации сразу создавать
-элементы. Создаем селект - генерим верстку только в методе, который за это отвечает.&lt;/p&gt;
+&lt;p&gt;Нужно написать компонент — кастомный селект, который получает этот объект и индентификатор текущего региона (он 
+должен быть выбран по в селекте по умолчанию).&lt;/p&gt;
+&lt;p&gt;Пример инициализации:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; select = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Select(regions, selectedId);
+
+&lt;span class=&quot;comment&quot;&gt;// Компонент должен генерировать событие после смены региона&lt;/span&gt;
+select.on(&lt;span class=&quot;string&quot;&gt;'change'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
+    alert(e.value);
+});
+
+$(&lt;span class=&quot;string&quot;&gt;'#regions'&lt;/span&gt;).append(select.getElement());
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Примерный вид компонента, (см. &lt;a href=&quot;http://shop.rockwool.ru&quot;&gt;http://shop.rockwool.ru&lt;/a&gt;):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-events/homework/regions_select.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Никаких ограничений на внешний вид и синтаксис нет, делайте как считаете нужным. Главное, чтоб код был понятен и 
+удобен в использовании.&lt;/p&gt;
 &lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/events/&quot;&gt;http://learn.jquery.com/events/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/events/&quot;&gt;http://api.jquery.com/category/events/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Ядро jQuery</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-core/</link>
+      <pubDate>Thu, 06  Aug 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-core/</guid>
+      <author></author>
+      <description>&lt;p&gt;Обзор основного функционала jQuery.
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;!--
+# Случаи, когда лушче не использовать jQuery
+Основная задача jQuery — обеспечить кроссбраузерность. Современные браузеры (возьмем IE9+) в этом плане лучше своих 
+предсшественников и многие возможности в ES5 реализованы нативно и работают быстрее, чем аналоги jQuery.
+
+В основном нативный функционал лучше использовать вместо утилитарныйх методов jQuery.
+
+## $.each
+Для массивов есть свйо `forEach` (IE9+).
+
+## $.inArray
+Для массивов есть свой `indexOf` (IE9+).
+
+## Материалы
+* http://youmightnotneedjquery.com/ — набор аналогов jQuery-методам на нативном JS и DOM.
+* http://kangax.github.io/compat-table/es5/ — таблица совместимости ES5.
+--&gt;
+&lt;h1 id=&quot;jquery-object-&quot;&gt;jQuery Object ($)&lt;/h1&gt;
+&lt;p&gt;При работе с DOM разные браузеры могут вести себя по-разному. jQuery берет на себя проблемы совместимости и
+предоставляет удобные методы работы с элементами.&lt;/p&gt;
+&lt;p&gt;При создании и выборке элементов функция &lt;code&gt;$&lt;/code&gt; возвращает расширенную коллекцию элементов. Индексы идут с 0, имеется 
+свойство &lt;code&gt;length&lt;/code&gt; и ряд методов, похожих на методы массивов.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Проверка коллекции на пустоту&lt;/h2&gt;
+&lt;p&gt;jQuery в любом случае вернет коллекцию, а она всегда будет &lt;code&gt;true&lt;/code&gt; при преобразованию у булевому значению. Поэтому при
+проверке коллекции на пустоту нужно смотреть на свойство &lt;code&gt;.length&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; $sections = $( &lt;span class=&quot;string&quot;&gt;'section'&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// BROKEN CODE:&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ($sections) { alert( &lt;span class=&quot;string&quot;&gt;'Test'&lt;/span&gt; ); } &lt;span class=&quot;comment&quot;&gt;// всегда сработает, пустой массив вернет true&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// OK&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ($sections.length) { alert( &lt;span class=&quot;string&quot;&gt;'Test'&lt;/span&gt; ); } &lt;span class=&quot;comment&quot;&gt;// сработает только когда есть элементы section&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Изменение коллекции и изменение документа&lt;/h2&gt;
+&lt;p&gt;jQuery коллекции — не «живые», как &lt;code&gt;getElementsByName&lt;/code&gt; и &lt;code&gt;getElementsByClassName&lt;/code&gt;. Выборка запоминается и, если в 
+html произошли изменения, то ее надо переопределить.&lt;/p&gt;
+&lt;h2 id=&quot;-eq-get-&quot;&gt;Выбор элемента, eq() и get()&lt;/h2&gt;
+&lt;p&gt;Если из коллекции нам нужно выбрать определенный элемент, мы можем выбрать его по индексу:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; $headings = $( &lt;span class=&quot;string&quot;&gt;'h1'&lt;/span&gt; );
+$headings.eq(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// вернет первый элемент из коллекции, jQuery object&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Если нам нужно выбртаь не расширенный эелмент, а обычный DOM-элемент, то можно воспользоваться методом &lt;code&gt;get()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$headings.get(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// вернет первый элемент из коллекции, но уже как DOM object&lt;/span&gt;
+$headings.[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;];    &lt;span class=&quot;comment&quot;&gt;// аналогично, вернет DOM object&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Таким образом, коллекция jQuery — это псевдо-массив DOM-элементов и куча методов, наследованных от объекта jQuery. 
+Это можно увидеть в консоли:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.dir( $headings );        &lt;span class=&quot;comment&quot;&gt;// псевдо-массив DOM-объектов&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( $headings.eq(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) );  &lt;span class=&quot;comment&quot;&gt;// псевдо-массив с одним DOM-объектом&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( $headings.get(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) ); &lt;span class=&quot;comment&quot;&gt;// один DOM-объект&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-jquery&quot;&gt;Сравнение объектов jQuery&lt;/h2&gt;
+&lt;p&gt;Каждый расширенный jQuery-объект уникален. Даже если объекты сделаны из одного селектора, они не равны.&lt;/p&gt;
+&lt;p&gt;Чтобы в коде было четко видно, где jQuery объекты, а где простые DOM-объекты и переменные, к jQuery-выборкам 
+добавляют префикс &lt;code&gt;$&lt;/code&gt;: &lt;code&gt;var $title = $(&amp;#39;h1&amp;#39;)&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-vs-&quot;&gt;$ vs. $()&lt;/h2&gt;
+&lt;p&gt;Можно встретить методы, типа &lt;code&gt;$.each()&lt;/code&gt; и &lt;code&gt;$(&amp;#39;ul&amp;#39;).each&lt;/code&gt;. Они принадлежать к разным областям jQuery.&lt;/p&gt;
+&lt;p&gt;Методы, которые вызываются через &lt;code&gt;$.&lt;/code&gt; — утилиты jQuery. Могут возвращать разные вещи.&lt;/p&gt;
+&lt;p&gt;Методы, которые работают с селекторами (&lt;code&gt;$(&amp;#39;ul&amp;#39;)&lt;/code&gt;), получают и возвращают коллекцию как &lt;code&gt;this&lt;/code&gt;. Они принадлежат к 
+области видимости &lt;code&gt;$.fn&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$.fn&lt;/code&gt; — “jQuery prototype”. Методы объектов jQuery, работают с коллекциями элементов.&lt;/p&gt;
+&lt;h2 id=&quot;-id-css-&quot;&gt;Выбор элемента с id, в котором содержатся символы из CSS-нотации (точки и двоеточия)&lt;/h2&gt;
+&lt;p&gt;В этом случае точки и двоеточия экранируются двумя слешами:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// BROKEN CODE&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;'some:id'&lt;/span&gt; ); $( &lt;span class=&quot;string&quot;&gt;'some.id'&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// А так нормально:&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;'some\\:id'&lt;/span&gt; ); $( &lt;span class=&quot;string&quot;&gt;'some\\.id'&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/jquery-object/&quot;&gt;http://learn.jquery.com/using-jquery-core/jquery-object/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/dollar-object-vs-function/&quot;&gt;http://learn.jquery.com/using-jquery-core/dollar-object-vs-function/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/faq/how-do-i-select-an-element-by-an-id-that-has-characters-used-in-css-notation/&quot;&gt;http://learn.jquery.com/using-jquery-core/faq/how-do-i-select-an-element-by-an-id-that-has-characters-used-in-css-notation/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-css-&quot;&gt;.css()&lt;/h1&gt;
+&lt;p&gt;С помощью метода &lt;code&gt;.css()&lt;/code&gt; можно получить значение css-свойства, установить его или установить пачку css-свойств:&lt;/p&gt;
+&lt;p&gt;Получить значение css-свойства:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).css( &lt;span class=&quot;string&quot;&gt;&quot;fontSize&quot;&lt;/span&gt; );  &lt;span class=&quot;comment&quot;&gt;// Returns a string such as &quot;19px&quot;.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).css( &lt;span class=&quot;string&quot;&gt;&quot;font-size&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Also works.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Установить значение css-свойства (свойств):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).css( &lt;span class=&quot;string&quot;&gt;&quot;fontSize&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;100px&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Setting an individual property.&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// Setting multiple properties.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).css({
+    fontSize: &lt;span class=&quot;string&quot;&gt;&quot;100px&quot;&lt;/span&gt;,
+    color: &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt;
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;При передаче в метод &lt;code&gt;.css()&lt;/code&gt; свойства должны быть в виде camelCase (&lt;code&gt;fontSize: &amp;quot;10px&amp;quot;&lt;/code&gt;) или в виде строки 
+(&lt;code&gt;&amp;quot;font-size&amp;quot;: &amp;quot;10px&amp;quot;&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Не стоит пользоватьсы методом css для установки стилей. Лучше все делать через классы, так будет работать быстрее.&lt;/p&gt;
+&lt;h2 id=&quot;-css-&quot;&gt;Использование CSS-классов&lt;/h2&gt;
+&lt;p&gt;Внешний вид элементов нужно задавать через CSS-классы. JS не должен отвечать за визуальное представление. Поэтому 
+метод &lt;code&gt;.css()&lt;/code&gt; нормально использовать как геттер, но как сеттер его лучше не применять.&lt;/p&gt;
+&lt;p&gt;Для работы с классами имеются методы &lt;code&gt;.addClass()&lt;/code&gt;, &lt;code&gt;.removeClass()&lt;/code&gt;, &lt;code&gt;.toggleClass()&lt;/code&gt;. Наличие класса можно проверить
+при помощи метода &lt;code&gt;.hasClass()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; h1 = $( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; );
+
+h1.addClass( &lt;span class=&quot;string&quot;&gt;&quot;big&quot;&lt;/span&gt; );
+h1.removeClass( &lt;span class=&quot;string&quot;&gt;&quot;big&quot;&lt;/span&gt; );
+h1.toggleClass( &lt;span class=&quot;string&quot;&gt;&quot;big&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( h1.hasClass( &lt;span class=&quot;string&quot;&gt;&quot;big&quot;&lt;/span&gt; ) ) {
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-data&quot;&gt;Методы для работы с data&lt;/h1&gt;
+&lt;p&gt;Часто нужно вместе с элементом хранить какие-то данные о нем. Для этого в jQuery есть специальные методы:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#myDiv&quot;&lt;/span&gt; ).data( &lt;span class=&quot;string&quot;&gt;&quot;keyName&quot;&lt;/span&gt;, { foo: &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt; } ); &lt;span class=&quot;comment&quot;&gt;// сохранить объект в свойство keyName&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;#myDiv&quot;&lt;/span&gt; ).data( &lt;span class=&quot;string&quot;&gt;&quot;keyName&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Returns { foo: &quot;bar&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Таким образом за элементом можно закрепить &lt;em&gt;любой&lt;/em&gt; вид данных. В том числе и ссылки на другие элементы.&lt;/p&gt;
+&lt;p&gt;Например, нам нужно установить связь между элементом списка и дивом внутри него. Чтобы каждый раз не дергать DOM, 
+можно сохранить референс однажды и потом по нему доставать нужный див:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#myList li&quot;&lt;/span&gt; ).each(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; li = $( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; );
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; div = li.find( &lt;span class=&quot;string&quot;&gt;&quot;div.content&quot;&lt;/span&gt; );
+
+    li.data( &lt;span class=&quot;string&quot;&gt;&quot;contentDiv&quot;&lt;/span&gt;, div );
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Теперь нам не нужно находить див в DOM, можно просто достать его из data&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; firstLi = $( &lt;span class=&quot;string&quot;&gt;&quot;#myList li:first&quot;&lt;/span&gt; );
+firstLi.data( &lt;span class=&quot;string&quot;&gt;&quot;contentDiv&quot;&lt;/span&gt; ).html( &lt;span class=&quot;string&quot;&gt;&quot;new content&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Так же можно передать сразу пачку data-свойств:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$el.data({
+    &lt;span class=&quot;string&quot;&gt;'str'&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;'Hello'&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;'bool'&lt;/span&gt;: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;'arr'&lt;/span&gt;: [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;],
+    &lt;span class=&quot;string&quot;&gt;'obj'&lt;/span&gt;: { isOk: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt; }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Работа с размерами элемента&lt;/h1&gt;
+&lt;p&gt;Basic dimensions methods.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Sets the width of all &amp;lt;h1&amp;gt; elements.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).width( &lt;span class=&quot;string&quot;&gt;&quot;50px&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Gets the width of the first &amp;lt;h1&amp;gt; element.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).width();
+
+&lt;span class=&quot;comment&quot;&gt;// Sets the height of all &amp;lt;h1&amp;gt; elements.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).height( &lt;span class=&quot;string&quot;&gt;&quot;50px&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Gets the height of the first &amp;lt;h1&amp;gt; element.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).height();
+
+
+&lt;span class=&quot;comment&quot;&gt;// Returns an object containing position information for&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// the first &amp;lt;h1&amp;gt; relative to its &quot;offset (positioned) parent&quot;.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;h1&quot;&lt;/span&gt; ).position();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/css-styling-dimensions/&quot;&gt;CSS, Styling &amp;amp; Dimensions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/dimensions/&quot;&gt;Category: Dimensions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-index-&quot;&gt;Получение индекса элемента или свойства, .index()&lt;/h1&gt;
+&lt;p&gt;Метод &lt;code&gt;.index()&lt;/code&gt; можно вызывать четырьмя способами и вести он будет себя по-разному. Если &lt;code&gt;.index()&lt;/code&gt; вызывается над 
+коллекцией, то берется первый элемент.&lt;/p&gt;
+&lt;h2 id=&quot;1-index-&quot;&gt;1. Использование .index() без аргументов&lt;/h2&gt;
+&lt;p&gt;При вызове без аргументов вернется индекс объекта (от нуля) в коллекции:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;test&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;test 1&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;test 2&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;test 3&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; $test = $(&lt;span class=&quot;string&quot;&gt;'li#test'&lt;/span&gt;);
+$test.index(); &lt;span class=&quot;comment&quot;&gt;// =&amp;gt; 0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;2-index-&quot;&gt;2. Использование .index() со строковым аргументом&lt;/h2&gt;
+&lt;p&gt;Рассмотрим пример:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;test&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;foo1&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;foo&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;bar1&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;test&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;bar&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;baz1&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;baz&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;li&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;test&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;ul&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;last&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;.index( &amp;#39;selector&amp;#39; )&lt;/code&gt; запрашивает &lt;code&gt;.first()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; $lis = $( &lt;span class=&quot;string&quot;&gt;'li'&lt;/span&gt; );
+$lis.index( &lt;span class=&quot;string&quot;&gt;'li'&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// =&amp;gt; 0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;$li.index( &amp;#39;li&amp;#39; )&lt;/code&gt; ищет вхождения &lt;code&gt;&amp;#39;li&amp;#39;&lt;/code&gt; по &lt;em&gt;всему документу&lt;/em&gt; и выводит индекс элемента относительно всех &lt;code&gt;&amp;lt;li&amp;gt;&lt;/code&gt; в 
+документе:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$(&lt;span class=&quot;string&quot;&gt;'#last'&lt;/span&gt;).index(&lt;span class=&quot;string&quot;&gt;'div'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// =&amp;gt; 2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;3-index-jquery-object-&quot;&gt;3. Использование .index() с jQuery-object в качестве аргумента&lt;/h2&gt;
+&lt;p&gt;В этом случае ищется индекс элемента (первого, если передана коллекция) в скобках внутри коллекции, на которой вызыван 
+&lt;code&gt;.index()&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;4-index-dom-object-&quot;&gt;4. Использование .index() с DOM-object в качестве аргумента&lt;/h2&gt;
+&lt;p&gt;Работает аналогично случаю с передачей jQuery-объекта.        &lt;/p&gt;
+&lt;h1 id=&quot;-jquery-&quot;&gt;Перебор jQuery объектов и примитивов&lt;/h1&gt;
+&lt;p&gt;В jQuery есть метод &lt;code&gt;$.each&lt;/code&gt; для перебора массивов, псевдо-массивов и объектов (примитивов) и &lt;code&gt;.each&lt;/code&gt; для перебора 
+jQuery-объектов (выборок). Они никак не пересекаются.&lt;/p&gt;
+&lt;p&gt;Так же имеются шорткаты &lt;code&gt;$.map&lt;/code&gt; и &lt;code&gt;.map&lt;/code&gt;, которые решают определенные частные случаи переборов (подмножестово &lt;code&gt;each&lt;/code&gt;).&lt;/p&gt;
+&lt;h2 id=&quot;-each-&quot;&gt;$.each()&lt;/h2&gt;
+&lt;p&gt;Это метод-утилита для работы с примитивами: массивами, псевдомассивами и объектами (не с jQuery-объектами).&lt;/p&gt;
+&lt;p&gt;Пример для массива:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; sum = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; arr = [ &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt; ];
+    $.each( arr, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; index, value &lt;/span&gt;)&lt;/span&gt;{
+        sum += value;
+    });
+
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( sum ); &lt;span class=&quot;comment&quot;&gt;// 15&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Пример для объекта:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; sum = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; obj = {
+        foo: &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,
+        bar: &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;
+    }
+
+    $.each( obj, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
+        sum += value;
+    });
+
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( sum ); &lt;span class=&quot;comment&quot;&gt;// 3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-each-&quot;&gt;.each()&lt;/h2&gt;
+&lt;p&gt;Итератор для работы с jQuery-коллекциями. Каждый элемент коллекции обрабатывается коллбэком, в который передается 
+индекс элемента и его DOM-представление (не jQuery-объект). Это DOM-представление так же равно &lt;code&gt;this&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;li&quot;&lt;/span&gt; ).each( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; index, listItem &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; === listItem; &lt;span class=&quot;comment&quot;&gt;// true&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;// For example only. You probably shouldn't call $.ajax() in a loop.&lt;/span&gt;
+        $.ajax({
+            success: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; data &lt;/span&gt;) &lt;/span&gt;{
+               &lt;span class=&quot;comment&quot;&gt;// The context has changed.&lt;/span&gt;
+               &lt;span class=&quot;comment&quot;&gt;// The &quot;this&quot; keyword no longer refers to listItem.&lt;/span&gt;
+               &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; !== listItem; &lt;span class=&quot;comment&quot;&gt;// true&lt;/span&gt;
+            }
+        });
+
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Второй аргумент &lt;code&gt;listItem&lt;/code&gt; равен &lt;code&gt;this&lt;/code&gt; в контексте коллбэка. Однако бывает, что внутри коллбэка есть другие функции,
+внутри которых будет свой &lt;code&gt;this&lt;/code&gt; и для читабельности кода в этом случае лучше использовать второй аргумент.        &lt;/p&gt;
+&lt;p&gt;Часто методы jQuery не требуют запуска итератора. Например, так класс добавится ко всем &lt;code&gt;li&lt;/code&gt; без перебора:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;li&quot;&lt;/span&gt; ).addClass( &lt;span class=&quot;string&quot;&gt;&quot;newClass&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Но некоторые требуют конктетного обращения к каждому элементу:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;input&quot;&lt;/span&gt; ).each( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; i, el &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; elem = $( el );
+        elem.val( elem.val() + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt; );
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Часто геттеры возвращают значение первого элемента из колекции, а сеттеры, наоборот, обрабатывают всю коллекцию.
+В такие сеттеры можно передать в качестве устанавливаемого значения коллбэк-функцию, которая пройдется по всем элементам
+коллекции:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;input&quot;&lt;/span&gt; ).val( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; i, el &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; elem = $( el );
+        elem.val( elem.val() + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt; );
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-map-&quot;&gt;.map()&lt;/h2&gt;
+&lt;p&gt;Пробегается по всем элементам коллекции и производит какие-то операции над каждым элементом. Возвращает 
+jQuery-коллекцию.&lt;/p&gt;
+&lt;p&gt;Если нужно вернуть простой массив, то заканчиваем цепочку методом &lt;code&gt;.get()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    $( &lt;span class=&quot;string&quot;&gt;&quot;li&quot;&lt;/span&gt; ).map( &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;index, element&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.id;
+    }).get();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Цепочку можно продолжать методами массива. Например сделать &lt;code&gt;.reverse()&lt;/code&gt; после &lt;code&gt;.get()&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-map-&quot;&gt;$.map()&lt;/h2&gt;
+&lt;p&gt;Этот метод перебирает примитивы (массивы и объекты). В нем параметры &lt;code&gt;index&lt;/code&gt; и &lt;code&gt;value&lt;/code&gt; имеют другой порядок, чем в
+&lt;code&gt;.each&lt;/code&gt; и прочих переборных методах для совместимости с ES5:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; dimensions = { width: &lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;, height: &lt;span class=&quot;number&quot;&gt;15&lt;/span&gt;, length: &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt; };
+    dimensions = $.map( dimensions, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value, index &lt;/span&gt;) &lt;/span&gt;{
+      &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; value * &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;;
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Работа с элементами&lt;/h1&gt;
+&lt;h2 id=&quot;get-set&quot;&gt;Get/Set&lt;/h2&gt;
+&lt;p&gt;Большинство методов позволяют и установить и получить значение:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;.html()
+.text()
+.height()/.width()
+.val()
+
+.position() &lt;span class=&quot;comment&quot;&gt;// get only&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Установка нового значения затронет все элементы выборки:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;'h1'&lt;/span&gt; ).text(&lt;span class=&quot;string&quot;&gt;'Hello'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// изменятся все h1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Перемещение, копирование и удаление элементов&lt;/h1&gt;
+&lt;p&gt;Работая с элементами, у нас бывают 2 задачи:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Поместить выбранный элемент относительно другого элемента.&lt;/li&gt;
+&lt;li&gt;Поместить какой-то элемент относительно выбранного элемента.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;$el.insertAfter( &amp;#39;#otherElement&amp;#39; )&lt;/code&gt; - поместить &lt;code&gt;$el&lt;/code&gt; после &lt;code&gt;#otherElement&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Аналогично будет: &lt;code&gt;$( &amp;#39;#otherElement&amp;#39; ).after($el)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Таким же образом работают:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.insertAfter()  | .after()
+.insertBefore() | .before()
+.appendTo()     | .append()
+.prependTo()    | .preped()
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Какой метод вставки выбрать?&lt;/h2&gt;
+&lt;p&gt;Если нужно сохранить ссылку на вставляемый элемент, то выбирает первую колонку: &lt;code&gt;.insertAfter&lt;/code&gt; и подобные. Эти методы 
+вернут вставляемый элемент и можно будет с ним работать дальше в цепочке или сохранить в переменную:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var $test = $( &amp;#39;&amp;lt;i&amp;gt;test&amp;lt;/i&amp;gt;&amp;#39; )
+                .insertAfter( &amp;#39;form&amp;#39; )
+                .animate({ &amp;#39;marginLeft&amp;#39;: &amp;#39;10px&amp;#39; });
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Эти методы &lt;em&gt;переносят&lt;/em&gt; элементы, не копируют. Если нам нужно именно скопировать элемент, то в начале нужно будет 
+создать новый такой же, т. е. сделать его клон.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Клонирование&lt;/h2&gt;
+&lt;p&gt;Элементы клонируются методом &lt;code&gt;.clone( [false|true] )&lt;/code&gt;. Этот методы вернет клонируемый элемент:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;form&amp;#39; ).clone().appendTo( &amp;#39;body&amp;#39; ); // Копия без данных и событий. Например, обработчик submit не сработает.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Если нам нужно клонировать элемент со всеми закрепленными данными и обработчиками, то нужно передать флаг &lt;code&gt;true&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;form&amp;#39; ).clone(true).appendTo( &amp;#39;body&amp;#39; ); // Все данные и обработчики сохранятся так же.
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Удаление элементов&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;.remove()&lt;/code&gt; — удалить выборку из документа. Метод вернет удаляемую выборку, все обработчики и данные будут так же 
+удалены. Применяется, когда элементы нам больше не нужны. Или когда нужны, но без обработчиков и данных.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.detach()&lt;/code&gt; — удалить выборку из документа с &lt;em&gt;сохранением&lt;/em&gt; всех данных и обработчиков. Применяется, если нужно дальше
+работать с удаляемыми элементами.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.detach()&lt;/code&gt; стоит использовать, когда нам нужно переработать структуру какого-то элемента (например, доабвить/удалить 
+строки в таблицу). Сначала детачим элемента, делаем, что нужно, потом вставляем его обратно. Так мы не трогаем DOM, а
+работаем с элементом в памяти. Это сокращает число запросов к дереву DOM и обеспечивает лучшую производительность.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.empty()&lt;/code&gt; — удалить содержимое элемента (его &lt;code&gt;innerHTML&lt;/code&gt;).    &lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Создание элементов&lt;/h2&gt;
+&lt;p&gt;Создавать элементы можно с помощью функции &lt;code&gt;$()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;&amp;lt;p&amp;gt;This is a new paragraph&amp;lt;/p&amp;gt;&amp;quot; );
+$( &amp;quot;&amp;lt;a/&amp;gt;&amp;quot;, {
+    html: &amp;quot;This is a &amp;lt;strong&amp;gt;new&amp;lt;/strong&amp;gt; link&amp;quot;,
+    &amp;quot;class&amp;quot;: &amp;quot;new&amp;quot;, // зарезервированное слово, пэотому в кавычках
+    href: &amp;quot;foo.html&amp;quot;
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Созданные элементы нужно еще добавить в DOM с помощью методов &lt;code&gt;.append()&lt;/code&gt;, &lt;code&gt;.insertAfter()&lt;/code&gt; и пр.&lt;/p&gt;
+&lt;p&gt;Когда нужно добавить много элементов, не стоит это делать в цикле. Лучше сформировать содержимое и добавить его в DOM
+один раз.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Работа с атрибутами&lt;/h2&gt;
+&lt;p&gt;Метод &lt;code&gt;.attr()&lt;/code&gt; позволяет получить значение атрибута, установить его или записать сразу пачку атрибутов. При этом в 
+качестве заначения можно передать функцию, которая получает индекс текущего элемента, текущее значение атрибута и 
+возвращает новое значение:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;a&amp;#39; ).attr( &amp;#39;href&amp;#39;, &amp;#39;newDestination.html&amp;#39; );
+$( &amp;#39;a&amp;#39; ).attr({
+    rel: &amp;#39;nofollow&amp;#39;,
+    href: function( idx, href ) {
+        return &amp;#39;/new/&amp;#39; + href
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/manipulating-elements/&quot;&gt;http://learn.jquery.com/using-jquery-core/manipulating-elements/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/manipulation/&quot;&gt;http://api.jquery.com/category/manipulation/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/attributes/&quot;&gt;http://api.jquery.com/category/attributes/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-&quot;&gt;Коллекции и селекторы&lt;/h1&gt;
+&lt;h2 id=&quot;-&quot;&gt;Проверка на видимость элементов&lt;/h2&gt;
+&lt;p&gt;Псевдо-селекторы jQuery &lt;code&gt;:hidden&lt;/code&gt; и &lt;code&gt;:visible&lt;/code&gt; смотрят не на css-свойства, а на физическое представление элемента, его 
+ширину и высоту. Исключение - только &lt;code&gt;tr&lt;/code&gt;. У него берется &lt;code&gt;display&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Скорость&lt;/h2&gt;
+&lt;p&gt;По возможности начинаем выборку с селектора по &lt;code&gt;id&lt;/code&gt;. Так будет быстрее всего.&lt;/p&gt;
+&lt;p&gt;Если надо использовать выборку несколько раз — сохнаняем ее в переменную, имя начинаем с доллара:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var $divs = $(&amp;#39;div&amp;#39;);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;$divs&lt;/code&gt; сохранит только те элементы, которые присутствую на странице при создании переменной.&lt;/p&gt;
+&lt;p&gt;Если нужна динамическая выборка (живая коллекция), то можно использовать &lt;code&gt;elem.getElementsBy[Name|TagName|ClassName]&lt;/code&gt;.
+В этом случае элементы не будут сохраняться, а будут выбираться каждый раз при вызове.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Проверка выборки на пустоту&lt;/h2&gt;
+&lt;p&gt;Проверить, не пустая ли выборка:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// Это не сработает.
+// Всегда вернется объект, а он будет преобразован в true.
+if ( $( &amp;quot;div.foo&amp;quot; ) ) {
+    ...
+}
+
+// Вот так правильно. Тут 0 станет false:
+if ( $( &amp;quot;div.foo&amp;quot; ).length ) {
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Фильтры&lt;/h2&gt;
+&lt;p&gt;Когда выборку нужно ограничить, можно к ней применить фильтры:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// Усечение выборок: 
+$( &amp;quot;div.foo&amp;quot; ).has( &amp;quot;p&amp;quot; );         // div.foo в которых есть &amp;lt;p&amp;gt;
+$( &amp;quot;h1&amp;quot; ).not( &amp;quot;.bar&amp;quot; );           // h1 без класса .bar
+$( &amp;quot;ul li&amp;quot; ).filter( &amp;quot;.current&amp;quot; ); // li с классом .current
+$( &amp;quot;ul li&amp;quot; ).first();              // Первый li
+$( &amp;quot;ul li&amp;quot; ).eq( 5 );              // Шестой li
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;filter-vs-find&quot;&gt;filter vs. find&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;.filter&lt;/code&gt; - урезать коллекцию, &lt;code&gt;.find&lt;/code&gt; - найти что-то внутри элемента.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Выбор элементов формы по типу и состоянию&lt;/h2&gt;
+&lt;p&gt;jQuery имеет собственный удобный API (псевдо-селекторы) для выборки элементов формы по типу и состоянию. Такого в CSS 
+нет.&lt;/p&gt;
+&lt;p&gt;Чтобы выборка по псевдо-селекторам работала быстро и использовала &lt;code&gt;querySelectorAll&lt;/code&gt;, а не механизмы поиска jQuery, 
+нужно сначала найти элемента, а потом их отфильтровать по псевдо-селектору:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;`$(&amp;#39;#myForm&amp;#39;).find(&amp;#39;input&amp;#39;).filter(&amp;#39;:checked&amp;#39;);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;По состоянию:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;:checked&lt;/strong&gt; - все выбранные элементы формы. Учитываются checkbox, radio и &amp;lt;select&amp;gt;&amp;lt;option&amp;gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#myForm input:checked&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;:disabled&lt;/strong&gt; - найти все элементы формы с атрибутом &lt;code&gt;disabled&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&amp;#39; #myForm &amp;#39;).find(&amp;#39;input&amp;#39;).filter(&amp;#39;:disabled&amp;#39;); // Так будет работать быстрее всего
+$(&amp;#39; #myForm input&amp;#39;).filter(&amp;#39;:disabled&amp;#39;); // Можно так
+$(&amp;#39; #myForm input:disabled&amp;#39;); // Или так, тэг или выборка перед псевдо-селектором
+$(&amp;#39; #myForm :disabled&amp;#39;); // А так лучше не надо
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;:enabled&lt;/strong&gt; - элементы без атрибута &lt;code&gt;disabled&lt;/code&gt;. Инверсия псевдо-селектора &lt;code&gt;:disabled&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$(&amp;#39; #myForm input&amp;#39;).filter(&amp;#39;:enabled&amp;#39;); // Сначала выбираем, потом фильтруем
+$(&amp;#39; #myForm input:enabled&amp;#39;); // Так тоже можно
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;:input&lt;/strong&gt; - выбрать все элементы, с типами input, textarea, select и button:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;:selected&lt;/strong&gt; — выбрать все выбранные option. Работает именно с тегами &lt;code&gt;&amp;lt;option&amp;gt;&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// BROKEN CODE: Так работать не будет
+$( &amp;#39;#myForm&amp;#39; ).find( &amp;#39;select&amp;#39; ).filter( &amp;#39;:selected&amp;#39; );
+
+// А так будет:
+$( &amp;#39;#select1&amp;#39; ).find( &amp;#39;option&amp;#39; ).filter(&amp;#39;:selected&amp;#39;);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;По типу:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;#myForm&amp;#39; ).find( &amp;#39;input&amp;#39; ).filter( &amp;#39;:password&amp;#39; );
+                                        :reset
+                                        :radio
+                                        :text
+                                        :submit
+                                        :checkbox
+                                        :button
+                                        :image
+                                        :file
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Работа с коллекциями&lt;/h2&gt;
+&lt;p&gt;Методы, вызываемые из коллекций могут быть сеттерами и геттерами. Если передаем параметр — получается сеттер, если 
+параметра нет, то геттер.&lt;/p&gt;
+&lt;p&gt;Сеттеры затронут &lt;strong&gt;все&lt;/strong&gt; элементы из колекции:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;h1&amp;#39; ).html( &amp;#39;Hello world&amp;#39; ); // Все h1 на странице изменят содержимое на &amp;#39;Hello world&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Геттеры вернут значение только первого элемента (за исключением &lt;code&gt;.text()&lt;/code&gt;):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;h1&amp;#39; ).html(); // Содержимое первого h1 из коллекции
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;.text()&lt;/code&gt; вернет текстовый контент вообще всех заголовков:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;#39;h1&amp;#39; ).text(); // Текст вообще всех h1 на странице в одной строке
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Цепочки вызовов&lt;/h2&gt;
+&lt;p&gt;Цепочку вызовов можно продолжать при сеттерах (они вернут jQuery object), а геттеры вернут только то, что у них 
+запросили, поэтому такая штука не сработает:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// BROKEN CODE: геттер вернет строку, цепочка вызовов закончится
+$( &amp;quot;h1&amp;quot; ).html().addClass( &amp;quot;test&amp;quot; );
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Chaining хорошая штука, но нужно знать меру. Чтобы код получился более читабельным, лучше разбивать вызовы по строкам:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;#content&amp;quot; )
+    .find( &amp;quot;h3&amp;quot; )
+    .eq( 2 )
+        .html( &amp;quot;new text for the third h3!&amp;quot; )
+        .end() // Restores the selection to all h3s in #content
+    .eq( 0 )
+        .html( &amp;quot;new text for the first h3!&amp;quot; );
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Здесь &lt;code&gt;.end()&lt;/code&gt; вернет нас к первоначальной выборке (все h3).&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Передвижение по выборке&lt;/h1&gt;
+&lt;p&gt;Элементы в выборке, по которым мы можем передвигаться, могут быть 3 типов: parents, children, siblings (родители, 
+дети и братья).&lt;/p&gt;
+&lt;h2 id=&quot;html-&quot;&gt;HTML для демонстрации&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;grandparent&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;parent&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;child&amp;quot;&amp;gt;
+            &amp;lt;span class=&amp;quot;subchild&amp;quot;&amp;gt;&amp;lt;/span&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&amp;quot;surrogateParent1&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+    &amp;lt;div class=&amp;quot;surrogateParent2&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-parents-&quot;&gt;Родительские элементы (parents)&lt;/h2&gt;
+&lt;p&gt;Чтобы выбрать определенные родительские элементы доступны следующие методы: .parent(), .parents(), .parentsUntil() 
+and .closest():&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// Вернет [ div.child ]
+$( &amp;quot;span.subchild&amp;quot; ).parent();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Выбрать родительские элементы, соответствующие селектору:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;span.subchild&amp;quot; ).parents( &amp;quot;div.parent&amp;quot; ); // [ div.parent ]
+$( &amp;quot;span.subchild&amp;quot; ).parents(); // [ div.child, div.parent, div.grandparent ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Выбрать родителей до селектора, &lt;em&gt;не включая его&lt;/em&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;span.subchild&amp;quot; ).parentsUntil( &amp;quot;div.grandparent&amp;quot; ); // [ div.child, div.parent ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Выбрать один ближайший родительский элемент. В том числе вернется &lt;em&gt;сам элемент&lt;/em&gt;, если он соответствует селектору:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;span.subchild&amp;quot; ).closest( &amp;quot;div&amp;quot; ); // [ div.child ]
+$( &amp;quot;div.child&amp;quot; ).closest( &amp;quot;div&amp;quot; ); // [ div.child ], вернется сам элемент, т. к. он включен в поиск
+                                   // и соответствует селектору
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-children-&quot;&gt;Дочерние элементы (children)&lt;/h2&gt;
+&lt;p&gt;Для доступа к дочерним элементам используются методы &lt;code&gt;.children()&lt;/code&gt; и &lt;code&gt;.find()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.children()&lt;/code&gt; — работает только с непосредственными детьми (div &amp;gt; p).
+&lt;code&gt;.find()&lt;/code&gt; — углубляется рекурсивно внутрь элемента&lt;/p&gt;
+&lt;p&gt;Выбор непосредственных детей:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.grandparent&amp;quot; ).children( &amp;quot;div&amp;quot; ); // [ div.parent, div.surrogateParent1, div.surrogateParent2 ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Все элементы в выборке, которые соответствуют селектору:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.grandparent&amp;quot; ).find( &amp;quot;div&amp;quot; ); // [ div.parent, div.child, div.surrogateParent1, div.surrogateParent2 ]
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-siblings-&quot;&gt;Одноуровневые элементы (братья, siblings)&lt;/h2&gt;
+&lt;p&gt;Для поиска одноуровневых элементов используются метды &lt;code&gt;.prev()&lt;/code&gt;, &lt;code&gt;.next()&lt;/code&gt;, &lt;code&gt;.siblings()&lt;/code&gt;, &lt;code&gt;.prevAll()&lt;/code&gt;, &lt;code&gt;.prevUntill()&lt;/code&gt;,
+&lt;code&gt;.nextAll()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Следующий элемент такого же уровня:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.parent&amp;quot; ).next(); // [ div.surrogateParent1 ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Предыдущий селектор такого же уровня:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.parent&amp;quot; ).prev(); // [] as No sibling exists before div.parent
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Все последующие элементы такого же уровня:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.parent&amp;quot; ).nextAll(); // [ div.surrogateParent1, div.surrogateParent2 ]
+$( &amp;quot;div.parent&amp;quot; ).nextAll().first(); // [ div.surrogateParent1 ]
+$( &amp;quot;div.parent&amp;quot; ).nextAll().last(); // [ div.surrogateParent2 ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Все предыдущие элементы такого же уровня:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.surrogateParent2&amp;quot; ).prevAll(); // [ div.surrogateParent1, div.parent ]
+$( &amp;quot;div.surrogateParent2&amp;quot; ).prevAll().first(); // [ div.surrogateParent1 ]
+$( &amp;quot;div.surrogateParent2&amp;quot; ).prevAll().last(); // [ div.parent ]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Все элементы такого же уровня во всех направлениях (и до и после):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;div.parent&amp;quot; ).siblings(); // [ div.surrogateParent1, div.surrogateParent2 ]
+$( &amp;quot;div.surrogateParent1&amp;quot; ).siblings(); // [ div.parent, div.surrogateParent2 ]
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Сложные переходы&lt;/h2&gt;
+&lt;p&gt;Не стоит строить длинные цепочки переходов. Нужно иметь ввиду, что при поддержке сайта DOM может изменяться со 
+временем и длинные переходы могут перестать работать. Пара-тройка элементов — ок, а если нужно найти дочерние 
+элементы в соседнем блоке, тот тут лучше отдельно найти элементы. Так гибче.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/traversing/&quot;&gt;Traversing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/traversing/tree-traversal/&quot;&gt;Category: Tree Traversal&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-&quot;&gt;Полезные функции из $&lt;/h1&gt;
+&lt;p&gt;В объекте &lt;code&gt;$&lt;/code&gt; содержится масса полезных фнукций для рутинных задач.&lt;/p&gt;
+&lt;p&gt;Вот несколько примеров.&lt;/p&gt;
+&lt;h2 id=&quot;-trim-&quot;&gt;$.trim()&lt;/h2&gt;
+&lt;p&gt;Убирает лишние пробелы в начале и в конце:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$.trim( &amp;quot;    lots of extra whitespace    &amp;quot; ); // &amp;quot;lots of extra whitespace&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-each&quot;&gt;$.each&lt;/h2&gt;
+&lt;p&gt;Перебор массивов и объектов:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$.each([ &amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot; ], function( idx, val ) {
+    console.log( &amp;quot;element &amp;quot; + idx + &amp;quot; is &amp;quot; + val );
+});
+
+$.each({ foo: &amp;quot;bar&amp;quot;, baz: &amp;quot;bim&amp;quot; }, function( k, v ) {
+    console.log( k + &amp;quot; : &amp;quot; + v );
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;$.each != .each&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$.each()&lt;/code&gt; работает с примитивами: массивы и объекты, &lt;code&gt;.each()&lt;/code&gt; работает только с выборкой jQuery.&lt;/p&gt;
+&lt;p&gt;Для массивов есть нативный &lt;code&gt;Array.prototype.forEach&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-inarray-&quot;&gt;$.inArray()&lt;/h2&gt;
+&lt;p&gt;Вернет индекс значения или -1, если значение не нашлось:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var myArray = [ 1, 2, 3, 5 ];
+
+if ( $.inArray( 4, myArray ) !== -1 ) {
+    console.log( &amp;quot;found it!&amp;quot; );
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Начиная с IE9 есть нативный &lt;code&gt;Array.prototype.indexOf&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-extend-&quot;&gt;$.extend()&lt;/h2&gt;
+&lt;p&gt;Расширяет (изменяет и дополняет) свойства первого объекта свойствами других объектов:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var firstObject = { foo: &amp;quot;bar&amp;quot;, a: &amp;quot;b&amp;quot; };
+var secondObject = { foo: &amp;quot;baz&amp;quot; };
+
+var newObject = $.extend( firstObject, secondObject );
+
+console.log( firstObject.foo ); // &amp;quot;baz&amp;quot;, изменилось
+console.log( newObject.foo ); // &amp;quot;baz&amp;quot;    
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Если не нужно изменять первый объект, то первым аргументом нужно передать пустой объект:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var firstObject = { foo: &amp;quot;bar&amp;quot;, a: &amp;quot;b&amp;quot; };
+var secondObject = { foo: &amp;quot;baz&amp;quot; };
+
+var newObject = $.extend( {}, firstObject, secondObject );
+
+console.log( firstObject.foo ); // &amp;quot;bar&amp;quot;
+console.log( newObject.foo ); // &amp;quot;baz&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-proxy-&quot;&gt;$.proxy()&lt;/h2&gt;
+&lt;p&gt;Назначает контекст выполнения для функции. Вторым аргументом передается объект:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var myFunction = function() {
+    console.log( this );
+};
+var myObject = {
+    foo: &amp;quot;bar&amp;quot;
+};
+
+myFunction(); // window
+
+var myProxyFunction = $.proxy( myFunction, myObject );
+
+myProxyFunction(); // myObject
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Если нужно сохранить контекст для метода из объекта (оставить в методе &lt;code&gt;this&lt;/code&gt;, равный этому объекту), то в &lt;code&gt;$.proxy&lt;/code&gt; 
+нужно передать объект и имя метода. В этом случае вернется функция, за которой закрепится контекст:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;var myObject = {
+    myFn: function() {
+        console.log( this );
+    }
+};
+
+$( &amp;quot;#foo&amp;quot; ).click( myObject.myFn ); // HTMLElement #foo
+$( &amp;quot;#foo&amp;quot; ).click( $.proxy( myObject, &amp;quot;myFn&amp;quot; ) ); // myObject
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Начиная с IE9 есть нативный &lt;code&gt;.bind(this)&lt;/code&gt; для функций. Последний пример можно написать так:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;#foo&amp;quot; ).click( myObject.myFn.bind(myObject) );
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Или так:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;#foo&amp;quot; ).click( function() { myObject.myFn.call(myObject) } );
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Или так:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$( &amp;quot;#foo&amp;quot; ).click( function() { myObject.myFn() } );
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Проверка типов&lt;/h2&gt;
+&lt;p&gt;Есть методы для проверки типа значения:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$.isArray([]); // true. Есть нативный аналог: Array.isArray([]), IE9+
+$.isFunction(function() {}); // true
+$.isNumeric(3.14); // true
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Помимо этого имеется метод &lt;code&gt;$.type()&lt;/code&gt;, который проверяет тип значения по его прототипу:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$.type( true ); // &amp;quot;boolean&amp;quot;
+$.type( 3 ); // &amp;quot;number&amp;quot;
+$.type( &amp;quot;test&amp;quot; ); // &amp;quot;string&amp;quot;
+$.type( function() {} ); // &amp;quot;function&amp;quot;
+
+$.type( new Boolean() ); // &amp;quot;boolean&amp;quot;
+$.type( new Number(3) ); // &amp;quot;number&amp;quot;
+$.type( new String(&amp;#39;test&amp;#39;) ); // &amp;quot;string&amp;quot;
+$.type( new Function() ); // &amp;quot;function&amp;quot;
+
+$.type( [] ); // &amp;quot;array&amp;quot;
+$.type( null ); // &amp;quot;null&amp;quot;
+$.type( /test/ ); // &amp;quot;regexp&amp;quot;
+$.type( new Date() ); // &amp;quot;date&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/using-jquery-core/utility-methods/&quot;&gt;Utility Methods&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/utilities/&quot;&gt;Category: Utilities&lt;/a&gt;            &lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>

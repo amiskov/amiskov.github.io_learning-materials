@@ -11,28 +11,3 @@ var regions = {
     558: "Тульская область",
     562: "Ярославская область"
 };
-
-
-var select = new Select(regions, selectedId);
-
-$('#regions').html(select.getElement()); // => <div class="...">...</div>
-
-select.on('change', function (e) {
-    $('#title').html(e.data.value);
-});
-
-
-function createElement() {
-    var $el = $('#select');
-
-    var $html = $('<ul/>', {
-        class: 'select',
-        text: 'Москва'
-    });
-     // Цикл для вставки li
-
-    $el.html($html);
-
-    $el.trigger('ready');
-
-}
