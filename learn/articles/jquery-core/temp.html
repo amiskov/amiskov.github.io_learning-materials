@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+</head>
+<body>
+<div class="test"></div>
+<ul>
+    <li>asdfasdf</li>
+    <li>asddf</li>
+</ul>
+<ul>
+    <div class="test"></div>
+    <li id="foo1">foo</li>
+    <li id="bar1" class="test">bar</li>
+    <li id="baz1">baz</li>
+    <div class="test"></div>
+</ul>
+<div id="last"></div>
+
+<script>
+    var $listItems = $( "li" );
+
+    // This implicitly calls .first()
+    console.log( "Index: " + $listItems.index( "li" ) ); // 0
+
+    var baz = $( "#baz1" );
+    console.log( "Index: " + baz.index( "li" )); // 2
+
+    var listItem = $( "#bar1" );
+    console.log( "Index: " + listItem.index( ".test" ) ); // 1
+
+    var div = $( "#last" );
+    console.log( "Index: " + div.index( "div" ) ); // 2
+</script>
+</body>
+</html>

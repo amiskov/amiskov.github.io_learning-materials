@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+</head>
+<body>
+<span id="foo">Click</span>
+<script>
+    var myObject = {
+        myFn: function() {
+            console.log( this );
+        }
+    };
+
+//    $( "#foo" ).click( myObject.myFn ); // HTMLElement #foo
+//    $( "#foo" ).click( $.proxy( myObject, "myFn" ) ); // myObject
+
+//    $( "#foo" ).click( function() { myObject.myFn.call(myObject) } );
+//    $( "#foo" ).click( myObject.myFn.bind(myObject) );
+
+
+        $( "#foo" ).click( function() { myObject.myFn() } );
+
+</script>
+</body>
+</html>

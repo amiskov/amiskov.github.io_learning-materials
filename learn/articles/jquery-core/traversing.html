@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+    <style>
+        body {
+            font: 12px/1.4 Tahoma, sans-serif;
+        }
+        .example div {
+            margin: 5px;
+            padding: 20px;
+            border: 1px solid #ccccff;
+            position: relative;
+            background: rgba(152, 77, 255, 0.1);
+        }
+        .example *::before {
+            content: attr(class);
+            padding: 0 3px;
+        }
+        .example *:hover {
+            border-color: #f00;
+        }
+        .example div::before {
+            position: absolute;
+            background: #ccccff;
+            top: 0;
+            left: 0;
+        }
+
+        .example span {
+            background: #fcc;
+        }
+    </style>
+</head>
+<body>
+<section class="example">
+
+    <div class="grandparent">
+        <div class="parent">
+            <div class="child">
+                <span class="subchild"></span>
+            </div>
+        </div>
+        <div class="surrogateParent1"></div>
+        <div class="surrogateParent2"></div>
+    </div>
+
+</section>
+</body>
+</html>
