@@ -1,5 +1,6 @@
 {
   "output": "../learn",
+  "baseUrl": "/learn/",
   "locale": "ru",
   "locals": {
     "url": "http://amiskov.github.io/learn/",
