@@ -1,0 +1,31 @@
+{
+  "output": "../learn",
+  "locale": "ru",
+  "locals": {
+    "url": "http://amiskov.github.io/learn/",
+    "name": "Занятия по фронтэнду",
+    "owner": "Andrey Miskov",
+    "description": "тезисы, примеры и домашние задания"
+  },
+  "plugins": [
+    "./plugins/paginator.coffee",
+    "wintersmith-autoprefixer-less",
+    "wintersmith-livereload",
+    "wintersmith-l10n"
+  ],
+  "require": {
+    "moment": "moment",
+    "_": "underscore",
+    "typogr": "typogr"
+  },
+  "jade": {
+    "pretty": true
+  },
+  "markdown": {
+    "smartLists": true,
+    "smartypants": true
+  },
+  "paginator": {
+    "perPage": 10
+  }
+}

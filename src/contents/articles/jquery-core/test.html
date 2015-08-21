@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../jquery-2.1.4.js"></script>
+</head>
+<body>
+<h1 id="heading1">Here's my form</h1>
+
+<h1>Test</h1>
+
+<h1>Test 2</h1>
+
+
+<ul id="list">
+    <li><a href="#">Test 1</a></li>
+    <li><a href="#">Test 2</a></li>
+    <li><a href="#">Test 3</a></li>
+</ul>
+
+<form id="myForm" action="#">
+    <label for="radio1">Radio 1</label>
+    <input type="radio" name="" id="radio1"><br>
+
+    <label for="radio2">Radio 2</label>
+    <input type="radio" name="" id="radio2"><br>
+
+
+    <label for="password">Password</label>
+    <input type="password" name="" id="password"><br>
+
+    <label for="text">Text</label>
+    <input type="text" name="" id="text"><br>
+
+    <label for="checkbox1">Checkbox</label>
+    <input type="checkbox" name="" id="checkbox1"><br>
+
+    <label for="select1">Select 1</label>
+    <select name="select" id="select1">
+        <option value="1">First</option>
+        <option value="2">Second</option>
+    </select>
+    <br>
+
+    <label for="select2">Select 2</label>
+    <select name="select" id="select2">
+        <option value="1">First</option>
+        <option value="2">Second</option>
+    </select>
+    <br>
+    <input type="submit" value="Submit">
+
+</form>
+
+<h2 id="heading2">Here's some text</h2>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aut debitis deserunt dolor earum facilis maxime
+    mollitia nemo sapiente sint totam vitae voluptate, voluptates! Necessitatibus, quis, sunt. Eos, tempora tenetur!</p>
+
+<ul id="muyList">
+    <li id="test1">
+        <div class="content">Test 0</div>
+    </li>
+    <li id="test3">
+        <div class="content">Test 1</div>
+    </li>
+</ul>
+<script>
+    var $f = $('#myForm');
+    $f.submit(function () {
+        alert('Test!');
+        return false;
+    });
+
+
+    //    $( "#myList li" ).each(function() {
+    //
+    //        var li = $( this );
+    //        var div = li.find( "div.content" );
+    //
+    //        li.data( "contentDiv", div );
+    //    });
+    //
+    //    // Теперь нам не нужно находить див в DOM, можно просто достать его из data
+    //    var firstLi = $( "#myList li:first" );
+    //    firstLi.data( "contentDiv" ).html( "new content" );
+
+    var $newLis = $("li").map(function (index, element) {
+        return $(this).html('asldfjasldf');
+    }).get();
+
+</script>
+
+</body>
+</html>
