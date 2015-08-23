@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="custom-select.css">
+    <script src="../../../js/jquery-2.1.4.min.js"></script>
+    <script src="regions.js"></script>
+</head>
+<body>
+<div id="regions"></div>
+<script>
+
+    function Select(options, selectedValue) {
+        this.$select = null;
+        this.$selected = null;
+        this.$optionsList = null;
+
+        this.getElement = function () {
+            this.$select = $('<div/>', {
+                class: 'select'
+            });
+
+            this.$selected = $('<div>', {
+                class: 'select__current',
+                'data-value': selectedValue,
+                text: options[selectedValue]
+            }).appendTo(this.$select)
+                    .on('click', onSelectedClick.bind(this));
+
+            this.$optionsList = $('<ul>', {
+                class: 'select__options'
+            }).appendTo(this.$select)
+                    .on('click', 'li', onOptionClick.bind(this));
+
+            for (var option in options) {
+                $('<li>', {
+                    class: 'select__option',
+                    'data-value': option,
+                    text: options[option]
+                }).appendTo(this.$optionsList);
+            }
+
+            function onSelectedClick() {
+                this.$select.toggleClass('open');
+            }
+
+            function onOptionClick(e) {
+                this.setValue($(e.target).data('value'));
+                this.$select.removeClass('open');
+            }
+
+            this.setValue = function (value) {
+                this.$selected
+                        .text(options[value])
+                        .attr('data-value', value);
+                this.$select.trigger({
+                    type: 'change',
+                    value: value
+                });
+            };
+
+            return this.$select;
+        };
+    }
+
+
+    var select = new Select(regions, 485);
+    $('#regions').append(select.getElement());
+
+    // Компонент должен генерировать событие после смены региона
+    select.$select.on('change', function (e) {
+        alert(e.value);
+    });
+</script>
+
+<button onclick="select.setValue(562)">Ярославская область</button>
+</body>
+</html>

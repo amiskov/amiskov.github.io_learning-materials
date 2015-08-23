@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="custom-select.css">
+    <script src="../../../js/jquery-2.1.4.min.js"></script>
+    <script src="regions.js"></script>
+</head>
+<body>
+<div id="regions"></div>
+<script>
+    function Select(options, selectedValue) {
+        this.$element = null;
+        this.$currentValue = null;
+        this.$optionsList = null;
+
+        this.createElement = function () {
+            this.$element = $('<div/>', {
+                class: 'select'
+            });
+
+            this.$currentValue = $('<div>', {
+                class: 'select__current',
+                'data-value': selectedValue,
+                text: options[selectedValue]
+            }).appendTo(this.$element)
+                    .on('click', onSelectedClick.bind(this));
+
+            this.$optionsList = $('<ul>', {
+                class: 'select__options'
+            }).appendTo(this.$element)
+                    .on('click', 'li', onOptionClick.bind(this));
+
+            for (var option in options) {
+                $('<li>', {
+                    class: 'select__option',
+                    'data-value': option,
+                    text: options[option]
+                }).appendTo(this.$optionsList);
+            }
+
+            $(document).on('click', onDocumentClick.bind(this));
+
+            return this.$element;
+        };
+
+        this.setValue = function (value) {
+            this.$currentValue
+                    .text(options[value])
+                    .attr('data-value', value);
+            this.$element.trigger({
+                type: 'change',
+                value: value
+            });
+        };
+
+        function onSelectedClick() {
+            this.$element.toggleClass('open');
+        }
+
+        function onOptionClick(e) {
+            this.setValue($(e.target).data('value'));
+            hideOptionsList.call(this);
+        }
+
+        function onDocumentClick(e) {
+            if (!$(e.target).closest(this.$element).length) {
+                hideOptionsList.call(this);
+            }
+        }
+
+        function hideOptionsList() {
+            this.$element.removeClass('open');
+        }
+    }
+
+
+    var select = new Select(regions, 485);
+    $('#regions').append(select.createElement());
+
+    // Компонент должен генерировать событие после смены региона
+    select.$element.on('change', function (e) {
+        console.log('New value: ' + e.value);
+    });
+</script>
+
+<button onclick="select.setValue(562)">Ярославская область</button>
+</body>
+</html>

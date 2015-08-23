@@ -1,0 +1,51 @@
+.select {
+    font: 14px/1.4 sans-serif;
+    max-width: 300px;
+    position: relative;
+
+    &__current {
+        border: 1px solid #CCC;
+        padding: 5px;
+        font-weight: bold;
+        padding-right: 20px;
+        cursor: pointer;
+
+        &::after {
+            position: absolute;
+            color: #999;
+            right: .5em;
+            top: 3px;
+            content: '\025BE';
+        }
+        &:hover {
+            border-color: #999;
+            &::after {
+                color: #666;
+            }
+        }
+    }
+
+    &__options {
+        background: #FFF;
+        box-sizing: border-box;
+        width: 100%;
+        position: absolute;
+        border: 1px solid #CCC;
+        border-top: none;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        display: none;
+        .open & {
+            display: block;
+        }
+    }
+    &__option {
+        padding: 3px 5px;
+        cursor: pointer;
+        color: #000;
+        &:hover {
+            color: #C00;
+        }
+    }
+}

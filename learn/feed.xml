@@ -165,6 +165,14 @@ jQuery-обработчиками, нативные событие тригге�
     $( &quot;a&quot; ).trigger( &quot;click&quot; );
 &amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Для лучшей читаемости кода, если нужно передать какие-то данные вместе с вызовом события, рекомендуется использовать 
+расширенный синтаксис:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; ).trigger({
+  type: &lt;span class=&quot;string&quot;&gt;&quot;logged&quot;&lt;/span&gt;,
+  user: &lt;span class=&quot;string&quot;&gt;&quot;foo&quot;&lt;/span&gt;,
+  pass: &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt;
+});
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Если надо вызвать нативное событие, то можно воспользоваться &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Document/createEvent&quot;&gt;document.createEvent&lt;/a&gt;.
 Есть еще плагин &lt;a href=&quot;https://github.com/jquery/jquery-simulate/&quot;&gt;jquery.simulate&lt;/a&gt;. Он триггерит и нативные и jQuery-события.&lt;/p&gt;
 &lt;h3 id=&quot;-trigger-vs-triggerhandler-&quot;&gt;.trigger() vs .triggerHandler()&lt;/h3&gt;
