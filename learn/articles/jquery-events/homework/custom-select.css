@@ -24,6 +24,7 @@
   color: #666;
 }
 .select__options {
+  background: #FFF;
   box-sizing: border-box;
   width: 100%;
   position: absolute;

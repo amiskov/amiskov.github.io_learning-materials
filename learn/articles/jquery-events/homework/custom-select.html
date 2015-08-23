@@ -10,27 +10,26 @@
 <body>
 <div id="regions"></div>
 <script>
-
     function Select(options, selectedValue) {
-        this.$select = null;
-        this.$selected = null;
+        this.$element = null;
+        this.$currentValue = null;
         this.$optionsList = null;
 
-        this.getElement = function () {
-            this.$select = $('<div/>', {
+        this.createElement = function () {
+            this.$element = $('<div/>', {
                 class: 'select'
             });
 
-            this.$selected = $('<div>', {
+            this.$currentValue = $('<div>', {
                 class: 'select__current',
                 'data-value': selectedValue,
                 text: options[selectedValue]
-            }).appendTo(this.$select)
+            }).appendTo(this.$element)
                     .on('click', onSelectedClick.bind(this));
 
             this.$optionsList = $('<ul>', {
                 class: 'select__options'
-            }).appendTo(this.$select)
+            }).appendTo(this.$element)
                     .on('click', 'li', onOptionClick.bind(this));
 
             for (var option in options) {
@@ -41,36 +40,48 @@
                 }).appendTo(this.$optionsList);
             }
 
-            function onSelectedClick() {
-                this.$select.toggleClass('open');
-            }
+            $(document).on('click', onDocumentClick.bind(this));
 
-            function onOptionClick(e) {
-                this.setValue($(e.target).data('value'));
-                this.$select.removeClass('open');
-            }
-
-            this.setValue = function (value) {
-                this.$selected
-                        .text(options[value])
-                        .attr('data-value', value);
-                this.$select.trigger({
-                    type: 'change',
-                    value: value
-                });
-            };
-
-            return this.$select;
+            return this.$element;
         };
+
+        this.setValue = function (value) {
+            this.$currentValue
+                    .text(options[value])
+                    .attr('data-value', value);
+            this.$element.trigger({
+                type: 'change',
+                value: value
+            });
+        };
+
+        function onSelectedClick() {
+            this.$element.toggleClass('open');
+        }
+
+        function onOptionClick(e) {
+            this.setValue($(e.target).data('value'));
+            hideOptionsList.call(this);
+        }
+
+        function onDocumentClick(e) {
+            if (!$(e.target).closest(this.$element).length) {
+                hideOptionsList.call(this);
+            }
+        }
+
+        function hideOptionsList() {
+            this.$element.removeClass('open');
+        }
     }
 
 
     var select = new Select(regions, 485);
-    $('#regions').append(select.getElement());
+    $('#regions').append(select.createElement());
 
     // Компонент должен генерировать событие после смены региона
-    select.$select.on('change', function (e) {
-        alert(e.value);
+    select.$element.on('change', function (e) {
+        console.log('New value: ' + e.value);
     });
 </script>
 
