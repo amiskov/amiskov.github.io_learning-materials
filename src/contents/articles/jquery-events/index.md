@@ -299,7 +299,8 @@ var regions = {
 ```javascript
 var select = new Select(regions, selectedId);
 
-// Компонент должен генерировать событие после смены региона
+// Компонент должен генерировать событие после смены региона.
+// Типа так:
 select.on('change', function(e) {
     alert(e.value);
 });
@@ -307,9 +308,9 @@ select.on('change', function(e) {
 $('#regions').append(select.getElement());
 ```
 
-Примерный вид компонента, (см. http://shop.rockwool.ru):
+Примерный вид и работа компонента. Выбор региона из списка и по клику на кнопке:
 
-![](homework/regions_select.png)
+![](homework/custom-select.gif)
 
 Никаких ограничений на внешний вид и синтаксис нет, делайте как считаете нужным. Главное, чтоб код был понятен и 
 удобен в использовании.

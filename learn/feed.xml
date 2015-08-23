@@ -240,15 +240,16 @@ foo(); &lt;span class=&quot;comment&quot;&gt;// instead of $( &quot;p&quot; ).tr
 &lt;p&gt;Пример инициализации:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; select = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Select(regions, selectedId);
 
-&lt;span class=&quot;comment&quot;&gt;// Компонент должен генерировать событие после смены региона&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// Компонент должен генерировать событие после смены региона.&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// Типа так:&lt;/span&gt;
 select.on(&lt;span class=&quot;string&quot;&gt;'change'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
     alert(e.value);
 });
 
 $(&lt;span class=&quot;string&quot;&gt;'#regions'&lt;/span&gt;).append(select.getElement());
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Примерный вид компонента, (см. &lt;a href=&quot;http://shop.rockwool.ru&quot;&gt;http://shop.rockwool.ru&lt;/a&gt;):&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-events/homework/regions_select.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Примерный вид и работа компонента. Выбор региона из списка и по клику на кнопке:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-events/homework/custom-select.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;Никаких ограничений на внешний вид и синтаксис нет, делайте как считаете нужным. Главное, чтоб код был понятен и 
 удобен в использовании.&lt;/p&gt;
 &lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;

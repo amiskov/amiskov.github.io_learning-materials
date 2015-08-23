@@ -248,15 +248,16 @@ foo(); <span class="comment">// instead of $( "p" ).trigger( "click" )</span>
 <p>Пример&nbsp;инициализации:</p>
 <pre><code class="lang-javascript"><span class="keyword">var</span> select = <span class="keyword">new</span> Select(regions, selectedId);
 
-<span class="comment">// Компонент должен генерировать событие после смены региона</span>
+<span class="comment">// Компонент должен генерировать событие после смены региона.</span>
+<span class="comment">// Типа так:</span>
 select.on(<span class="string">'change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>{
     alert(e.value);
 });
 
 $(<span class="string">'#regions'</span>).append(select.getElement());
 </code></pre>
-<p>Примерный вид компонента, (см. <a href="http://shop.rockwool.ru">http://shop.rockwool.ru</a>):</p>
-<p><img src="/learn/articles/jquery-events/homework/regions_select.png" alt=""></p>
+<p>Примерный вид и работа компонента. Выбор региона из списка и по клику на&nbsp;кнопке:</p>
+<p><img src="/learn/articles/jquery-events/homework/custom-select.gif" alt=""></p>
 <p>Никаких ограничений на внешний вид и синтаксис нет, делайте как считаете нужным. Главное, чтоб код был понятен и 
 удобен в&nbsp;использовании.</p>
 <h2 id="-">Материалы</h2>
