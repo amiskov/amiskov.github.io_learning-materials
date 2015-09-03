@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>jQuery Widget Factory - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>jQuery Widget Factory</h1>
+        <!--p.author-->
+        <!--  | #{ 'Written by ' }-->
+        <!--  mixin author(page.metadata.author)-->
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><h1 id="-ui-widget-factory">Использование <span class="caps">UI</span> Widget&nbsp;Factory</h1>
+<h2 id="stateless-vs-statefull">Stateless vs&nbsp;Statefull</h2>
+<p>Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
+делают и возвращают этй же&nbsp;коллекцию.</p>
+<p>Если мы имеем дело с более сложными штуками, которые больше похожи на объекты, то плагины могут быть не слишком 
+удобны в&nbsp;использовании.</p>
+<p>Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery создали <a href="http://jqueryui.com/widget/">jQuery 
+Widget Factofy</a>, которая является частью jQuery <span class="caps">UI</span> и может быть использована отдельно 
+(7Кб в сжатом виде). 
+<span class="more"></span></p>
+<h2 id="-">Написание&nbsp;плагина</h2>
+<p>В метод <code>$.widget</code> передается 2 параметра: имя плагина и объект с его&nbsp;функционалом:</p>
+<pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, { <span class="comment">// nmk — namespace, progressbar - widget name</span>
+
+    _create: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+        <span class="keyword">this</span>.element.addClass( <span class="string">"progressbar"</span> ).text( progress );
+    }
+
+});
+</code></pre>
+<h2 id="-">Соглашения</h2>
+<p>Пространство имен: имя плагина начинается с неймспейса, далее следует точка и после точки идет имя плагина:
+<code>nmk.progressbar</code>. Неймспейс <code>ui</code> занят компонентами библиотеки jQuery <span class="caps">UI</span>. Нам следует использовать свое собственное 
+пространство&nbsp;имен.</p>
+<p><code>this.element</code> — объект jQuery (единичный). Если плагин, созданный через Widget Factory, вызывается на коллекции 
+элементов jQuery, то для каждого элемента создается свой собственный&nbsp;экземляр.</p>
+<p><code>this.options</code> — объект с опциями, которые переданы при&nbsp;инициализации.</p>
+<p>Значения по умолчанию (опции и коллбэки) мы можем обозначить как объект <code>options</code>:</p>
+<pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
+
+    <span class="comment">// Default options.</span>
+    options: {
+        value: <span class="number">0</span>,
+
+        callback: <span class="literal">null</span> <span class="comment">// Callbacks are also here</span>
+    },
+
+    _create: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+        <span class="keyword">this</span>.element.addClass( <span class="string">"progressbar"</span> ).text( progress );
+    }
+
+});
+</code></pre>
+<h2 id="-">Добавление&nbsp;методов</h2>
+<p>Мы можем добавить методы в наш объект, в том числе приватные, начав их имена с&nbsp;подчеркивания:</p>
+<pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
+    options: {
+        value: <span class="number">0</span>
+    },
+
+    _create: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+        <span class="keyword">this</span>.element.addClass(<span class="string">"progressbar"</span>).text( progress );
+    },
+
+    <span class="comment">// Create a public method.</span>
+    value: <span class="function"><span class="keyword">function</span>(<span class="params"> value </span>) </span>{
+
+        <span class="comment">// No value passed, act as a getter.</span>
+        <span class="keyword">if</span> ( value === <span class="literal">undefined</span> ) {
+
+            <span class="keyword">return</span> <span class="keyword">this</span>.options.value;
+
+        <span class="comment">// Value passed, act as a setter.</span>
+        } <span class="keyword">else</span> {
+
+            <span class="keyword">this</span>.options.value = <span class="keyword">this</span>._constrain( value );
+            <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+            <span class="keyword">this</span>.element.text( progress );
+
+        }
+
+    },
+
+    <span class="comment">// Create a private method.</span>
+    _constrain: <span class="function"><span class="keyword">function</span>(<span class="params"> value </span>) </span>{
+
+        <span class="keyword">if</span> ( value &gt; <span class="number">100</span> ) {
+            value = <span class="number">100</span>;
+        }
+
+        <span class="keyword">if</span> ( value &lt; <span class="number">0</span> ) {
+            value = <span class="number">0</span>;
+        }
+
+        <span class="keyword">return</span> value;
+    }
+
+});
+</code></pre>
+<p>Для вызова методов нужно передать параметр в jQuery-плагин. Если нужно установить значение, то передаем его&nbsp;следом:</p>
+<pre><code class="lang-js"><span class="keyword">var</span> bar = $( <span class="string">"&lt;div /&gt;"</span> ).appendTo( <span class="string">"body"</span>).progressbar({ value: <span class="number">20</span> });
+
+<span class="comment">// Get the current value.</span>
+alert( bar.progressbar( <span class="string">"value"</span> ) );
+
+<span class="comment">// Update the value.</span>
+bar.progressbar( <span class="string">"value"</span>, <span class="number">50</span> );
+
+<span class="comment">// Get the current value again.</span>
+alert( bar.progressbar( <span class="string">"value"</span> ) );
+</code></pre>
+<p>Это не самый удобный способ работы. Так сделано для того, чтобы по-минимуму воздействовать своими методами объект <code>$</code>.</p>
+<h2 id="-">Работа с&nbsp;опциями</h2>
+<p>Widget Factory предоставляет возможность работы с опциями автоматически:&nbsp;???</p>
+<pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
+
+    options: {
+        value: <span class="number">0</span>
+    },
+
+    _create: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">this</span>.element.addClass( <span class="string">"progressbar"</span> );
+        <span class="keyword">this</span>._update();
+    },
+
+    _setOption: <span class="function"><span class="keyword">function</span>(<span class="params"> key, value </span>) </span>{
+        <span class="keyword">this</span>.options[ key ] = value;
+        <span class="keyword">this</span>._update();
+    },
+
+    _update: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+        <span class="keyword">this</span>.element.text( progress );
+    }
+
+});
+</code></pre>
+<h2 id="callbacks">Callbacks</h2>
+<p>Для запуска коллбэка существует метод <code>_trigger</code>:</p>
+<pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
+
+    options: {
+        value: <span class="number">0</span>
+    },
+
+    _create: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">this</span>.element.addClass( <span class="string">"progressbar"</span> );
+        <span class="keyword">this</span>._update();
+    },
+
+    _setOption: <span class="function"><span class="keyword">function</span>(<span class="params"> key, value </span>) </span>{
+        <span class="keyword">this</span>.options[ key ] = value;
+        <span class="keyword">this</span>._update();
+    },
+
+    _update: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> progress = <span class="keyword">this</span>.options.value + <span class="string">"%"</span>;
+        <span class="keyword">this</span>.element.text( progress );
+        <span class="keyword">if</span> ( <span class="keyword">this</span>.options.value == <span class="number">100</span> ) {
+            <span class="keyword">this</span>._trigger( <span class="string">"complete"</span>, <span class="literal">null</span>, { value: <span class="number">100</span> } );
+        }
+    }
+
+});
+</code></pre>
+<h2 id="-widget-factory">Как работает Widget&nbsp;Factory</h2>
+<p>Когда мы создаем виджет, мы передаем в него неймспейс.имя и объект. <span class="caps">WF</span> создаст конструктор и будет использовать 
+переданный объект как прототип для него. Весь дефолтный функционал будет браться из <code>jQuery.Widget.prototype</code>.</p>
+<h1 id="-">Итого</h1>
+<p>Нет четких рецептов, когда что надо использовать. Нужно знать как работает экосистема jQuery, что хорошо и что плохо.
+Нужно уметь пользоваться тем, что предоставляе библиотека и сообщество. Однако, стоит понить о том, что прежде всего — сделанная задача. Так, если на проекте нужен 
+слайдер, то, возможно, его стоит сделать просто через конструктор. Если элемент точно будет использоваться повторно, 
+то стоит подумать о применении&nbsp;плагина.</p>
+<p>При создании, экземпляр виджета сохраняется в <code>.data</code> <span class="caps">DOM</span>-объекта:</p>
+<pre><code class="lang-js"><span class="keyword">var</span> bar = $( <span class="string">"&lt;div /&gt;"</span>)
+    .appendTo( <span class="string">"body"</span> )
+    .progressbar()
+    .data( <span class="string">"nmk-progressbar"</span> );
+
+<span class="comment">// Call a method directly on the plugin instance.</span>
+bar.option( <span class="string">"value"</span>, <span class="number">50</span> );
+
+<span class="comment">// Access properties on the plugin instance.</span>
+alert( bar.options.value );
+</code></pre>
+<p>Widget Factory позволяет работать с прототипом всех созданных сущностей. Добавляя новые методы, они становятся 
+доступны всем&nbsp;эзкемплярам:</p>
+<pre><code class="lang-js">$.nmk.progressbar.prototype.reset = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+    <span class="keyword">this</span>._setOption( <span class="string">"value"</span>, <span class="number">0</span> );
+};
+</code></pre>
+<h1 id="-">Материалы</h1>
+<p><a href="http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/">http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/</a>
+<a href="http://api.jqueryui.com/jQuery.widget">http://api.jqueryui.com/jQuery.widget</a></p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

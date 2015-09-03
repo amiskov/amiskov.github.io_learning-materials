@@ -1,0 +1,27 @@
+body {
+    font: 14px/1.4 Arial, sans-serif;
+}
+
+.sortable {
+    border-collapse: collapse;
+    th {
+        text-align: left;
+        border-bottom: 1px solid #CCC;
+        cursor: pointer;
+        min-width: 50px;
+        &.on,
+        &:hover {
+            color: #C00;
+        }
+        &.on {
+            &::after {
+                content: ' \25b4';
+            }
+        }
+    }
+    th, td {
+        padding: 3px 10px;
+    }
+    td {
+    }
+}

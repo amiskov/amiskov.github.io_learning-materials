@@ -9,6 +9,8 @@
     <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
     <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
   </head>
   <body class="article-detail">
     <header class="header">
@@ -248,8 +250,7 @@ foo(); <span class="comment">// instead of $( "p" ).trigger( "click" )</span>
 <p>Пример&nbsp;инициализации:</p>
 <pre><code class="lang-javascript"><span class="keyword">var</span> select = <span class="keyword">new</span> Select(regions, selectedId);
 
-<span class="comment">// Компонент должен генерировать событие после смены региона.</span>
-<span class="comment">// Типа так:</span>
+<span class="comment">// Компонент должен генерировать событие после смены региона:</span>
 select.on(<span class="string">'change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>{
     alert(e.value);
 });
@@ -264,6 +265,8 @@ $(<span class="string">'#regions'</span>).append(select.getElement());
 <ul>
 <li><a href="http://learn.jquery.com/events/">http://learn.jquery.com/events/</a></li>
 <li><a href="http://api.jquery.com/category/events/">http://api.jquery.com/category/events/</a></li>
+<li><a href="https://learn.javascript.ru/widgets">https://learn.javascript.ru/widgets</a></li>
+<li><a href="https://learn.javascript.ru/task/custom-select">https://learn.javascript.ru/task/custom-select</a></li>
 </ul>
 </section>
         </article>

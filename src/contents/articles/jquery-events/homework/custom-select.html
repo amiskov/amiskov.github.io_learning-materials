@@ -25,7 +25,7 @@
                 'data-value': selectedValue,
                 text: options[selectedValue]
             }).appendTo(this.$element)
-                    .on('click', onSelectedClick.bind(this));
+                    .on('click', onCurrentClick.bind(this));
 
             this.$optionsList = $('<ul>', {
                 class: 'select__options'
@@ -55,7 +55,7 @@
             });
         };
 
-        function onSelectedClick() {
+        function onCurrentClick() {
             this.$element.toggleClass('open');
         }
 

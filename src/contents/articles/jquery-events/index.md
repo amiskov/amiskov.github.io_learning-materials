@@ -299,8 +299,7 @@ var regions = {
 ```javascript
 var select = new Select(regions, selectedId);
 
-// Компонент должен генерировать событие после смены региона.
-// Типа так:
+// Компонент должен генерировать событие после смены региона:
 select.on('change', function(e) {
     alert(e.value);
 });
@@ -318,3 +317,5 @@ $('#regions').append(select.getElement());
 ## Материалы
 * http://learn.jquery.com/events/
 * http://api.jquery.com/category/events/
+* https://learn.javascript.ru/widgets
+* https://learn.javascript.ru/task/custom-select

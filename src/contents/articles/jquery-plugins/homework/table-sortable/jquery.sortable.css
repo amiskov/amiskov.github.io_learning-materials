@@ -1,0 +1,23 @@
+body {
+  font: 14px/1.4 Arial, sans-serif;
+}
+.sortable {
+  border-collapse: collapse;
+}
+.sortable th {
+  text-align: left;
+  border-bottom: 1px solid #CCC;
+  cursor: pointer;
+  min-width: 50px;
+}
+.sortable th.on,
+.sortable th:hover {
+  color: #C00;
+}
+.sortable th.on::after {
+  content: ' \25b4';
+}
+.sortable th,
+.sortable td {
+  padding: 3px 10px;
+}

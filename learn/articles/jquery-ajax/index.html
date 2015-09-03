@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>jQuery Ajax - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>jQuery Ajax</h1>
+        <!--p.author-->
+        <!--  | #{ 'Written by ' }-->
+        <!--  mixin author(page.metadata.author)-->
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>Объект <code>XMLHttpRequest</code> позволяет браузеру обращаться к серверу без перезагрузки страницы. Посылается асинхронный запрос
+на <span class="caps">URL</span>, сервер отдает данные, котоыре можно обработать в коллбэк-функции. Асинхронный — значит не блокирующий. То 
+есть остальной код может продолжать исполняться во время выполнения запроса. Асинхронные запросы требуют времени на 
+выполнение и могут быть обработаны не сразу. Для этого используются коллбэки и некоторые другие&nbsp;штуки.</p>
+<p><span class="more"></span></p>
+<p>Так работать не&nbsp;будет:</p>
+<pre><code class="lang-js">    <span class="keyword">var</span> response;
+
+    $.get( <span class="string">"foo.php"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> r </span>) </span>{
+        response = r;
+    });
+
+    <span class="built_in">console</span>.log( response ); <span class="comment">// undefined</span>
+</code></pre>
+<p>А так&nbsp;будет:</p>
+<pre><code class="lang-js">    $.get( <span class="string">"foo.php"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> response </span>) </span>{
+        <span class="built_in">console</span>.log( response ); <span class="comment">// server response</span>
+    });
+</code></pre>
+<p>Ajax — Asynchronous JavaScript and <span class="caps">XML</span>. Однако, XML тут по историческим причинам. В основном обмен данными происходит
+в формате [JSON][2] или просто&nbsp;HTML.</p>
+<h2 id="-">Кроссдоменные&nbsp;запросы</h2>
+<p>Раньше браузеры не позволяли делать посылать ajax-запросы на другие домены. Обходной путь — <span class="caps">JSONP</span>. Запросы 
+осуществляются через тег <code>&lt;script&gt;</code>. Современные браузеры используют [Cross-Origin Resource Sharing&nbsp;(<span class="caps">CORS</span>)][1].</p>
+<p>Чтобы аякс-запрос обработался, клиент и сервер должны быть на одном домене, использовать одни и тот же протокол 
+(http/https) и общаться по одному и тому же порту. Это ограничение не распространяется на скрпты, загружаемые через 
+аяксовые методы&nbsp;jQuery.</p>
+<p><span class="caps">JSNP</span> обходит эти ограничения, релазиуя передачу данных, которые будут записаны в тег <code>&lt;script&gt;</code>. Сервер возвращает 
+скрипт, который будет обернут в коллбэк-функцию, которую мы ему&nbsp;назовем.</p>
+<p>[1] <a href="http://caniuse.com/#search=CORS">http://caniuse.com/#search=<span class="caps">CORS</span></a>
+[2] <a href="http://json.org/json-ru.html">http://json.org/json-ru.html</a></p>
+<h2 id="-">Основные&nbsp;понятия</h2>
+<h3 id="get-post"><span class="caps">GET</span> и&nbsp;POST</h3>
+<p><code>GET</code>-запрос нужен для получения данных. Не для изменения или удаления, а просто для того, чтобы что-то узнать. Такие
+запросы кешируются браузерами и посылаются как параметры в адресной строке браузера.
+Например, <code>https://www.google.ru/webhp?sourceid=chrome-instant&amp;ion=1&amp;espv=2&amp;ie=UTF-8#q=json</code></p>
+<p><code>POST</code>-запросы используются для изменения данных на сервере: добавить пользователя, удалить товар, изменить пароль и 
+пр. Такие запросы браузер не кеширует и данные не видны в адресной&nbsp;строке.</p>
+<h3 id="-">Типы&nbsp;данных</h3>
+<p>Данные могут быть получены в разном&nbsp;виде:</p>
+<ul>
+<li>text — обычные строковые&nbsp;данные</li>
+<li>html — блоки&nbsp;html-кода</li>
+<li>script — для добавления нового тега script на&nbsp;страницу</li>
+<li><span class="caps">JSON</span> — передача строк, массивов и&nbsp;объектов</li>
+<li><span class="caps">JSONP</span> — JSON с другого&nbsp;домена</li>
+<li><span class="caps">XML</span></li>
+</ul>
+<p>В основном используется&nbsp;<span class="caps">JSON</span>.</p>
+<h2 id="-">Методы для работы с&nbsp;аяксом</h2>
+<p>Основной функционал в jQuery реализует метод <code>$.ajax</code>. Остальные методы —&nbsp;шорткаты.</p>
+<p>Рекомендуется использовать синтаксис <code>$.ajax</code> для любых запросов&nbsp;(?).</p>
+<h2 id="-">Работа с&nbsp;формами</h2>
+<h2 id="-">Сериализация</h2>
+<p><code>serialize()</code> — представляет данные формы в виде строки запроса (query string). Каждый элемент формы должен иметь 
+атрибут <code>name</code>. Значения инпутов <code>checkbox</code> и <code>radio</code> добавятся только если они&nbsp;отмечены.</p>
+<pre><code class="lang-js"><span class="comment">// Turning form data into a query string</span>
+$( <span class="string">"#myForm"</span> ).serialize();
+
+<span class="comment">// Creates a query string like this:</span>
+<span class="comment">// field_1=something&amp;field2=somethingElse</span>
+</code></pre>
+<p><code>serializeArray</code> — представляет данные формы в виде массива&nbsp;объектов:</p>
+<pre><code class="lang-js"><span class="comment">// Creating an array of objects containing form data</span>
+$( <span class="string">"#myForm"</span> ).serializeArray();
+
+<span class="comment">// Creates a structure like this:</span>
+<span class="comment">// [</span>
+<span class="comment">//   {</span>
+<span class="comment">//     name : "field_1",</span>
+<span class="comment">//     value : "something"</span>
+<span class="comment">//   },</span>
+<span class="comment">//   {</span>
+<span class="comment">//     name : "field_2",</span>
+<span class="comment">//     value : "somethingElse"</span>
+<span class="comment">//   }</span>
+<span class="comment">// ]</span>
+</code></pre>
+<h2 id="-">Валидация</h2>
+<h2 id="-">Префильтер</h2>
+<h2 id="jsonp"><span class="caps">JSONP</span></h2>
+<p>Создается тег скрипт, в src добавляется нужный <span class="caps">URL</span>. Начинается загрузка. Сервер отдает данные, обернутые в 
+функцию-коллбэк. Название функции заранее оговорено, все о нем знают. Клиент полностью доверяет&nbsp;серверу:</p>
+<pre><code class="lang-js"><span class="comment">// Добавляем скрипт</span>
+addScript(<span class="string">'user?id=123&amp;callback=onUserData'</span>); <span class="comment">// функция сгенерирует &lt;script src="user?id=..."&gt; и добавить в head</span>
+<span class="comment">// ответ сервера</span>
+onUserData({
+  name: <span class="string">"Вася"</span>,
+  age: <span class="number">25</span>
+});
+</code></pre>
+<h2 id="-">Материалы</h2>
+<ul>
+<li><a href="https://learn.jquery.com/ajax/">https://learn.jquery.com/ajax/</a></li>
+<li><a href="http://learn.javascript.ru/json">http://learn.javascript.ru/json</a></li>
+<li><a href="http://learn.javascript.ru/ajax-jsonp">http://learn.javascript.ru/ajax-jsonp</a></li>
+<li><a href="http://api.jquery.com/category/ajax/">http://api.jquery.com/category/ajax/</a></li>
+<li><a href="http://www.html5rocks.com/en/tutorials/cors/">http://www.html5rocks.com/en/tutorials/cors/</a></li>
+</ul>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

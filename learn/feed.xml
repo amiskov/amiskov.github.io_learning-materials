@@ -5,9 +5,633 @@
     <atom:link href="http://amiskov.github.io/learn//feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://amiskov.github.io/learn/</link>
     <description>тезисы, примеры и домашние задания</description>
-    <pubDate>Thu, 20  Aug 2015 10:30:00 +0300</pubDate>
+    <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>jQuery Widget Factory</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</link>
+      <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</guid>
+      <author></author>
+      <description>&lt;h1 id=&quot;-ui-widget-factory&quot;&gt;Использование UI Widget Factory&lt;/h1&gt;
+&lt;h2 id=&quot;stateless-vs-statefull&quot;&gt;Stateless vs Statefull&lt;/h2&gt;
+&lt;p&gt;Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
+делают и возвращают этй же коллекцию.&lt;/p&gt;
+&lt;p&gt;Если мы имеем дело с более сложными штуками, которые больше похожи на объекты, то плагины могут быть не слишком 
+удобны в использовании.&lt;/p&gt;
+&lt;p&gt;Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery создали &lt;a href=&quot;http://jqueryui.com/widget/&quot;&gt;jQuery 
+Widget Factofy&lt;/a&gt;, которая является частью jQuery UI и может быть использована отдельно 
+(7Кб в сжатом виде). 
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Написание плагина&lt;/h2&gt;
+&lt;p&gt;В метод &lt;code&gt;$.widget&lt;/code&gt; передается 2 параметра: имя плагина и объект с его функционалом:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, { &lt;span class=&quot;comment&quot;&gt;// nmk — namespace, progressbar - widget name&lt;/span&gt;
+
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; ).text( progress );
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Соглашения&lt;/h2&gt;
+&lt;p&gt;Пространство имен: имя плагина начинается с неймспейса, далее следует точка и после точки идет имя плагина:
+&lt;code&gt;nmk.progressbar&lt;/code&gt;. Неймспейс &lt;code&gt;ui&lt;/code&gt; занят компонентами библиотеки jQuery UI. Нам следует использовать свое собственное 
+пространство имен.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;this.element&lt;/code&gt; — объект jQuery (единичный). Если плагин, созданный через Widget Factory, вызывается на коллекции 
+элементов jQuery, то для каждого элемента создается свой собственный экземляр.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;this.options&lt;/code&gt; — объект с опциями, которые переданы при инициализации.&lt;/p&gt;
+&lt;p&gt;Значения по умолчанию (опции и коллбэки) мы можем обозначить как объект &lt;code&gt;options&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
+
+    &lt;span class=&quot;comment&quot;&gt;// Default options.&lt;/span&gt;
+    options: {
+        value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,
+
+        callback: &lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;// Callbacks are also here&lt;/span&gt;
+    },
+
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; ).text( progress );
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Добавление методов&lt;/h2&gt;
+&lt;p&gt;Мы можем добавить методы в наш объект, в том числе приватные, начав их имена с подчеркивания:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
+    options: {
+        value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
+    },
+
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass(&lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt;).text( progress );
+    },
+
+    &lt;span class=&quot;comment&quot;&gt;// Create a public method.&lt;/span&gt;
+    value: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;comment&quot;&gt;// No value passed, act as a getter.&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value === &lt;span class=&quot;literal&quot;&gt;undefined&lt;/span&gt; ) {
+
+            &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value;
+
+        &lt;span class=&quot;comment&quot;&gt;// Value passed, act as a setter.&lt;/span&gt;
+        } &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+
+            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain( value );
+            &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
+
+        }
+
+    },
+
+    &lt;span class=&quot;comment&quot;&gt;// Create a private method.&lt;/span&gt;
+    _constrain: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;
+        }
+
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;lt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+        }
+
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; value;
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Для вызова методов нужно передать параметр в jQuery-плагин. Если нужно установить значение, то передаем его следом:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div /&amp;gt;&quot;&lt;/span&gt; ).appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt;).progressbar({ value: &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt; });
+
+&lt;span class=&quot;comment&quot;&gt;// Get the current value.&lt;/span&gt;
+alert( bar.progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ) );
+
+&lt;span class=&quot;comment&quot;&gt;// Update the value.&lt;/span&gt;
+bar.progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Get the current value again.&lt;/span&gt;
+alert( bar.progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ) );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Это не самый удобный способ работы. Так сделано для того, чтобы по-минимуму воздействовать своими методами объект &lt;code&gt;$&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Работа с опциями&lt;/h2&gt;
+&lt;p&gt;Widget Factory предоставляет возможность работы с опциями автоматически: ???&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
+
+    options: {
+        value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
+    },
+
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+    },
+
+    _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options[ key ] = value;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+    },
+
+    _update: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;callbacks&quot;&gt;Callbacks&lt;/h2&gt;
+&lt;p&gt;Для запуска коллбэка существует метод &lt;code&gt;_trigger&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
+
+    options: {
+        value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
+    },
+
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+    },
+
+    _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options[ key ] = value;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+    },
+
+    _update: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value == &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._trigger( &lt;span class=&quot;string&quot;&gt;&quot;complete&quot;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;, { value: &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; } );
+        }
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-widget-factory&quot;&gt;Как работает Widget Factory&lt;/h2&gt;
+&lt;p&gt;Когда мы создаем виджет, мы передаем в него неймспейс.имя и объект. WF создаст конструктор и будет использовать 
+переданный объект как прототип для него. Весь дефолтный функционал будет браться из &lt;code&gt;jQuery.Widget.prototype&lt;/code&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Итого&lt;/h1&gt;
+&lt;p&gt;Нет четких рецептов, когда что надо использовать. Нужно знать как работает экосистема jQuery, что хорошо и что плохо.
+Нужно уметь пользоваться тем, что предоставляе библиотека и сообщество. Однако, стоит понить о том, что прежде всего — сделанная задача. Так, если на проекте нужен 
+слайдер, то, возможно, его стоит сделать просто через конструктор. Если элемент точно будет использоваться повторно, 
+то стоит подумать о применении плагина.&lt;/p&gt;
+&lt;p&gt;При создании, экземпляр виджета сохраняется в &lt;code&gt;.data&lt;/code&gt; DOM-объекта:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div /&amp;gt;&quot;&lt;/span&gt;)
+    .appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; )
+    .progressbar()
+    .data( &lt;span class=&quot;string&quot;&gt;&quot;nmk-progressbar&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Call a method directly on the plugin instance.&lt;/span&gt;
+bar.option( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Access properties on the plugin instance.&lt;/span&gt;
+alert( bar.options.value );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Widget Factory позволяет работать с прототипом всех созданных сущностей. Добавляя новые методы, они становятся 
+доступны всем эзкемплярам:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.nmk.progressbar.prototype.reset = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._setOption( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; );
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&quot;&gt;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&lt;/a&gt;
+&lt;a href=&quot;http://api.jqueryui.com/jQuery.widget&quot;&gt;http://api.jqueryui.com/jQuery.widget&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>jQuery Plugins</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-plugins/</link>
+      <pubDate>Thu, 03 Sep 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-plugins/</guid>
+      <author></author>
+      <description>&lt;p&gt;Плагин — это что-то, что расширяет существующий функционал. jQuery работает с DOM, Ajax и имеет раяд утилит. Если нам
+нужно расширить существующие возможности, то можно написать плагин.&lt;/p&gt;
+&lt;p&gt;По этому материалу есть &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-plugins/#-homework-&quot;&gt;домашнее задание&lt;/a&gt;
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Плагин jQuery — это новый метод в объекте jQuery.prototype. Добавляя метод (создавая плагин), мы делаем его доступным
+всем jQuery-объектам:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; $element = $(&lt;span class=&quot;string&quot;&gt;'&amp;lt;div&amp;gt;'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// Унаследует все методы jQuery.prototype&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Задача плагина — работать с коллекцией элементов (что-то с ней делать). Например, &lt;code&gt;fadeOut&lt;/code&gt;, &lt;code&gt;addClass&lt;/code&gt; и пр.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;jQuery.fn&lt;/code&gt; это то же самое, что &lt;code&gt;jQuery.prototype&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Где-то в районе 92-й строки исходника jQuery&lt;/span&gt;
+jQuery.fn = jQuery.prototype = {
+    &lt;span class=&quot;comment&quot;&gt;// The current version of jQuery being used&lt;/span&gt;
+    jquery: version,
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Подробнее о &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-plugins/learn.jquery.com/plugins/&quot;&gt;прототипах в JS&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Простейший плагин&lt;/h1&gt;
+&lt;h2 id=&quot;-1-jquery&quot;&gt;Шаг 1: добавление метода в прототип jQuery&lt;/h2&gt;
+&lt;p&gt;Чтобы создать плагин, нужно добавить метод в прототип jQuery. При вызове этого метода на коллекции его &lt;code&gt;this&lt;/code&gt; как 
+раз и бдует этой коллекцией. Соответственно, в нем доступны все методы &lt;code&gt;jQuery.prototype&lt;/code&gt; (например, &lt;code&gt;.css&lt;/code&gt;):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.fn.makeItRed = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.dir(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.css(&lt;span class=&quot;string&quot;&gt;'color'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'red'&lt;/span&gt;);
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-2-&quot;&gt;Шаг 2: обеспечение цепочного вызова&lt;/h2&gt;
+&lt;p&gt;Чтобы над jQuery-коллекцией можно было работать и после вызова нашего плагина, нужно вернуть &lt;code&gt;this&lt;/code&gt;. Так мы обеспечим
+работоспособность дальнейших вызовов в цепочке:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.fn.makeItRed = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.css(&lt;span class=&quot;string&quot;&gt;'color'&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;'red'&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;;
+};
+$(&lt;span class=&quot;string&quot;&gt;'p'&lt;/span&gt;).makeItRed().makeItBig();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-3-&quot;&gt;Шаг 3: ограничение области видимости&lt;/h2&gt;
+&lt;p&gt;Разные библиотеки любят использовать &lt;code&gt;$&lt;/code&gt; для своих нужд. Чтобы не получилось конфликта, мы должны ограничить доступ к
+нашему методу извне. Завернем наш код в функциональное выражение:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    $.fn.makeItRed = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.css( &lt;span class=&quot;string&quot;&gt;&quot;color&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt; );
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;;
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Теперь внутри функционального выражения мы можем создавать переменные с любыми именами и не бояться, что они будут 
+использованы во внешнем коде:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; shade = &lt;span class=&quot;string&quot;&gt;&quot;#556b2f&quot;&lt;/span&gt;;
+
+    $.fn.greenify = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.css( &lt;span class=&quot;string&quot;&gt;&quot;color&quot;&lt;/span&gt;, shade );
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;;
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Подробнее об ограничении области видимости:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.javascript.ru/closures-module&quot;&gt;Модули через замыкания&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://benalman.com/news/2010/11/immediately-invoked-function-expression/&quot;&gt;Immediately-Invoked Function Expression (IIFE)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;-4-&quot;&gt;Шаг 4: минимизация присутствия&lt;/h2&gt;
+&lt;p&gt;Плагин должен иметь минимальное вхождение в прототип. Например, если мы делаем попап, то у него будут методы для 
+закрытия и открытия. Сходу можно попробовать сделать нечто подобное:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Два метода для одного плагина. Плохо.&lt;/span&gt;
+(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    $.fn.openPopup = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// Open popup code.&lt;/span&gt;
+    };
+
+    $.fn.closePopup = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// Close popup code.&lt;/span&gt;
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;В примере выше в прототип добавляется 2 метода. Так делать не стоит. Лучше добавить один и передавать в него параметры:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    $.fn.popup = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; action &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( action === &lt;span class=&quot;string&quot;&gt;&quot;open&quot;&lt;/span&gt;) {
+            &lt;span class=&quot;comment&quot;&gt;// Open popup code.&lt;/span&gt;
+        }
+
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( action === &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; ) {
+            &lt;span class=&quot;comment&quot;&gt;// Close popup code.&lt;/span&gt;
+        }
+
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Это хороший подход для плагина, но это выглядит не красиво с точки зрения ООП. Попап — это объект. У объекта должны быть 
+методы, а мы тут передаем какие-то параметры. Однако, так принято в мире jQuery, этот подход оправдан и хорошо 
+работает если дело касается расширения существующего функционала.&lt;/p&gt;
+&lt;p&gt;Как вариант, в этом случае попап, можно сделать объектом и создавать экземпляры через конструктор или воспользоваться
+&lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-widget-factory&quot;&gt;jQuery widget factory&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-5-&quot;&gt;Шаг 5: Перебор элементов коллекции&lt;/h2&gt;
+&lt;p&gt;При инициализации плагин получает коллекцию элементов jQuery. Это массив объектов DOM, расширенный методами jQuery.
+Если нужно делать что-то с каждым элементом коллекции, то ее можно перебрать с помощью &lt;code&gt;.each()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.fn.myNewPlugin = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.each(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// Do something to each element here.&lt;/span&gt;
+    });
+
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;В этом примере возвращается результат перебора. Это тот же &lt;code&gt;this&lt;/code&gt;, поэтому нет смысла возвращать &lt;code&gt;this&lt;/code&gt; отдельно.&lt;/p&gt;
+&lt;h2 id=&quot;-6-&quot;&gt;Шаг 6: опции&lt;/h2&gt;
+&lt;p&gt;Часто нам хочется передавать в плагин какие-то параметры (опции). Для этого используют переопределение объекта с 
+опциями по умолчанию:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    $.fn.greenify = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;comment&quot;&gt;// This is the easiest way to have default options.&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; settings = $.extend({
+            &lt;span class=&quot;comment&quot;&gt;// These are the defaults.&lt;/span&gt;
+            color: &lt;span class=&quot;string&quot;&gt;&quot;#556b2f&quot;&lt;/span&gt;,
+            backgroundColor: &lt;span class=&quot;string&quot;&gt;&quot;white&quot;&lt;/span&gt;
+        }, options );
+
+        &lt;span class=&quot;comment&quot;&gt;// Greenify the collection based on the settings variable.&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.css({
+            color: settings.color,
+            backgroundColor: settings.backgroundColor
+        });
+
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Пример&lt;/h2&gt;
+&lt;p&gt;Плагин, который собирает все ссылки и ставит рядом в скобочках их href:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    $.fn.showLinkLocation = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.filter( &lt;span class=&quot;string&quot;&gt;&quot;a&quot;&lt;/span&gt; ).append(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+            &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot; (&quot;&lt;/span&gt; + &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.href + &lt;span class=&quot;string&quot;&gt;&quot;)&quot;&lt;/span&gt;;
+        });
+
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;;
+
+    };
+
+}( jQuery ));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Более продвинутые техники&lt;/h1&gt;
+&lt;h2 id=&quot;-&quot;&gt;Доступ к дефолтным настройкам&lt;/h2&gt;
+&lt;p&gt;Чтобы разработчики могли установить свое собственное значение по умолчанию и не переопределять его постоянно, нужно 
+сделать объект опций свойством функции плагина:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Plugin definition.&lt;/span&gt;
+$.fn.highlight = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;comment&quot;&gt;// Extend our default options with those provided.&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;// Note that the first argument to extend is an empty&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;// object – this is to keep from overriding our &quot;defaults&quot; object.&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; opts = $.extend( {}, $.fn.highlight.defaults, options );
+
+    &lt;span class=&quot;comment&quot;&gt;// Our plugin implementation code goes here.&lt;/span&gt;
+
+};
+
+&lt;span class=&quot;comment&quot;&gt;// Plugin defaults – added as a property on our plugin function.&lt;/span&gt;
+$.fn.highlight.defaults = {
+    foreground: &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt;,
+    background: &lt;span class=&quot;string&quot;&gt;&quot;yellow&quot;&lt;/span&gt;
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Теперь можно сделать так:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Override plugin default foreground color.&lt;/span&gt;
+$.fn.highlight.defaults.foreground = &lt;span class=&quot;string&quot;&gt;&quot;blue&quot;&lt;/span&gt;;
+
+&lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// Invoke plugin using new defaults.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;.highlightDiv&quot;&lt;/span&gt; ).highlight();
+
+&lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// Override default by passing options to plugin method.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;#green&quot;&lt;/span&gt; ).highlight({
+    foreground: &lt;span class=&quot;string&quot;&gt;&quot;green&quot;&lt;/span&gt;
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Предоставить доступ к прикладным функциям&lt;/h2&gt;
+&lt;p&gt;Это даст возможность минимальными усилиями изменить поведение плаина:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Plugin definition.&lt;/span&gt;
+$.fn.highlight = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;comment&quot;&gt;// Iterate and reformat each matched element.&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.each(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; elem = $( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; );
+
+        &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; markup = elem.html();
+
+        &lt;span class=&quot;comment&quot;&gt;// Call our format function.&lt;/span&gt;
+        markup = $.fn.highlight.format( markup );
+
+        elem.html( markup );
+
+    });
+
+};
+
+&lt;span class=&quot;comment&quot;&gt;// Define our format function.&lt;/span&gt;
+$.fn.highlight.format = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; txt &lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;strong&amp;gt;&quot;&lt;/span&gt; + txt + &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;/strong&amp;gt;&quot;&lt;/span&gt;;
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Здесь разработчик сможет переопределить шаблон итоговой разметки на свой собственный. Написать плагин для нашего 
+плагина.&lt;/p&gt;
+&lt;p&gt;Для примера можно взглянуть на код плагина &lt;a href=&quot;/learn/articles/jquery-plugins/jquery.cycle.js&quot;&gt;jQuery Cycle 2&lt;/a&gt;. Там таких методов много. Напирмер, один
+из них — &lt;code&gt;transitions&lt;/code&gt; — отвечает за эффекты. Такая организация кода позволяет удобно делать &lt;a href=&quot;http://malsup.com/jquery/cycle2/download/advanced.php&quot;&gt;расширения для 
+плагина&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Ограничить доступ к служебным функциям&lt;/h2&gt;
+&lt;p&gt;Открывая доступ к методам, мы, тем самым, обязуемся поддерживать определенную совместимость в будущем. Изменим 
+название метода, как-то решим реорганизовать наш код — нарушим совместимость. Таким образом, если нет уверенности, 
+что какой-то метод нужно открыть, то лучше оставить его приватным. Это можно сделать через замыкание, обернув код в 
+анонимную функцию с вызовом на месте:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Create closure.&lt;/span&gt;
+(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; $ &lt;/span&gt;) &lt;/span&gt;{
+
+    &lt;span class=&quot;comment&quot;&gt;// Plugin definition.&lt;/span&gt;
+    $.fn.highlight = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+        debug( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt; );
+        &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+    };
+
+    &lt;span class=&quot;comment&quot;&gt;// Private function for debugging.&lt;/span&gt;
+    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;debug&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; obj &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( &lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.console &amp;amp;&amp;amp; &lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.console.log ) {
+            &lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.console.log( &lt;span class=&quot;string&quot;&gt;&quot;highlight selection count: &quot;&lt;/span&gt; + obj.length );
+        }
+    };
+
+    &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// End of closure.&lt;/span&gt;
+
+})( jQuery );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Метод &lt;code&gt;debug&lt;/code&gt; останется только внутри функции и будет браться внутренним кодом из замыкания.&lt;/p&gt;
+&lt;!--
+## Ответственная кастомизация
+
+## Не изобретать свой собственный синтаксис
+
+## Дать возможность изменять разметку
+
+## Дать возможность указывать коллбэк-функции
+
+При написании плагина нужно всегда иметь ввиду 3 вещи:
+* Гибкость
+* Размер
+* Производительность
+--&gt;
+&lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/plugins/&quot;&gt;http://learn.jquery.com/plugins/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://remysharp.com/2010/06/03/signs-of-a-poorly-written-jquery-plugin&quot;&gt;Признаки плохого плагина&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://addyosmani.com/resources/essentialjsdesignpatterns/book/#jquerypluginpatterns&quot;&gt;jQuery Plugin Design Patterns&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-homework-&quot;&gt;Домашняя работа &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-plugins/#homework&quot;&gt;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Написать плагин, который позволит сортировать содержимое таблиц по столбцам. Пример решения:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-plugins/homework/table-sortable/sortable.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Для сортировки значений используется метод &lt;code&gt;.sort&lt;/code&gt; &lt;a href=&quot;http://learn.javascript.ru/array-methods#сортировка-метод-sort-fn&quot;&gt;массива&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Сортировать нужно 2 вида значений: строки и числа. Для этого в таблице предусмотрены соответствющие атрибуты:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-html&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;table&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;string&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Имя&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;number&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Возраст&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;data-type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;string&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;Город&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;th&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;thead&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;tbody&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;Вася&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;5&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;Смоленск&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;td&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;tr&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;tbody&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;table&lt;/span&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;elixir&quot;&gt;
+&lt;span class=&quot;variable&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;'table'&lt;/span&gt;).sortable();
+&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Сортировку можно сделать только по возрастанию. Если сделаете сортировку и по убыванию, это будет очень хорошо.&lt;/p&gt;
+&lt;div class=&quot;homework-tip&quot;&gt;
+&lt;span class=&quot;homework-tip__handle&quot;&gt;Подсказка&lt;/span&gt;
+&lt;div class=&quot;homework-tip__content&quot;&gt;
+&lt;ol&gt;
+&lt;li&gt;Для начала &lt;a href=&quot;http://learn.javascript.ru/array-methods#сортировка-метод-sort-fn&quot;&gt;изучите&lt;/a&gt;, как работает 
+метод &lt;code&gt;sort&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Создайте из строк таблицы массив, его нужно будет отсортировать.&lt;/li&gt;
+&lt;li&gt;Напишите свою сортировочную функцию для метода &lt;code&gt;sort&lt;/code&gt;, которая бы получала для сравнения две строки таблицы, 
+доставала бы из них нужные значения и сравнивала бы их между собой. Если этот пункт не понятен, см. пункт №1.&lt;/li&gt;
+&lt;li&gt;Отсортируйте массив строк и вставье их в таблицу.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    <item>
+      <title>jQuery Ajax</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-ajax/</link>
+      <pubDate>Thu, 27  Aug 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-ajax/</guid>
+      <author></author>
+      <description>&lt;p&gt;Объект &lt;code&gt;XMLHttpRequest&lt;/code&gt; позволяет браузеру обращаться к серверу без перезагрузки страницы. Посылается асинхронный запрос
+на URL, сервер отдает данные, котоыре можно обработать в коллбэк-функции. Асинхронный — значит не блокирующий. То 
+есть остальной код может продолжать исполняться во время выполнения запроса. Асинхронные запросы требуют времени на 
+выполнение и могут быть обработаны не сразу. Для этого используются коллбэки и некоторые другие штуки.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Так работать не будет:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; response;
+
+    $.get( &lt;span class=&quot;string&quot;&gt;&quot;foo.php&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; r &lt;/span&gt;) &lt;/span&gt;{
+        response = r;
+    });
+
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( response ); &lt;span class=&quot;comment&quot;&gt;// undefined&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;А так будет:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;    $.get( &lt;span class=&quot;string&quot;&gt;&quot;foo.php&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; response &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( response ); &lt;span class=&quot;comment&quot;&gt;// server response&lt;/span&gt;
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ajax — Asynchronous JavaScript and XML. Однако, XML тут по историческим причинам. В основном обмен данными происходит
+в формате [JSON][2] или просто HTML.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Кроссдоменные запросы&lt;/h2&gt;
+&lt;p&gt;Раньше браузеры не позволяли делать посылать ajax-запросы на другие домены. Обходной путь — JSONP. Запросы 
+осуществляются через тег &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt;. Современные браузеры используют [Cross-Origin Resource Sharing (CORS)][1].&lt;/p&gt;
+&lt;p&gt;Чтобы аякс-запрос обработался, клиент и сервер должны быть на одном домене, использовать одни и тот же протокол 
+(http/https) и общаться по одному и тому же порту. Это ограничение не распространяется на скрпты, загружаемые через 
+аяксовые методы jQuery.&lt;/p&gt;
+&lt;p&gt;JSNP обходит эти ограничения, релазиуя передачу данных, которые будут записаны в тег &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt;. Сервер возвращает 
+скрипт, который будет обернут в коллбэк-функцию, которую мы ему назовем.&lt;/p&gt;
+&lt;p&gt;[1] &lt;a href=&quot;http://caniuse.com/#search=CORS&quot;&gt;http://caniuse.com/#search=CORS&lt;/a&gt;
+[2] &lt;a href=&quot;http://json.org/json-ru.html&quot;&gt;http://json.org/json-ru.html&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Основные понятия&lt;/h2&gt;
+&lt;h3 id=&quot;get-post&quot;&gt;GET и POST&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;GET&lt;/code&gt;-запрос нужен для получения данных. Не для изменения или удаления, а просто для того, чтобы что-то узнать. Такие
+запросы кешируются браузерами и посылаются как параметры в адресной строке браузера.
+Например, &lt;code&gt;https://www.google.ru/webhp?sourceid=chrome-instant&amp;amp;ion=1&amp;amp;espv=2&amp;amp;ie=UTF-8#q=json&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;POST&lt;/code&gt;-запросы используются для изменения данных на сервере: добавить пользователя, удалить товар, изменить пароль и 
+пр. Такие запросы браузер не кеширует и данные не видны в адресной строке.&lt;/p&gt;
+&lt;h3 id=&quot;-&quot;&gt;Типы данных&lt;/h3&gt;
+&lt;p&gt;Данные могут быть получены в разном виде:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;text — обычные строковые данные&lt;/li&gt;
+&lt;li&gt;html — блоки html-кода&lt;/li&gt;
+&lt;li&gt;script — для добавления нового тега script на страницу&lt;/li&gt;
+&lt;li&gt;JSON — передача строк, массивов и объектов&lt;/li&gt;
+&lt;li&gt;JSONP — JSON с другого домена&lt;/li&gt;
+&lt;li&gt;XML&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В основном используется JSON.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Методы для работы с аяксом&lt;/h2&gt;
+&lt;p&gt;Основной функционал в jQuery реализует метод &lt;code&gt;$.ajax&lt;/code&gt;. Остальные методы — шорткаты.&lt;/p&gt;
+&lt;p&gt;Рекомендуется использовать синтаксис &lt;code&gt;$.ajax&lt;/code&gt; для любых запросов (?).&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Работа с формами&lt;/h2&gt;
+&lt;h2 id=&quot;-&quot;&gt;Сериализация&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;serialize()&lt;/code&gt; — представляет данные формы в виде строки запроса (query string). Каждый элемент формы должен иметь 
+атрибут &lt;code&gt;name&lt;/code&gt;. Значения инпутов &lt;code&gt;checkbox&lt;/code&gt; и &lt;code&gt;radio&lt;/code&gt; добавятся только если они отмечены.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Turning form data into a query string&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;#myForm&quot;&lt;/span&gt; ).serialize();
+
+&lt;span class=&quot;comment&quot;&gt;// Creates a query string like this:&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// field_1=something&amp;amp;field2=somethingElse&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;serializeArray&lt;/code&gt; — представляет данные формы в виде массива объектов:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Creating an array of objects containing form data&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;#myForm&quot;&lt;/span&gt; ).serializeArray();
+
+&lt;span class=&quot;comment&quot;&gt;// Creates a structure like this:&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// [&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//   {&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//     name : &quot;field_1&quot;,&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//     value : &quot;something&quot;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//   },&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//   {&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//     name : &quot;field_2&quot;,&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//     value : &quot;somethingElse&quot;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//   }&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// ]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Валидация&lt;/h2&gt;
+&lt;h2 id=&quot;-&quot;&gt;Префильтер&lt;/h2&gt;
+&lt;h2 id=&quot;jsonp&quot;&gt;JSONP&lt;/h2&gt;
+&lt;p&gt;Создается тег скрипт, в src добавляется нужный URL. Начинается загрузка. Сервер отдает данные, обернутые в 
+функцию-коллбэк. Название функции заранее оговорено, все о нем знают. Клиент полностью доверяет серверу:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Добавляем скрипт&lt;/span&gt;
+addScript(&lt;span class=&quot;string&quot;&gt;'user?id=123&amp;amp;callback=onUserData'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// функция сгенерирует &amp;lt;script src=&quot;user?id=...&quot;&amp;gt; и добавить в head&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// ответ сервера&lt;/span&gt;
+onUserData({
+  name: &lt;span class=&quot;string&quot;&gt;&quot;Вася&quot;&lt;/span&gt;,
+  age: &lt;span class=&quot;number&quot;&gt;25&lt;/span&gt;
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Материалы&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.jquery.com/ajax/&quot;&gt;https://learn.jquery.com/ajax/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.javascript.ru/json&quot;&gt;http://learn.javascript.ru/json&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.javascript.ru/ajax-jsonp&quot;&gt;http://learn.javascript.ru/ajax-jsonp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/ajax/&quot;&gt;http://api.jquery.com/category/ajax/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.html5rocks.com/en/tutorials/cors/&quot;&gt;http://www.html5rocks.com/en/tutorials/cors/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     <item>
       <title>Работа с событиями в jQuery</title>
       <link>http://amiskov.github.io/learn//learn/articles/jquery-events/</link>
@@ -240,8 +864,7 @@ foo(); &lt;span class=&quot;comment&quot;&gt;// instead of $( &quot;p&quot; ).tr
 &lt;p&gt;Пример инициализации:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; select = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Select(regions, selectedId);
 
-&lt;span class=&quot;comment&quot;&gt;// Компонент должен генерировать событие после смены региона.&lt;/span&gt;
-&lt;span class=&quot;comment&quot;&gt;// Типа так:&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// Компонент должен генерировать событие после смены региона:&lt;/span&gt;
 select.on(&lt;span class=&quot;string&quot;&gt;'change'&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;e&lt;/span&gt;) &lt;/span&gt;{
     alert(e.value);
 });
@@ -256,6 +879,8 @@ $(&lt;span class=&quot;string&quot;&gt;'#regions'&lt;/span&gt;).append(select.ge
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/events/&quot;&gt;http://learn.jquery.com/events/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/events/&quot;&gt;http://api.jquery.com/category/events/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.javascript.ru/widgets&quot;&gt;https://learn.javascript.ru/widgets&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.javascript.ru/task/custom-select&quot;&gt;https://learn.javascript.ru/task/custom-select&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
