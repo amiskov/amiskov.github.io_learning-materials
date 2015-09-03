@@ -14,9 +14,7 @@
       <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</guid>
       <author></author>
-      <description>&lt;h1 id=&quot;-ui-widget-factory&quot;&gt;Использование UI Widget Factory&lt;/h1&gt;
-&lt;h2 id=&quot;stateless-vs-statefull&quot;&gt;Stateless vs Statefull&lt;/h2&gt;
-&lt;p&gt;Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
+      <description>&lt;p&gt;Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
 делают и возвращают этй же коллекцию.&lt;/p&gt;
 &lt;p&gt;Если мы имеем дело с более сложными штуками, которые больше похожи на объекты, то плагины могут быть не слишком 
 удобны в использовании.&lt;/p&gt;
@@ -211,7 +209,7 @@ alert( bar.options.value );
       <author></author>
       <description>&lt;p&gt;Плагин — это что-то, что расширяет существующий функционал. jQuery работает с DOM, Ajax и имеет раяд утилит. Если нам
 нужно расширить существующие возможности, то можно написать плагин.&lt;/p&gt;
-&lt;p&gt;По этому материалу есть &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-plugins/#-homework-&quot;&gt;домашнее задание&lt;/a&gt;
+&lt;p&gt;По этому материалу есть &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-plugins/#-homework-&quot;&gt;домашнее задание&lt;/a&gt;.
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Плагин jQuery — это новый метод в объекте jQuery.prototype. Добавляя метод (создавая плагин), мы делаем его доступным
 всем jQuery-объектам:&lt;/p&gt;
