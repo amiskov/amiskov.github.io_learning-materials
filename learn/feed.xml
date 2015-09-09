@@ -14,7 +14,8 @@
       <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</guid>
       <author></author>
-      <description>&lt;p&gt;Если мы имеем дело с компонентами, которые хочется сделать объектами, то плагины могут быть не слишком удобны в 
+      <description>&lt;p&gt;&lt;em&gt;Статься готова процентов на 70&lt;/em&gt;&lt;br&gt;
+Если мы имеем дело с компонентами, которые хочется сделать объектами, то плагины могут быть не слишком удобны в 
 использовании. Для таких случаев придумали jQuery Widget Factory.
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
