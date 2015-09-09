@@ -24,15 +24,137 @@
     <div id="content">
       <div class="content-wrap">
         <article class="article">
-          <section class="content"><p>Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
-делают и возвращают этй же&nbsp;коллекцию.</p>
-<p>Если мы имеем дело с более сложными штуками, которые больше похожи на объекты, то плагины могут быть не слишком 
-удобны в&nbsp;использовании.</p>
-<p>Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery создали <a href="http://jqueryui.com/widget/">jQuery 
-Widget Factofy</a>, которая является частью jQuery <span class="caps">UI</span> и может быть использована отдельно 
-(7Кб в сжатом виде). 
+          <section class="content"><p>Если мы имеем дело с компонентами, которые хочется сделать объектами, то плагины могут быть не слишком удобны в 
+использовании. Для таких случаев придумали jQuery Widget Factory.
 <span class="more"></span></p>
-<h2 id="-">Написание&nbsp;плагина</h2>
+<p>Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
+делают и возвращают эту же коллекцию, обеспечивая цепочность&nbsp;вызовов.</p>
+<p>Обычно jQuery-плагины применяются без настроек и результат их выполнения всегда одинаков. <code>$(&#39;div&#39;).text(&#39;Hello&#39;)</code> 
+— для такого рода операций плагин — самое&nbsp;то.</p>
+<p>В Magento 2.0 Widget Factory <a href="http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html">является стандартом</a> для создания компонентов&nbsp;интерфейса.</p>
+<p>Если нам нужно реализовать плагин, для которогу нужно произвести инициализацию, следить за его <a href="http://en.wikipedia.org/wiki/State_%28computer_science%29">состоянием</a> и изменять 
+его в зависимости от разлиынх условий, возможно, дестроить, то тут потребуется писать код, типичных для многих таких 
+виджетов. Разные авторы могут по-разному подходить к реализации <span class="caps">API</span> своих виджетов. Это влечет снижение 
+консистентности кода и лишние затраты времени на изучение&nbsp;API.</p>
+<p>Widget factory предоставляет ряд соглашений и готовых решений для того, чтобы написание виджетов было однотипным и 
+получаемый <span class="caps">API</span> работал одним образом. Сохраняем время на рутинных операциях, типа инициализации и дестроя, используем
+соглашения для приватных и публичных метоодов, получаем более более качественный результат и экономим время на 
+рутинных операциях. Научились использовать один виджет из jQuery UI — умеем пользоваться&nbsp;всеми.</p>
+<p>Соглашения:</p>
+<ul>
+<li>Создание и удаление&nbsp;виджетов;</li>
+<li>Установка и получение опций (геттеры и&nbsp;сеттеры);</li>
+<li>Вызов&nbsp;методов;</li>
+<li>Прослушивание событий, которые инициирует&nbsp;виджет.</li>
+</ul>
+<p>Состояние объекта — набор данных о нем в текущий момент времени: значение (проценты в прогрессбаре), открыт он или 
+закрыт, какой пункт выделеин и т.&nbsp;д.</p>
+<p>Виджеты имеют жизненный цикл — от инициализации до&nbsp;дестроя.</p>
+<p>Инициализация&nbsp;прогрессбара:</p>
+<pre><code class="lang-js"><span class="comment">// Без параметров, с дефолтными настройками</span>
+$( <span class="string">"#elem"</span> ).progressbar();
+<span class="comment">// Со своими параметрами</span>
+$( <span class="string">"#elem"</span> ).progressbar({ value: <span class="number">20</span> });
+</code></pre>
+<p>Параметры — часть состояния виджета. Их мы можем менять в течение жизненного цикла через метод <code>option</code>.</p>
+<p>Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery придумали <a href="http://jqueryui.com/widget/">jQuery 
+Widget Factofy</a>, которая является частью jQuery <span class="caps">UI</span> и может быть использована отдельно 
+(7Кб в сжатом&nbsp;виде). </p>
+<h2 id="-">Консистентность&nbsp;кода</h2>
+<p>jQuery Widget Factory прежде всего решает задачу по организации кода. Следование соглашениям в команде позволяет не 
+тратить время раздумывая над <span class="caps">API</span> виджета при разработке и над вызосом методов, установкой свойств при&nbsp;использовании.</p>
+<h2 id="-">Параметры при&nbsp;инициализации</h2>
+<p>Для плагина хорошая практика — набор дефолтных опций и предоставление внешнего интерфейса к&nbsp;ним:</p>
+<pre><code class="lang-js">$.fn.plugin = <span class="function"><span class="keyword">function</span>(<span class="params"> options </span>) </span>{
+    options = $.extend( {}, $.fn.plugin.defaults, options );
+    <span class="comment">// Plugin logic goes here.</span>
+};
+
+$.fn.plugin.defaults = {
+    param1: <span class="string">"foo"</span>,
+    param2: <span class="string">"bar"</span>,
+    param3: <span class="string">"baz"</span>
+};
+</code></pre>
+<p>Здесь мы вручную выносим дефолтные настройки в метод функции, пользуясь тем, что функция — это объект. <code>$.widget</code> 
+позволяет это делать даже&nbsp;проще:</p>
+<pre><code>$.widget( &quot;ns.plugin&quot;, {
+
+    // Default options.
+    options: {
+        param1: &quot;foo&quot;,
+        param2: &quot;bar&quot;,
+        param3: &quot;baz&quot;
+    },
+
+    _create: function() {
+        // Options are already merged and stored in this.options
+        // Plugin logic goes here.
+    }
+
+});
+</code></pre><p>Мы из коробки имеем смерженные дефолтные и юзерские параметры и доступ к ним&nbsp;извне.</p>
+<h2 id="-">Методы</h2>
+<p>После инициализации виджета мы можем следить за его состоянием, менять его и выполнять с помощью виджета какие-то 
+действия. Выполнить действие — запустить метод. Метода запускается&nbsp;так:</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"value"</span> ); <span class="comment">// Геттер</span>
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"value"</span>, <span class="number">40</span> ); <span class="comment">// Сеттер (передали параметр)</span>
+<span class="comment">// Обычно виджет возвращает jQuery object, так что можно продолжать цепочку:</span>
+$( <span class="string">"#elem"</span> )
+    .progressbar( <span class="string">"value"</span>, <span class="number">90</span> )
+    .addClass( <span class="string">"almost-done"</span> );
+</code></pre>
+<h3 id="-">Общие&nbsp;методы</h3>
+<p>Некоторые методы идут из&nbsp;коробки.</p>
+<p><strong>option</strong> позволяет установить параметр после инициализации&nbsp;виджета:</p>
+<pre><code class="lang-js"><span class="comment">// Получить значение (геттер)</span>
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"option"</span>, <span class="string">"value"</span> );
+
+<span class="comment">// Установить значение (сеттер)</span>
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"option"</span>, <span class="string">"value"</span>, <span class="number">30</span> );
+
+<span class="comment">// Перезаписать сразу несколько параметров</span>
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"option"</span>, {
+    value: <span class="number">100</span>,
+    disabled: <span class="literal">true</span>
+});
+</code></pre>
+<p>Получение и установка значений следует синтаксису jQuery core. Например, <code>$(&#39;div&#39;).css()</code>. Отличие в том, что в 
+виджет передается еще одни параметр — имя&nbsp;метода.</p>
+<p><strong>disable</strong> — метод для отключения виджета. Например, прогрессбар становится серым и перестает&nbsp;изменяться.</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"disable"</span> );
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"option"</span>, <span class="string">"disabled"</span>, <span class="literal">true</span> ); <span class="comment">// Эквивалентный синтаксис</span>
+</code></pre>
+<p><strong>enable</strong> — метод включения виджета (выключение отключения&nbsp;&uarr;):</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"enable"</span> );
+$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"option"</span>, <span class="string">"disabled"</span>, <span class="literal">false</span> ); <span class="comment">// Эквивалентный синтаксис</span>
+</code></pre>
+<p><strong>destroy</strong> — грохнуть виджет и вернуть первоначальную разметку. Закончить жизненный цикл&nbsp;виджета:</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"destroy"</span> );
+</code></pre>
+<p>После удаления виджета работать с ним нельзя. Надо работать — инициализируем заново. При вызове <code>.remove()</code> у 
+элемента виджета, при изменении <code>.html()</code> или вызове <code>.empty()</code> у родителей <code>destroy</code> вызывается&nbsp;автоматически.</p>
+<p><strong>widget</strong> вернет сгенерированную виджетом разметку. Если таковой нет, то вернется исходный&nbsp;элемент:</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar( <span class="string">"widget"</span> );
+</code></pre>
+<h2 id="-">События</h2>
+<p>Видеты могут триггерить события при изменении состояния. Обычно к именам событияй виджета добавляется префикс — 
+название&nbsp;виджета:</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).on( <span class="string">"progressbarchange"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+    alert( <span class="string">"The value has changed!"</span> );
+});
+</code></pre>
+<p>Каждому событию соответствует коллбэк, который мы можем&nbsp;переопределить:</p>
+<pre><code class="lang-js">$( <span class="string">"#elem"</span> ).progressbar({
+    change: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        alert( <span class="string">"The value has changed!"</span> );
+    }
+});
+</code></pre>
+<h3 id="-">Общие&nbsp;события</h3>
+<p>У всех виджетов уже есть событие <code>create</code>, которое сработает при создании&nbsp;виджета.</p>
+<h2 id="-">Написание&nbsp;виджета</h2>
+<p>Рассмотрим написание виджета на примере <a href="http://jqueryui.com/progressbar/">прогрессбара</a>.</p>
 <p>В метод <code>$.widget</code> передается 2 параметра: имя плагина и объект с его&nbsp;функционалом:</p>
 <pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, { <span class="comment">// nmk — namespace, progressbar - widget name</span>
 
@@ -48,7 +170,8 @@ Widget Factofy</a>, которая является частью jQuery <span cl
 <code>nmk.progressbar</code>. Неймспейс <code>ui</code> занят компонентами библиотеки jQuery <span class="caps">UI</span>. Нам следует использовать свое собственное 
 пространство&nbsp;имен.</p>
 <p><code>this.element</code> — объект jQuery (единичный). Если плагин, созданный через Widget Factory, вызывается на коллекции 
-элементов jQuery, то для каждого элемента создается свой собственный&nbsp;экземляр.</p>
+элементов jQuery, то для каждого элемента создается свой собственный экземляр. Эти экземпляры унаследуют методы и 
+свойства от одного&nbsp;прототипа.</p>
 <p><code>this.options</code> — объект с опциями, которые переданы при&nbsp;инициализации.</p>
 <p>Значения по умолчанию (опции и коллбэки) мы можем обозначить как объект <code>options</code>:</p>
 <pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
@@ -67,6 +190,8 @@ Widget Factofy</a>, которая является частью jQuery <span cl
 
 });
 </code></pre>
+<p>Widget factory предоставляет удобные способ управления состоянием плагина и соглашение по выполнению частых задач, 
+типа работы с приватными и внешними&nbsp;методами.</p>
 <h2 id="-">Добавление&nbsp;методов</h2>
 <p>Мы можем добавить методы в наш объект, в том числе приватные, начав их имена с&nbsp;подчеркивания:</p>
 <pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
@@ -126,7 +251,8 @@ bar.progressbar( <span class="string">"value"</span>, <span class="number">50</s
 <span class="comment">// Get the current value again.</span>
 alert( bar.progressbar( <span class="string">"value"</span> ) );
 </code></pre>
-<p>Это не самый удобный способ работы. Так сделано для того, чтобы по-минимуму воздействовать своими методами объект <code>$</code>.</p>
+<p>Это не самый удобный способ работы. Так сделано для того, чтобы по-минимуму воздействовать своими методами на объект 
+<code>$</code>.</p>
 <h2 id="-">Работа с&nbsp;опциями</h2>
 <p>Widget Factory предоставляет возможность работы с опциями автоматически:&nbsp;???</p>
 <pre><code class="lang-js">$.widget( <span class="string">"nmk.progressbar"</span>, {
@@ -207,8 +333,10 @@ alert( bar.options.value );
 };
 </code></pre>
 <h1 id="-">Материалы</h1>
-<p><a href="http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/">http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/</a>
-<a href="http://api.jqueryui.com/jQuery.widget">http://api.jqueryui.com/jQuery.widget</a></p>
+<p><a href="https://learn.jquery.com/jquery-ui/">https://learn.jquery.com/jquery-ui/</a>
+<a href="http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/">http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/</a>
+<a href="http://api.jqueryui.com/jQuery.widget">http://api.jqueryui.com/jQuery.widget</a>
+<a href="http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html">http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html</a></p>
 </section>
         </article>
       </div>
