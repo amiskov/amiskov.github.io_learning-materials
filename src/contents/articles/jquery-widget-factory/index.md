@@ -723,7 +723,7 @@ $( ":data(ui-dialog)" ).dialog( "close" );
 * http://ajpiano.com/widgetfactory
 * http://www.slideshare.net/magentodev/take-more-from-jquery
 
-# Домашняя работа
+# Домашняя работа [](#homework)
 Задача — реализовать список с выделением, используя Widget Factory.
 
 * Клик на элементе списка выделяет только его.

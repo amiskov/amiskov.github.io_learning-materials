@@ -591,7 +591,7 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;:data(ui-dialog)&quot;&lt;/span&gt
 &lt;li&gt;&lt;a href=&quot;http://ajpiano.com/widgetfactory&quot;&gt;http://ajpiano.com/widgetfactory&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/magentodev/take-more-from-jquery&quot;&gt;http://www.slideshare.net/magentodev/take-more-from-jquery&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1 id=&quot;-&quot;&gt;Домашняя работа&lt;/h1&gt;
+&lt;h1 id=&quot;-homework-&quot;&gt;Домашняя работа &lt;a href=&quot;http://amiskov.github.io/learn/articles/jquery-widget-factory/#homework&quot;&gt;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Задача — реализовать список с выделением, используя Widget Factory.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Клик на элементе списка выделяет только его.&lt;/li&gt;
