@@ -1,0 +1,30 @@
+.custom-table {
+    border-collapse: collapse;
+}
+
+.custom-table th {
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+    cursor: default;
+}
+
+.custom-table th, td {
+    padding: 2px 10px;
+}
+
+.custom-table th:after {
+    padding-left: 2px;
+    position: absolute;
+}
+
+.custom-table th.asc, th.desc {
+    color: #cd0000;
+}
+
+.custom-table th.asc:after {
+    content: '▲';
+}
+
+.custom-table th.desc:after {
+    content: '▼';
+}

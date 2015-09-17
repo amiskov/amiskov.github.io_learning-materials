@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sort table</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+        .container {
+            padding: 2rem 0 0;
+            margin: 0 auto;
+            max-width: 980px;
+        }
+        .table {
+            border-spacing: 0;
+            width: 350px;
+        }
+        .table th, .table td {
+            color: #000;
+            text-align: left;
+            padding: 4px 10px;
+            vertical-align: top;
+        }
+        .table th {
+            padding: 9px 10px;
+            position: relative;
+        }
+        .table th:after {
+            content: '';
+            width: 0;
+            height: 0;
+            position: absolute;
+            border: solid 5px transparent;
+            border-bottom-color: #19AB96;
+            border-bottom-width: 7px;
+            margin-left: 6px;
+            margin-top: 1px;
+            display: none;
+        }
+        .table th.desc:after {
+            border-bottom-color: transparent;
+            border-bottom-width: 5px;
+            border-top-color: #19AB96;
+            border-top-width: 7px;
+            margin-top: 7px;
+        }
+        .table th.sorted {
+            color: #19AB96;
+        }
+        .table th.sorted:after {
+            display: inline-block;
+        }
+        .table th:hover {
+            cursor: pointer;
+            color: #19AB96;
+        }
+        .table tr:nth-child(odd):not(.table-head-row) {
+            background: #f1f1f1;
+        }
+        .btn {
+            background: #19AB96;
+            color: #fff;
+            outline: none;
+            border: none;
+            margin-top: 1.5rem;
+            padding: 5px 24px 5px 12px;
+            position: relative;
+        }
+        .btn[data-order='1']:after,
+        .btn[data-order='-1']:after {
+            position: absolute;
+            margin-left: 7px;
+        }
+        .btn[data-order='1']:after {
+            content: '↑';
+        }
+        .btn[data-order='-1']:after {
+            content: '↓';
+        }
+        .btn:hover {
+            background: #159280;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <table class="table js-sort-table">
+        <thead>
+            <tr class="table-head-row">
+                <th data-type="string">Имя</th>
+                <th data-type="number">Возраст</th>
+                <th data-type="string">Город</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Оля</td>
+                <td>8</td>
+                <td>Самара</td>
+            </tr>
+            <tr>
+                <td>Иван</td>
+                <td>12</td>
+                <td>Ростов</td>
+            </tr>
+            <tr>
+                <td>Вася</td>
+                <td>7</td>
+                <td>Москва</td>
+            </tr>
+            <tr>
+                <td>Катя</td>
+                <td>5</td>
+                <td>Архангельск</td>
+            </tr>
+            <tr>
+                <td>Максим</td>
+                <td>11</td>
+                <td>Санкт-Петербург</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn js-change-order">Сменить порядок сортировки</button>
+</div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/sort.js"></script>
+<script>
+    jQuery(function() {
+        'use strict';
+
+        $('.js-sort-table').sortTable();
+        
+        // $('.js-sort-table').sortTable({
+        //     initiallySorted: true,
+        //     indexCol: 1,
+        //     order: -1
+        // });
+    });
+</script>
+
+</body>
+</html>

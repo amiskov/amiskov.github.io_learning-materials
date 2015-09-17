@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>custome select</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        .container {
+            padding: 2rem 0 0;
+            margin: 0 auto;
+            max-width: 980px;
+        }
+
+        .select-wrapper {
+            min-width: 250px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .custom-select {
+            border: solid 1px #ccc;
+        }
+
+        .custom-select.opened .custom-select-list {
+            display: block;
+        }
+
+        .custom-select.opened .custom-select-title:after {
+            border-top-color: transparent;
+            border-bottom-color: #ccc;
+            margin-top: -8px;
+        }
+
+        .custom-select-title {
+            cursor: pointer;
+            display: block;
+            padding: 5px 20px 5px 10px;
+            position: relative;
+        }
+
+        .custom-select-title:after {
+            content: '';
+            border: solid 5px transparent;
+            border-top-color: #ccc;
+            position: absolute;
+            display: block;
+            margin-top: -2px;
+            top: 50%;
+            right: 10px;
+            height: 0;
+            width: 0;
+        }
+
+        .custom-select-list {
+            display: none;
+            border-top: solid 1px #ccc;
+            list-style: none;
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        .custom-select-list li {
+            cursor: pointer;
+            padding: 2px 10px;
+        }
+
+        .custom-select-list li:hover {
+            color: #6476A2;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-left: 1rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="regions" class="select-wrapper">
+        <span class="js-select">Выберите город</span>
+    </div>
+
+    <button id="btnRegion" data-value="485" class="btn">Москва</button>
+</div>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid delectus, dicta distinctio non porro quisquam
+    repellat. Ab ad assumenda deserunt dicta error expedita hic incidunt libero optio sunt! Deserunt, perferendis?</p>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/select_my.js"></script>
+<script src="http://someurl.com/?user_id=123&callback=myCallback"></script>
+<script>
+var data = myCallback({
+    user_id: 123,
+    age: 25
+});
+</script>
+
+<!--<script src="js/select.js"></script>-->
+<script>
+    jQuery(function () {
+        var regions = {
+            485: "Москва",
+            523: "Владимирская область",
+            530: "Калужская область",
+            536: "Ленинградская область",
+            486: "Московская область",
+            549: "Рязанская область",
+            563: "Санкт-Петербург",
+            554: "Смоленская область",
+            556: "Тверская область",
+            558: "Тульская область",
+            562: "Ярославская область"
+        };
+
+        var select = new Select(regions, $('.js-select'), 485);
+        $(select).on('...')
+
+        select.getElement().on('change', function (e) {
+            console.log(e.value);
+        });
+
+        $('#btnRegion').on('click', function () {
+            select.setValue($(this).attr('data-value'));
+        });
+    });
+</script>
+
+</body>
+</html>

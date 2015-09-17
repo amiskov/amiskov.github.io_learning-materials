@@ -1,0 +1,45 @@
+.select {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+}
+.select__title {
+  width: 250px;
+  padding: 10px 0;
+  border: 1px solid #ccc;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  background: #eee;
+}
+.select-list {
+  display: none;
+  list-style-type: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-top: 0;
+}
+.select-list__item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  cursor: pointer;
+}
+.select-list__item:hover {
+  background: #eee;
+  font-weight: bold;
+}
+.select-list._active {
+  display: block;
+}
+.btn {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 250px;
+  cursor: pointer;
+}

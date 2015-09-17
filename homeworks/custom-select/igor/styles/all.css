@@ -1,0 +1,42 @@
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+* {
+  box-sizing: border-box;
+}
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+.select {
+  position: relative;
+}
+.select__title {
+  border: 1px solid gainsboro;
+  padding: 5px 10px;
+  width: 200px;
+  display: block;
+}
+.select__list {
+  background-color: ghostwhite;
+  position: absolute;
+  display: none;
+  border: 1px solid gainsboro;
+  width: 200px;
+}
+.select__link {
+  display: block;
+  padding: 5px 10px;
+}
+.select._open .select__list {
+  display: block;
+}

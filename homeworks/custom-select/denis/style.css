@@ -1,0 +1,25 @@
+.custom-select {
+    max-width: 200px;
+    position: relative;
+}
+
+.custom-select__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.custom-select__selected-item {
+    font-weight: bold;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+.custom-select__item, .custom-select__selected-item {
+    border: 1px solid #000;
+    cursor: default;
+    background: #fff;
+}

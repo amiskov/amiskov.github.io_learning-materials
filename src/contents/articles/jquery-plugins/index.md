@@ -325,8 +325,6 @@ $.fn.highlight.format = function( txt ) {
 * Производительность
 -->
 
-
-
 # Материалы
 * http://learn.jquery.com/plugins/
 * [Признаки плохого плагина](https://remysharp.com/2010/06/03/signs-of-a-poorly-written-jquery-plugin)

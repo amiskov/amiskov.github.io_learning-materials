@@ -4,15 +4,15 @@ extends layout
 block append vars
   - bodyclass = 'article-detail'
 
+    div.top-nav.content-wrap
+      a(href=contents.index.url) « Назад на главную
+
 block prepend title
   | #{ page.title + ' - '}
 
 block header
   include author
   h1= page.title
-  //p.author
-  //  | #{ 'Written by ' }
-  //  mixin author(page.metadata.author)
 
 block content
   article.article
