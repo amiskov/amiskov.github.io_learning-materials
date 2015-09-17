@@ -1,6 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
-.DS_Store
 .idea/
 _notes/
 /src/node_modules
-temporary/
+homeworks/
+.DS_Store

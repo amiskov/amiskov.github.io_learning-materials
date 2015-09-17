@@ -2,10 +2,7 @@
     'use strict';
 
     $.fn.sortTable = function (options) {
-        // Не забыла, хорошо
         return this.each(function () {
-            // Опции в дефолте, отрыты, хорошо.
-            // Опции нужно вынести из перебора. Они же одни на всех. Пускай беруться из одного места.
             var opts = $.extend({}, $.fn.sortTable.defaults, options),
                 $table = $(this),
                 numberCols = $table.find('th').length,
@@ -23,7 +20,6 @@
                     var $row = $(this),
                         arrRow = [];
 
-                    // Можно проще, через массив со строками, а не со значениями.
                     $row.find('td').each(function () {
                         var $cell = $(this);
                         arrRow.push($cell.text());
@@ -34,7 +30,7 @@
             }
 
             function sortRows(index, isNumber, orderCol) {
-                return arr.sort(function (a, b) {
+                arr.sort(function (a, b) {
                     var value1 = a[index],
                         value2 = b[index],
                         order = (orderCol) ? orderCol : opts.order,
@@ -123,8 +119,6 @@
                 }
             }
 
-            // Как-то не очень клево получилось.
-            // Пример в переносом строк в DOM, как у Дениса.
             function rewriteTable() {
                 $table.find('tbody tr').each(function (iRow) {
                     $(this).find('td').each(function (iCell) {

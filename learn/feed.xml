@@ -5,38 +5,54 @@
     <atom:link href="http://amiskov.github.io/learn//feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://amiskov.github.io/learn/</link>
     <description>тезисы, примеры и домашние задания</description>
-    <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
+    <pubDate>Wed, 16 Sep 2015 10:30:00 +0300</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
     <item>
       <title>jQuery Widget Factory</title>
       <link>http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</link>
-      <pubDate>Wed, 09 Sep 2015 10:30:00 +0300</pubDate>
+      <pubDate>Wed, 16 Sep 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</guid>
       <author></author>
-      <description>&lt;p&gt;&lt;em&gt;Статься готова процентов на 70&lt;/em&gt;&lt;br&gt;
-Если мы имеем дело с компонентами, которые хочется сделать объектами, то плагины могут быть не слишком удобны в 
-использовании. Для таких случаев придумали jQuery Widget Factory.
+      <description>&lt;p&gt;Если нам нужен компонент, который будет менять состояния, взаимодействовать с другими компонентами, 
+включаться/отключаться и т. д., то плагины могут быть не слишком удобны в использовании. Для таких случаев придумали
+jQuery Widget Factory.
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Плагины нужны, чтобы расширить существующий функционал фреймворка. Обычно они запускаются на коллекции, что-то с ней 
 делают и возвращают эту же коллекцию, обеспечивая цепочность вызовов.&lt;/p&gt;
-&lt;p&gt;Обычно jQuery-плагины применяются без настроек и результат их выполнения всегда одинаков. &lt;code&gt;$(&amp;#39;div&amp;#39;).text(&amp;#39;Hello&amp;#39;)&lt;/code&gt; 
-— для такого рода операций плагин — самое то.&lt;/p&gt;
+&lt;p&gt;Обычно jQuery-плагины применяются без настроек и результат их выполнения всегда одинаков.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$(&amp;#39;div&amp;#39;).text(&amp;#39;Hello&amp;#39;)&lt;/code&gt; — для такого рода операций плагин — самое то. &lt;code&gt;.text()&lt;/code&gt; добавляет текст в элемент и на этом 
+его работа заканчивается.&lt;/p&gt;
+&lt;p&gt;Если нам нужно произвести инициализацию компонента, следить за его &lt;a href=&quot;http://en.wikipedia.org/wiki/State_%28computer_science%29&quot;&gt;состоянием&lt;/a&gt; и изменять 
+его в зависимости от разлиынх условий, то тут потребуется писать код, типичный для многих таких 
+виджетов. Разные авторы могут по-разному подходить к реализации своих API. Это влечет снижение консистентности кода и
+ лишние затраты времени.&lt;/p&gt;
+&lt;p&gt;Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery придумали &lt;a href=&quot;http://jqueryui.com/widget/&quot;&gt;jQuery 
+Widget Factofy&lt;/a&gt;, которая является частью jQuery UI и может быть использована отдельно 
+(7Кб в сжатом виде). &lt;/p&gt;
+&lt;h2 id=&quot;widget-factory&quot;&gt;Widget factory&lt;/h2&gt;
+&lt;p&gt;Widget factory предоставляет ряд соглашений и готового функционала для того, чтобы написание виджетов было однотипным и 
+получаемый API работал одним образом. Сохраняем время на рутинных операциях (инициализация, дестрой, триггеринг 
+событий) используем соглашения для приватных и публичных метоодов, получаем более более качественный результат и 
+экономим время. Научились использовать один виджет из jQuery UI — умеем пользоваться всеми.&lt;/p&gt;
 &lt;p&gt;В Magento 2.0 Widget Factory &lt;a href=&quot;http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html&quot;&gt;является стандартом&lt;/a&gt; для создания компонентов интерфейса.&lt;/p&gt;
-&lt;p&gt;Если нам нужно реализовать плагин, для которогу нужно произвести инициализацию, следить за его &lt;a href=&quot;http://en.wikipedia.org/wiki/State_%28computer_science%29&quot;&gt;состоянием&lt;/a&gt; и изменять 
-его в зависимости от разлиынх условий, возможно, дестроить, то тут потребуется писать код, типичных для многих таких 
-виджетов. Разные авторы могут по-разному подходить к реализации API своих виджетов. Это влечет снижение 
-консистентности кода и лишние затраты времени на изучение API.&lt;/p&gt;
-&lt;p&gt;Widget factory предоставляет ряд соглашений и готовых решений для того, чтобы написание виджетов было однотипным и 
-получаемый API работал одним образом. Сохраняем время на рутинных операциях, типа инициализации и дестроя, используем
-соглашения для приватных и публичных метоодов, получаем более более качественный результат и экономим время на 
-рутинных операциях. Научились использовать один виджет из jQuery UI — умеем пользоваться всеми.&lt;/p&gt;
-&lt;p&gt;Соглашения:&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Консистентность кода&lt;/h2&gt;
+&lt;p&gt;jQuery Widget Factory прежде всего решает задачу по организации кода. Следование соглашениям в команде позволяет не 
+тратить время, раздумывая над API виджета при разработке и над вызовом методов, установкой свойств при использовании.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Преимущества&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Наследование и полиморфизм&lt;/li&gt;
+&lt;li&gt;Конструктор/Деструктор &lt;code&gt;_create&lt;/code&gt;/&lt;code&gt;_destroy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Псевдоселектор &lt;code&gt;$(&amp;#39;:ns-plugin&amp;#39;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Приватные и публичные методы&lt;/li&gt;
+&lt;li&gt;Механизм колбэков (&lt;code&gt;_trigger&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;-&quot;&gt;Соглашения&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Создание и удаление виджетов;&lt;/li&gt;
 &lt;li&gt;Установка и получение опций (геттеры и сеттеры);&lt;/li&gt;
 &lt;li&gt;Вызов методов;&lt;/li&gt;
-&lt;li&gt;Прослушивание событий, которые инициирует виджет.&lt;/li&gt;
+&lt;li&gt;Прослушивание и вызов событий, которые инициирует виджет.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Состояние объекта — набор данных о нем в текущий момент времени: значение (проценты в прогрессбаре), открыт он или 
 закрыт, какой пункт выделеин и т. д.&lt;/p&gt;
@@ -47,13 +63,7 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 &lt;span class=&quot;comment&quot;&gt;// Со своими параметрами&lt;/span&gt;
 $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar({ value: &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt; });
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Параметры — часть состояния виджета. Их мы можем менять в течение жизненного цикла через метод &lt;code&gt;option&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Для того, чтобы создавать более ООП-ориентированные сущности и в то же время быть в среде jQuery придумали &lt;a href=&quot;http://jqueryui.com/widget/&quot;&gt;jQuery 
-Widget Factofy&lt;/a&gt;, которая является частью jQuery UI и может быть использована отдельно 
-(7Кб в сжатом виде). &lt;/p&gt;
-&lt;h2 id=&quot;-&quot;&gt;Консистентность кода&lt;/h2&gt;
-&lt;p&gt;jQuery Widget Factory прежде всего решает задачу по организации кода. Следование соглашениям в команде позволяет не 
-тратить время раздумывая над API виджета при разработке и над вызосом методов, установкой свойств при использовании.&lt;/p&gt;
+&lt;p&gt;Параметры — часть состояния виджета. Их мы можем менять в течение жизненного цикла через метод &lt;a href=&quot;http://api.jqueryui.com/jQuery.widget/#method-option&quot;&gt;&lt;code&gt;option&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&quot;-&quot;&gt;Параметры при инициализации&lt;/h2&gt;
 &lt;p&gt;Для плагина хорошая практика — набор дефолтных опций и предоставление внешнего интерфейса к ним:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.fn.plugin = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
@@ -67,35 +77,39 @@ $.fn.plugin.defaults = {
     param3: &lt;span class=&quot;string&quot;&gt;&quot;baz&quot;&lt;/span&gt;
 };
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Здесь мы вручную выносим дефолтные настройки в метод функции, пользуясь тем, что функция — это объект. &lt;code&gt;$.widget&lt;/code&gt; 
-позволяет это делать даже проще:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$.widget( &amp;quot;ns.plugin&amp;quot;, {
+&lt;p&gt;Здесь мы вручную выносим дефолтные настройки в метод функции, пользуясь тем, что функция — это объект.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$.widget&lt;/code&gt; позволяет это делать даже проще:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;ns.plugin&quot;&lt;/span&gt;, {
 
-    // Default options.
+    &lt;span class=&quot;comment&quot;&gt;// Default options.&lt;/span&gt;
     options: {
-        param1: &amp;quot;foo&amp;quot;,
-        param2: &amp;quot;bar&amp;quot;,
-        param3: &amp;quot;baz&amp;quot;
+        param1: &lt;span class=&quot;string&quot;&gt;&quot;foo&quot;&lt;/span&gt;,
+        param2: &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt;,
+        param3: &lt;span class=&quot;string&quot;&gt;&quot;baz&quot;&lt;/span&gt;
     },
 
-    _create: function() {
-        // Options are already merged and stored in this.options
-        // Plugin logic goes here.
+    &lt;span class=&quot;comment&quot;&gt;// Этот методы вызовется при первом обращении к виджету: $('div').widgetName();&lt;/span&gt;
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// Options are already merged and stored in this.options&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;// Plugin logic goes here.&lt;/span&gt;
     }
 
 });
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Мы из коробки имеем смерженные дефолтные и юзерские параметры и доступ к ним извне.&lt;/p&gt;
-&lt;h2 id=&quot;-&quot;&gt;Методы&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Мы из коробки имеем смерженные дефолтные и юзерские параметры и доступ к ним извне.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Методы&lt;/h1&gt;
 &lt;p&gt;После инициализации виджета мы можем следить за его состоянием, менять его и выполнять с помощью виджета какие-то 
-действия. Выполнить действие — запустить метод. Метода запускается так:&lt;/p&gt;
+действия. Выполнить действие — запустить метод. Метод запускается так:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Геттер&lt;/span&gt;
 $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;40&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Сеттер (передали параметр)&lt;/span&gt;
-&lt;span class=&quot;comment&quot;&gt;// Обычно виджет возвращает jQuery object, так что можно продолжать цепочку:&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// При таком вызове метода (а-ля плагин) виджет возвращает jQuery object, так что можно&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// продолжать цепочку вызовов:&lt;/span&gt;
 $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; )
     .progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;90&lt;/span&gt; )
     .addClass( &lt;span class=&quot;string&quot;&gt;&quot;almost-done&quot;&lt;/span&gt; );
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;-&quot;&gt;Общие методы&lt;/h3&gt;
+&lt;h2 id=&quot;-&quot;&gt;Общие методы&lt;/h2&gt;
 &lt;p&gt;Некоторые методы идут из коробки.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;option&lt;/strong&gt; позволяет установить параметр после инициализации виджета:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Получить значение (геттер)&lt;/span&gt;
@@ -120,7 +134,7 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;enable&quot;&lt;/span&gt; );
 $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;option&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;disabled&quot;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Эквивалентный синтаксис&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;destroy&lt;/strong&gt; — грохнуть виджет и вернуть первоначальную разметку. Закончить жизненный цикл виджета:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;destroy&lt;/strong&gt; — грохнуть виджет, закончить его жизненный цикл:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;destroy&quot;&lt;/span&gt; );
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;После удаления виджета работать с ним нельзя. Надо работать — инициализируем заново. При вызове &lt;code&gt;.remove()&lt;/code&gt; у 
@@ -128,7 +142,7 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 &lt;p&gt;&lt;strong&gt;widget&lt;/strong&gt; вернет сгенерированную виджетом разметку. Если таковой нет, то вернется исходный элемент:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progressbar( &lt;span class=&quot;string&quot;&gt;&quot;widget&quot;&lt;/span&gt; );
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&quot;-&quot;&gt;События&lt;/h2&gt;
+&lt;h1 id=&quot;-&quot;&gt;События&lt;/h1&gt;
 &lt;p&gt;Видеты могут триггерить события при изменении состояния. Обычно к именам событияй виджета добавляется префикс — 
 название виджета:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).on( &lt;span class=&quot;string&quot;&gt;&quot;progressbarchange&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
@@ -142,11 +156,14 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
     }
 });
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;-&quot;&gt;Общие события&lt;/h3&gt;
+&lt;h2 id=&quot;-&quot;&gt;Общие события&lt;/h2&gt;
 &lt;p&gt;У всех виджетов уже есть событие &lt;code&gt;create&lt;/code&gt;, которое сработает при создании виджета.&lt;/p&gt;
-&lt;h2 id=&quot;-&quot;&gt;Написание виджета&lt;/h2&gt;
+&lt;h1 id=&quot;-&quot;&gt;Написание виджета&lt;/h1&gt;
 &lt;p&gt;Рассмотрим написание виджета на примере &lt;a href=&quot;http://jqueryui.com/progressbar/&quot;&gt;прогрессбара&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;В метод &lt;code&gt;$.widget&lt;/code&gt; передается 2 параметра: имя плагина и объект с его функционалом:&lt;/p&gt;
+&lt;p&gt;В метод &lt;code&gt;$.widget&lt;/code&gt; передается 2 параметра: имя плагина и объект с его функционалом. Widget factory создаст 
+конструктор и будет использовать переданный объект как прототип для него. Весь дефолтный функционал будет браться из 
+&lt;code&gt;jQuery.Widget.prototype&lt;/code&gt;. У плагина контекст (&lt;code&gt;this&lt;/code&gt;) — это DOM-элемент, у виджета контекст — единичный экземпляр 
+объекта:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, { &lt;span class=&quot;comment&quot;&gt;// nmk — namespace, progressbar - widget name&lt;/span&gt;
 
     _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
@@ -156,13 +173,30 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 
 });
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;При создании, экземпляр виджета сохраняется в &lt;code&gt;.data&lt;/code&gt; DOM-объекта:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div /&amp;gt;&quot;&lt;/span&gt;)
+    .appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; )
+    .progressbar()
+    .data( &lt;span class=&quot;string&quot;&gt;&quot;nmk-progressbar&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Call a method directly on the plugin instance.&lt;/span&gt;
+bar.option( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Access properties on the plugin instance.&lt;/span&gt;
+alert( bar.options.value );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Widget Factory позволяет работать с прототипом всех созданных сущностей. Добавляя новые методы, они становятся 
+доступны всем эзкемплярам:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.nmk.progressbar.prototype.reset = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._setOption( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; );
+};
+&lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id=&quot;-&quot;&gt;Соглашения&lt;/h2&gt;
 &lt;p&gt;Пространство имен: имя плагина начинается с неймспейса, далее следует точка и после точки идет имя плагина:
 &lt;code&gt;nmk.progressbar&lt;/code&gt;. Неймспейс &lt;code&gt;ui&lt;/code&gt; занят компонентами библиотеки jQuery UI. Нам следует использовать свое собственное 
 пространство имен.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;this.element&lt;/code&gt; — объект jQuery (единичный). Если плагин, созданный через Widget Factory, вызывается на коллекции 
-элементов jQuery, то для каждого элемента создается свой собственный экземляр. Эти экземпляры унаследуют методы и 
-свойства от одного прототипа.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;this.element&lt;/code&gt; — объект jQuery (единичный). Если Widget Factory, вызывается на коллекции элементов, то для каждого 
+элемента создается &lt;em&gt;свой собственный&lt;/em&gt; экземляр. Эти экземпляры унаследуют методы и свойства от одного прототипа.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;this.options&lt;/code&gt; — объект с опциями, которые переданы при инициализации.&lt;/p&gt;
 &lt;p&gt;Значения по умолчанию (опции и коллбэки) мы можем обозначить как объект &lt;code&gt;options&lt;/code&gt;:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
@@ -184,7 +218,8 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 &lt;p&gt;Widget factory предоставляет удобные способ управления состоянием плагина и соглашение по выполнению частых задач, 
 типа работы с приватными и внешними методами.&lt;/p&gt;
 &lt;h2 id=&quot;-&quot;&gt;Добавление методов&lt;/h2&gt;
-&lt;p&gt;Мы можем добавить методы в наш объект, в том числе приватные, начав их имена с подчеркивания:&lt;/p&gt;
+&lt;p&gt;Мы можем добавить методы в наш объект, в том числе приватные, начав их имена с подчеркивания. Снаружи они будут 
+недоступны:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
     options: {
         value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
@@ -230,7 +265,7 @@ $( &lt;span class=&quot;string&quot;&gt;&quot;#elem&quot;&lt;/span&gt; ).progres
 
 });
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Для вызова методов нужно передать параметр в jQuery-плагин. Если нужно установить значение, то передаем его следом:&lt;/p&gt;
+&lt;p&gt;Для вызова методов нужно передать параметр в виджет. Если нужно установить значение, то передаем его следом:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div /&amp;gt;&quot;&lt;/span&gt; ).appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt;).progressbar({ value: &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt; });
 
 &lt;span class=&quot;comment&quot;&gt;// Get the current value.&lt;/span&gt;
@@ -245,71 +280,118 @@ alert( bar.progressbar( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&l
 &lt;p&gt;Это не самый удобный способ работы. Так сделано для того, чтобы по-минимуму воздействовать своими методами на объект 
 &lt;code&gt;$&lt;/code&gt;.&lt;/p&gt;
 &lt;h2 id=&quot;-&quot;&gt;Работа с опциями&lt;/h2&gt;
-&lt;p&gt;Widget Factory предоставляет возможность работы с опциями автоматически: ???&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
-
+&lt;p&gt;Widget Factory предоставляет возможность работы с опциями. С помощью метода &lt;code&gt;option()&lt;/code&gt; можно получать и устанавливать
+опции после инициализации используя его как геттер и сеттер. В него можно передавать единичные мараметры или срзау 
+объект.&lt;/p&gt;
+&lt;p&gt;При установке опций вызывается метод &lt;code&gt;_setOption&lt;/code&gt; для каждого передаваемого свойства. Этот метод мы можем указать 
+руками, чтобы контролировать установку опций.&lt;/p&gt;
+&lt;p&gt;Если нам нужно что-то сделать со всей пачкой передаваемых опций, в нашем распоряжении имеетс метод &lt;code&gt;_setOptions&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.progressbar&quot;&lt;/span&gt;, {
     options: {
         value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
     },
-
     _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value);
         &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; );
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
     },
-
     _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options[ key ] = value;
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( key === &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ) {
+            value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain( value );
+        }
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( key, value );
     },
-
-    _update: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    _setOptions: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( options );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
+    },
+    refresh: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
         &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
         &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
+    },
+    _constrain: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;lt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; value;
     }
-
 });
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id=&quot;callbacks&quot;&gt;Callbacks&lt;/h2&gt;
-&lt;p&gt;Для запуска коллбэка существует метод &lt;code&gt;_trigger&lt;/code&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;nmk.progressbar&quot;&lt;/span&gt;, {
-
+&lt;p&gt;Для того, чтобы реагировать на изменение состояния нашего виджета предусмотрен механизм работы с колбэк-функциями. В 
+прмере ниже с помощью метода &lt;code&gt;_trigger&lt;/code&gt; вызывается метод &lt;code&gt;complete&lt;/code&gt;, который сработает, когда значение прогрессбара 
+достигнет 100%.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.progressbar&quot;&lt;/span&gt;, {
     options: {
         value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
     },
-
     _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value);
         &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; );
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
     },
-
     _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options[ key ] = value;
-        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._update();
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( key === &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ) {
+            value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain( value );
+        }
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( key, value );
     },
-
-    _update: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    _setOptions: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( options );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
+    },
+    refresh: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
         &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
         &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
         &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value == &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
-            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._trigger( &lt;span class=&quot;string&quot;&gt;&quot;complete&quot;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;, { value: &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; } );
+            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._trigger( &lt;span class=&quot;string&quot;&gt;&quot;complete&quot;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;, { value: &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; } ); &lt;span class=&quot;comment&quot;&gt;// вызов колбэка и триггеринг события&lt;/span&gt;
         }
+    },
+    _constrain: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;lt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; value;
     }
-
 });
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&quot;-widget-factory&quot;&gt;Как работает Widget Factory&lt;/h2&gt;
-&lt;p&gt;Когда мы создаем виджет, мы передаем в него неймспейс.имя и объект. WF создаст конструктор и будет использовать 
-переданный объект как прототип для него. Весь дефолтный функционал будет браться из &lt;code&gt;jQuery.Widget.prototype&lt;/code&gt;.&lt;/p&gt;
-&lt;h1 id=&quot;-&quot;&gt;Итого&lt;/h1&gt;
-&lt;p&gt;Нет четких рецептов, когда что надо использовать. Нужно знать как работает экосистема jQuery, что хорошо и что плохо.
-Нужно уметь пользоваться тем, что предоставляе библиотека и сообщество. Однако, стоит понить о том, что прежде всего — сделанная задача. Так, если на проекте нужен 
-слайдер, то, возможно, его стоит сделать просто через конструктор. Если элемент точно будет использоваться повторно, 
-то стоит подумать о применении плагина.&lt;/p&gt;
-&lt;p&gt;При создании, экземпляр виджета сохраняется в &lt;code&gt;.data&lt;/code&gt; DOM-объекта:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div /&amp;gt;&quot;&lt;/span&gt;)
+&lt;p&gt;Метод &lt;code&gt;_trigger&lt;/code&gt; принимает 3 параметра: имя колбэка, объект события jQuery и объект данных. Колбэк-функция — это один
+из параметров. Ее можно получать и вызывать как обычные опции. На ряду с колбэк-функций триггериться и событие. Имя 
+события получается из объединения имени виджета и колбэк-функции: &lt;code&gt;progressbarcomplete&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&quot;&lt;/span&gt; )
     .appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; )
-    .progressbar()
-    .data( &lt;span class=&quot;string&quot;&gt;&quot;nmk-progressbar&quot;&lt;/span&gt; );
+    .progressbar({
+        complete: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event, data &lt;/span&gt;) &lt;/span&gt;{
+            alert( &lt;span class=&quot;string&quot;&gt;&quot;Callbacks are great!&quot;&lt;/span&gt; );
+        }
+    })
+    .bind( &lt;span class=&quot;string&quot;&gt;&quot;progressbarcomplete&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event, data &lt;/span&gt;) &lt;/span&gt;{
+        alert( &lt;span class=&quot;string&quot;&gt;&quot;Events bubble and support many handlers for extreme flexibility.&quot;&lt;/span&gt; );
+        alert( &lt;span class=&quot;string&quot;&gt;&quot;The progress bar value is &quot;&lt;/span&gt; + data.value );
+    });
+
+bar.progressbar( &lt;span class=&quot;string&quot;&gt;&quot;option&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-widget-factory&quot;&gt;Как работает Widget Factory&lt;/h1&gt;
+&lt;p&gt;Вызов &lt;code&gt;$.widget(&amp;#39;namespace.widgetname&amp;#39;, widgetObject)&lt;/code&gt; создает конструктор и устанавливает его прототипом 
+передаваемый &lt;code&gt;widgetObject&lt;/code&gt;. Таким образом все создаваемые сущности унаследуют от &lt;code&gt;widgetObject&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Сам объект унаследует дефолтный функционал от &lt;code&gt;jQuery.Widget.prototype&lt;/code&gt; (Widget с большой буквы).&lt;/p&gt;
+&lt;p&gt;Для примера можно рассмотреть &lt;a href=&quot;http://jqueryui.com/resources/demos/progressbar/default.html&quot;&gt;http://jqueryui.com/resources/demos/progressbar/default.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Запустив в консоли &lt;code&gt;$.ui.progressbar.prototype&lt;/code&gt; можно увидеть объект, от которого виджет наследует методы и свойства
+присущие ему из коробки.&lt;/p&gt;
+&lt;p&gt;При создании виджета ссылка на его объект содержится в &lt;code&gt;jQuery.data&lt;/code&gt; DOM-элемента. На той же странице можно 
+посмотреть &lt;code&gt;$( &amp;quot;#progressbar&amp;quot; ).data(&amp;#39;uiProgressbar&amp;#39;)&lt;/code&gt; и его &lt;code&gt;__proto__&lt;/code&gt;. А раз так, то мы можем записать ее в 
+переменную и обращаться к методам и свойсвтам через точку, а не передавая в скобках названия:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&quot;&lt;/span&gt; )
+    .appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt; )
+    .progressbar()                 &lt;span class=&quot;comment&quot;&gt;// Инициализировали виджет&lt;/span&gt;
+    .data( &lt;span class=&quot;string&quot;&gt;&quot;custom-progressbar&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Достали и сохранили в bar ссылку на объект виджета&lt;/span&gt;
 
 &lt;span class=&quot;comment&quot;&gt;// Call a method directly on the plugin instance.&lt;/span&gt;
 bar.option( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;50&lt;/span&gt; );
@@ -317,17 +399,222 @@ bar.option( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;,
 &lt;span class=&quot;comment&quot;&gt;// Access properties on the plugin instance.&lt;/span&gt;
 alert( bar.options.value );
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Widget Factory позволяет работать с прототипом всех созданных сущностей. Добавляя новые методы, они становятся 
-доступны всем эзкемплярам:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.nmk.progressbar.prototype.reset = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+&lt;p&gt;Так же можно вызывать конструктор виджета напрямую:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; bar = $.custom.progressbar({},       &lt;span class=&quot;comment&quot;&gt;// возможные опции&lt;/span&gt;
+    $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&quot;&lt;/span&gt; ).appendTo( &lt;span class=&quot;string&quot;&gt;&quot;body&quot;&lt;/span&gt;) &lt;span class=&quot;comment&quot;&gt;// элемент виджета&lt;/span&gt;
+);
+
+&lt;span class=&quot;comment&quot;&gt;// Same result as before.&lt;/span&gt;
+alert( bar.options.value );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Добавление/изменение методов в прототипе виджета&lt;/h2&gt;
+&lt;p&gt;Поскольку в виджете мы работаем с конструктором и прототипом (в плагине мы не имеем таких возможностей), то мы можем 
+легко расширять его функционал: добавлять новые методы или изменять существующие:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Добавим метод для сбрасывания значения прогрессбара&lt;/span&gt;
+$.custom.progressbar.prototype.reset = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
     &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._setOption( &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; );
 };
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Дестрой&lt;/h1&gt;
+&lt;p&gt;Для того, чтобы удалить виджет и почистить за собой существует метод &lt;code&gt;_destroy&lt;/code&gt;. Из коробки он удаляет ссылку на 
+объект из &lt;code&gt;jQuery.data&lt;/code&gt; элемента, отключает все события из неймспейса виджета.&lt;/p&gt;
+&lt;p&gt;Метод &lt;code&gt;_destroy()&lt;/code&gt; вызывается с помощью открытого метода &lt;code&gt;destroy()&lt;/code&gt;. Мы сами можем добавить в него нужный функционал:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.progressbar&quot;&lt;/span&gt;, {
+    options: {
+        value: &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;
+    },
+    _create: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain(&lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value);
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.addClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
+    },
+    _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( key === &lt;span class=&quot;string&quot;&gt;&quot;value&quot;&lt;/span&gt; ) {
+            value = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._constrain( value );
+        }
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( key, value );
+    },
+    _setOptions: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; options &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( options );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.refresh();
+    },
+    refresh: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; progress = &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value + &lt;span class=&quot;string&quot;&gt;&quot;%&quot;&lt;/span&gt;;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.text( progress );
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.options.value == &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._trigger( &lt;span class=&quot;string&quot;&gt;&quot;complete&quot;&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;null&lt;/span&gt;, { value: &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; } );
+        }
+    },
+    _constrain: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; value &lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( value &amp;lt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; ) {
+            value = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; value;
+    },
+    _destroy: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element
+            .removeClass( &lt;span class=&quot;string&quot;&gt;&quot;progressbar&quot;&lt;/span&gt; )
+            .text( &lt;span class=&quot;string&quot;&gt;&quot;&quot;&lt;/span&gt; );
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Особенности вызова методов&lt;/h1&gt;
+&lt;p&gt;Widget factory создает и плагин и экземпляр объекта. Мы можем вызывать методы используя эти два подхода.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Вызов метода из плагина&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; ).dialog( &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; );
+$( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; ).dialog( &lt;span class=&quot;string&quot;&gt;&quot;option&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;height&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// вызов метода с параметром (получаем высоту)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Вызов метода из объекта&lt;/h2&gt;
+&lt;p&gt;По скольку каждый экземпляр каждого виджета храниться в &lt;code&gt;jQuery.data&lt;/code&gt;, то мы можем просто доставать методы по ссылке:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; dialog = $( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; ).data( &lt;span class=&quot;string&quot;&gt;&quot;ui-dialog&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// сохраняем ссылку на объект&lt;/span&gt;
+dialog.close(); &lt;span class=&quot;comment&quot;&gt;// вызываем методы напрямую&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Можно и так, с помощью метода &lt;code&gt;instance&lt;/code&gt; (работает в jQuery UI 1.11):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; ).dialog( &lt;span class=&quot;string&quot;&gt;&quot;instance&quot;&lt;/span&gt; ).close();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Возвращаемые значения&lt;/h2&gt;
+&lt;p&gt;Когда мы используем вызов метода как из плагина, то возвращается jQuery-объект и мы можем продолжить цепочку. 
+Исключение — методы, которые возвращают информацию о состоянии виджета:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; dialog = $( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; ).dialog();
+
+&lt;span class=&quot;comment&quot;&gt;// Plugin invocation - returns a jQuery object&lt;/span&gt;
+dialog.dialog( &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Therefore, plugin method invocation makes it possible to&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// chain method calls with other jQuery functions&lt;/span&gt;
+dialog.dialog( &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; )
+    .css( &lt;span class=&quot;string&quot;&gt;&quot;color&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;comment&quot;&gt;// Запрашиваем информацию о состоянии виджета. jQuery-объект не вернется:&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;.selector&quot;&lt;/span&gt; )
+    .dialog( &lt;span class=&quot;string&quot;&gt;&quot;isOpen&quot;&lt;/span&gt; )
+    &lt;span class=&quot;comment&quot;&gt;// This will throw a TypeError&lt;/span&gt;
+    .css( &lt;span class=&quot;string&quot;&gt;&quot;color&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Когда мы вызываем метод из экземпляра, то вернется &lt;code&gt;undefined&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// Instance invocation - returns undefined&lt;/span&gt;
+dialog.data( &lt;span class=&quot;string&quot;&gt;&quot;ui-dialog&quot;&lt;/span&gt; ).close();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Расширение функционала существующих виджетов&lt;/h1&gt;
+&lt;p&gt;Иногда нужно что-то подкрутить в существующем виджете или сделано новый на его основе. Обычно виджеты создаются 
+фукнций &lt;code&gt;$.wiget&lt;/code&gt;, которая получает два параметра: название виджета с нейспейсом и прототипный объект. Однако, если 
+передать вторым параметром конструктор другого виджета, то он будет взят за основу:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, {} );              &lt;span class=&quot;comment&quot;&gt;// создание нового виджета без наследования&lt;/span&gt;
+$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, $.ui.dialog, {} ); &lt;span class=&quot;comment&quot;&gt;// за основу будет взят $.ui.dialog&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;В объекте, который передается третьим параметром мы можем переопределять или задавать собственные методы:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, $.ui.dialog, {
+    red: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;.element.css( &lt;span class=&quot;string&quot;&gt;&quot;color&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt; );
+    }
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Create a new &amp;lt;div&amp;gt;, convert it into a superDialog, and call the red() method.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;I am red&amp;lt;/div&amp;gt;&quot;&lt;/span&gt; )
+    .superDialog()
+    .superDialog( &lt;span class=&quot;string&quot;&gt;&quot;red&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Расширение существующим методов&lt;/h2&gt;
+&lt;p&gt;Если в новом виджете создать метод с названием таким же, как у родительского, то мы его просто перетрем:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, $.ui.dialog, {
+    open: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;comment&quot;&gt;// Был такой метод в $.ui.dialog, теперь его нету, только вывод в консоль&lt;/span&gt;
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;open&quot;&lt;/span&gt; );
+    }
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Create a new &amp;lt;div&amp;gt;, and convert it into a superDialog.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&quot;&lt;/span&gt; ).superDialog();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Зачастую нам не нужно переписывать существующие мтоды, нам нужно их расширять. Это можно сделать с помощью методов 
+&lt;code&gt;_super()&lt;/code&gt; и &lt;code&gt;_superApply()&lt;/code&gt;, которые вызовут одноименный метод из прототипного объекта:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, $.ui.dialog, {
+    open: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;open&quot;&lt;/span&gt; );
+
+        &lt;span class=&quot;comment&quot;&gt;// Invoke the parent widget's open(). Теперь все будет работать.&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super();
+    }
+});
+
+$( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&quot;&lt;/span&gt; ).superDialog();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;_super&lt;/code&gt; и &lt;code&gt;_superApply&lt;/code&gt; отличаются так же, как &lt;code&gt;call()&lt;/code&gt; и &lt;code&gt;apply()&lt;/code&gt; для функций: первый получает список аргументов, 
+второй — массив аргументов.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;custom.superDialog&quot;&lt;/span&gt;, $.ui.dialog, {
+    _setOption: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; key, value &lt;/span&gt;) &lt;/span&gt;{
+
+        &lt;span class=&quot;comment&quot;&gt;// Both invoke dialog's setOption() method. _super() requires the arguments&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;// be passed as an argument list, _superApply() as a single array.&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super( key, value );
+        &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._superApply( &lt;span class=&quot;built_in&quot;&gt;arguments&lt;/span&gt; );
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Переопределение виджетов&lt;/h2&gt;
+&lt;p&gt;Мы можем полностью переопределить виджет (не создавая новый) задав такое же имя, как и у прототипа:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.widget( &lt;span class=&quot;string&quot;&gt;&quot;ui.dialog&quot;&lt;/span&gt;, $.ui.dialog, { &lt;span class=&quot;comment&quot;&gt;// Не будем создавать новый, будем расширять текущий&lt;/span&gt;
+    open: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;open&quot;&lt;/span&gt; );
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;this&lt;/span&gt;._super();
+    }
+});
+
+$( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&quot;&lt;/span&gt; ).dialog();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Переопределение методов в отдельных экземплярах&lt;/h2&gt;
+&lt;p&gt;Для этого пользуемся обычной JS-нотацией для объектов:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; dialogInstance = $( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&quot;&lt;/span&gt; )
+    .dialog()
+    .data( &lt;span class=&quot;string&quot;&gt;&quot;ui-dialog&quot;&lt;/span&gt; ); &lt;span class=&quot;comment&quot;&gt;// Retrieve the dialog's instance and store it.&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// Override the close() method for this dialog&lt;/span&gt;
+dialogInstance.close = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; );
+};
+
+&lt;span class=&quot;comment&quot;&gt;// Create a second dialog&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;&amp;lt;div&amp;gt;&quot;&lt;/span&gt; ).dialog();
+
+&lt;span class=&quot;comment&quot;&gt;// Select both dialogs and call close() on each of them.&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// &quot;close&quot; will only be logged once.&lt;/span&gt;
+$( &lt;span class=&quot;string&quot;&gt;&quot;:data(ui-dialog)&quot;&lt;/span&gt; ).dialog( &lt;span class=&quot;string&quot;&gt;&quot;close&quot;&lt;/span&gt; );
+&lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://learn.jquery.com/jquery-ui/&quot;&gt;https://learn.jquery.com/jquery-ui/&lt;/a&gt;
-&lt;a href=&quot;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&quot;&gt;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&lt;/a&gt;
-&lt;a href=&quot;http://api.jqueryui.com/jQuery.widget&quot;&gt;http://api.jqueryui.com/jQuery.widget&lt;/a&gt;
-&lt;a href=&quot;http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html&quot;&gt;http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.jquery.com/jquery-ui/&quot;&gt;https://learn.jquery.com/jquery-ui/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&quot;&gt;http://learn.jquery.com/plugins/stateful-plugins-with-widget-factory/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jqueryui.com/jQuery.widget&quot;&gt;http://api.jqueryui.com/jQuery.widget&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html&quot;&gt;http://devdocs.magento.com/guides/v2.0/coding-standards/code-standard-jquery-widgets.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://ajpiano.com/widgetfactory&quot;&gt;http://ajpiano.com/widgetfactory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/magentodev/take-more-from-jquery&quot;&gt;http://www.slideshare.net/magentodev/take-more-from-jquery&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-&quot;&gt;Домашняя работа&lt;/h1&gt;
+&lt;p&gt;Задача — реализовать список с выделением, используя Widget Factory.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Клик на элементе списка выделяет только его.&lt;/li&gt;
+&lt;li&gt;Ctrl (Cmd) + клик добавляет/убирает элемент из выделенных. &lt;/li&gt;
+&lt;li&gt;Shift + клик добавляет промежуток от последнего кликнутого к выделению. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-widget-factory/wf_homework.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Нужно реализовать API виджета, чтобы можно было получить массив индексов выделенных элементов, выделить все элементы 
+и снять выделение полностью.&lt;/p&gt;
+&lt;p&gt;Не забываем про деструктор. Нужно дать возможность разработчикам почистить за собой, когда виджет будет не нужен.&lt;/p&gt;
+&lt;p&gt;Обратите внимание на работу с событиями и метод &lt;a href=&quot;http://api.jqueryui.com/jQuery.widget/#method-_on&quot;&gt;&lt;code&gt;_on&lt;/code&gt;&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Возможно, пригодиться вспомнить некоторые &lt;a href=&quot;http://learn.javascript.ru/css-selectors&quot;&gt;CSS-селекторы&lt;/a&gt;, но можно и без 
+них. &lt;/p&gt;
+&lt;p&gt;Примерный код:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; selectable = $(&lt;span class=&quot;string&quot;&gt;'#currencies'&lt;/span&gt;).selectable({
+    selected: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;e, data&lt;/span&gt;) &lt;/span&gt;{
+        $(&lt;span class=&quot;string&quot;&gt;'#selectedItems'&lt;/span&gt;).text(data.selectedItems.join(&lt;span class=&quot;string&quot;&gt;', '&lt;/span&gt;));
+    }
+}).data(&lt;span class=&quot;string&quot;&gt;'am-selectable'&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;// selectable.someMethod('someParameter');&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// selectable.destroy();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     <item>

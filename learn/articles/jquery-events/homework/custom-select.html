@@ -10,6 +10,7 @@
 <body>
 <div id="regions"></div>
 <script>
+    "use strict";
     function Select(options, selectedValue) {
         this.$element = null;
         this.$currentValue = null;
@@ -77,7 +78,7 @@
 
 
     var select = new Select(regions, 485);
-    $('#regions').append(select.createElement());
+     $('#regions').append(select.createElement());
 
     // Компонент должен генерировать событие после смены региона
     select.$element.on('change', function (e) {

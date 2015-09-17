@@ -124,22 +124,41 @@
         </tbody>
     </table>
 
+
     <button class="btn js-change-order">Сменить порядок сортировки</button>
 </div>
 
 <script src="js/jquery-2.1.4.min.js"></script>
-<script src="js/sort.js"></script>
+<script src="js/sort_my.js"></script>
 <script>
+
+    function fun(a, b, c) {
+        alert(this.name)     ;
+    }
+
+    var user = {
+        name: 'Vasya'
+    };
+
+    fun.call(this, 3, 5, 7);
+
+    var args = [3, 5, 7];
+    fun.apply(this, args);
+
+
+
     jQuery(function() {
         'use strict';
 
+        $.fn.somePlugin();
+
         $('.js-sort-table').sortTable();
         
-        // $('.js-sort-table').sortTable({
-        //     initiallySorted: true,
-        //     indexCol: 1,
-        //     order: -1
-        // });
+//         $('.js-sort-table').sortTable({
+//             initiallySorted: true,
+//             indexCol: 1,
+//             order: -1
+//         });
     });
 </script>
 

@@ -1,25 +1,20 @@
-(function($){
-    $.fn.sortable = function() {
+(function ($) {
+    $.fn.sortable = function () {
         var $th = this.find('th'),
             $tr = this.find('tr').not(':eq(0)');
 
         $th.data('sort', -1);
+
         addIndex();
         clickProcessing();
 
         function addIndex() {
-            $tr.each(function(index) {
+            $tr.each(function (index) {
                 $(this).attr('data-index', index);
             });
         }
 
-        function clickProcessing() {
-            $th.each(function() {
-                $(this).on('click', function() {
-                    sort($(this));
-                });
-            });
-        }
+            $th.on('click', sort.bind(this));
 
         function sort($elem) {
             var $array = getElements($elem),
@@ -60,23 +55,22 @@
                 return 0
             }
 
-            return firstValue > secondValue ? 1: -1;
+            return firstValue > secondValue ? 1 : -1;
         }
 
         function getElements($header) {
             var index = $th.index($header),
                 result = [];
 
-            $tr.each(function() {
+            $tr.each(function () {
                 var value = $header.data('type') === 'number' ? +$(this).find('td').eq(index).text()
-                    : $(this).find('td').eq(index).text(),
+                        : $(this).find('td').eq(index).text(),
                     current = {};
                 current[$(this).data('index')] = value;
                 result.push(current);
             });
             return result;
         }
-
 
 
     };
