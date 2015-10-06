@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<script>
+    "use strict";
+
+    var openDeferred = $.Deferred();
+    setTimeout(function () {
+        openDeferred.resolve('Hello from open deferred!');
+    }, 2000);
+    //    openDeferred.done(function (data) {
+    //        alert(data);
+    //    });
+    // Пока идет операция в консоли можно вызвать openDeferred.resolve('OLOLO!111') и мы не получим начального сообщения
+
+    var closedDeferred = (function() {
+        var d = $.Deferred();
+        setTimeout(function () {
+            d.resolve('Hello from closed deferred!');
+        }, 2000);
+        return d.promise();
+    })();
+    closedDeferred.done(function (data) {
+        alert(data);
+    });
+    // Так уже сделать не получится: closedDeferred.resolve('ololo'), т. к. возвращенный promise нам этого не даст
+</script>
+</body>
+</html>

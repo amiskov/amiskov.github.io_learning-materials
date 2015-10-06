@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<div>DIV #1</div>
+<div>DIV #2</div>
+<div>DIV #3</div>
+<div>DIV #4</div>
+<div>DIV #5</div>
+<div>DIV #6</div>
+<div>DIV #7</div>
+<div>DIV #8</div>
+<div>DIV #9</div>
+<div>DIV #10</div>
+<script>
+    $('div').each(function(i){
+        $(this).fadeIn().fadeOut(1000 * (i + 1));
+    });
+    $('div').promise().done(function(){
+        alert('done')
+    });
+</script>
+</body>
+</html>

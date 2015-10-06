@@ -5,9 +5,333 @@
     <atom:link href="http://amiskov.github.io/learn//feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://amiskov.github.io/learn/</link>
     <description>тезисы, примеры и домашние задания</description>
-    <pubDate>Wed, 16 Sep 2015 10:30:00 +0300</pubDate>
+    <pubDate>Wed, 30 Sep 2015 10:30:00 +0300</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>jQuery Deferred/Promise</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-deferred/</link>
+      <pubDate>Wed, 30 Sep 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-deferred/</guid>
+      <author></author>
+      <description>&lt;p&gt;При работе с асинхронными процессами код становится сложнее. Функции обратного вызова (коллбэки) не всегда достаточно
+удобны. При использовании колбэков код может быть перегражен вложенными конструкциями и потерей производительности.
+Для решения этих проблем придумали механизм отложенного исполнения. В jQuery он реализован с помощь deferred-объектов.
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h1 id=&quot;deferred&quot;&gt;Deferred&lt;/h1&gt;
+&lt;p&gt;К объекту с отложенным вызовом обработчиков (deferred-объект) мы можем прикрепить код, который сработает при успешном
+или неуспешном выполении действия в будущем.&lt;/p&gt;
+&lt;p&gt;Deferred — объект для хранения состояния. К каждому состоянию объекта можно прикрепить функционал, выполняемый 
+когда-то в 
+будущем:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; d = $.Deferred(); &lt;span class=&quot;comment&quot;&gt;// Объект, отвечающий за выполнение чего-то в будущем&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;/*
+    Запускаем процесс, занимающий неопределенное время: аяксовый запрос, таймер, анимация и пр.
+    После успешного завершения процесса вызываем d.resolve(DATA).
+    Если возникла ошибка, вызываем d.reject(DATA).
+    Во время выполнения процесса d находится в стадии `progress'. Это можно увидеть с помощью d.state().
+*/&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это, когда все будет хорошо&lt;/span&gt;
+d.done(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value)
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это, когда будет ошибка&lt;/span&gt;
+d.fail(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value);
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это в любом случае&lt;/span&gt;
+d.always(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Этот код работает, но наш объект &lt;code&gt;d&lt;/code&gt; открыт внешнему миру. Любой код, которому доступен &lt;code&gt;d&lt;/code&gt; может изменить его 
+состояние. Это потенциальная проблема. Ее можно решить, ограничив доступ к методам &lt;code&gt;resolve&lt;/code&gt; и &lt;code&gt;reject&lt;/code&gt; нашего 
+deferred-объекта.&lt;/p&gt;
+&lt;h1 id=&quot;promise&quot;&gt;Promise&lt;/h1&gt;
+&lt;p&gt;Зачастую нам не нужно давать возможность изменять состояние deferred-объекта. Мы чаще хотим просто дать возможность 
+прикреплять обработчики. Для этого реализован метод &lt;code&gt;d.promise()&lt;/code&gt;. Он вернет deferred-объект без возможности 
+зарезолвить или зареджектить его. Можно будет только прикрепить к нему обработчики, а менять его будет нельзя.&lt;/p&gt;
+&lt;p&gt;Метод &lt;code&gt;$.ajax&lt;/code&gt; возвращает промис. И мы можем наряду с &lt;code&gt;success&lt;/code&gt; и &lt;code&gt;error&lt;/code&gt; использовать &lt;code&gt;.done&lt;/code&gt; и &lt;code&gt;.fail&lt;/code&gt;. Это 
+даст возможность избавиться от вложенных методов и прикрепить несколько обработчиков. Код станет читабельнее и гибче.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; promise = (&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; d = $.Deferred(); &lt;span class=&quot;comment&quot;&gt;// Объект, отвечающий за выполнение чего-то в будущем&lt;/span&gt;
+
+    asyncProcess(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// Прощесс пошел...&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;// Если все пройдет успешно, запустим d.resolve();&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;// Если будет ошибка, запустим d.reject();&lt;/span&gt;
+    });
+
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; d.promise(); &lt;span class=&quot;comment&quot;&gt;// Вернуть не объект d, а ограниченный интерфейс к нему — promise&lt;/span&gt;
+})();
+
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это, когда все будет хорошо&lt;/span&gt;
+promise.done(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value)
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это, когда будет ошибка&lt;/span&gt;
+promise.fail(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value);
+});
+
+&lt;span class=&quot;comment&quot;&gt;// Сделать это в любом случае&lt;/span&gt;
+promise.always(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;value&lt;/span&gt;) &lt;/span&gt;{
+    alert(value);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Promise is a read-only jQuery Deferred object.&lt;/p&gt;
+&lt;h1 id=&quot;-deferred-promise&quot;&gt;Терминология: Deferred и Promise&lt;/h1&gt;
+&lt;p&gt;Все делает Deferred.&lt;/p&gt;
+&lt;p&gt;Promise — это неразрушающий интерфейс к объекту Deferred. Лучше не давать внешнему коду лезть в deferred, чтобы ничто 
+левое не запустило &lt;code&gt;resolve&lt;/code&gt; или &lt;code&gt;reject&lt;/code&gt;. Промис как секретарь фильтрует только неизменяющие 
+запросы к deferred. См. &lt;a href=&quot;/learn/articles/jquery-deferred/deferred_vs_promise.html&quot;&gt;deferred_vs_promise.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Мы пришли в ресторан, свободных столов нет. Система ресторана может прислать смс, когда освободится стол, который нам
+понравился.&lt;/p&gt;
+&lt;p&gt;Мы можем заказать стол на будущее. Оставить номер телефона и система сама пришлет нам смс, когда стол освободится.
+Официант создаст для нас Deferred, зарегистрировав наш заказ. Но он не пустит нас к компьютеру, чтобы мы не нажали 
+кнопку “Стол свободен” раньше времени. Он только добавит наш телефон в систему — это наш единственный интерфейс.&lt;/p&gt;
+&lt;p&gt;Смс соответствуюет Promise.
+Пока стол будет занят, мы можем прогуляться, выпить чего-нибудь в баре, а не тупо стоять в очереди. А когда стол 
+освободится, то promise станет resolved и нам придет смс. Мы никак не можем повлиять на сообщение.&lt;/p&gt;
+&lt;p&gt;Физическая очередь ожидания — это синхронное решение. Оставь телефон и делай что хочешь — это асинхронное решение.&lt;/p&gt;
+&lt;h1 id=&quot;-jquery-&quot;&gt;Какие функции jQuery возвращают промис?&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;$.ajax&lt;/code&gt; возвращает промис.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.animate.promise()&lt;/code&gt; возвращает промис.&lt;/p&gt;
+&lt;p&gt;У коллекции элементов есть метод &lt;code&gt;$(&amp;#39;div&amp;#39;).promise()&lt;/code&gt;, который возвращает промис. Используется для отслеживания 
+окончания анимации над всей коллекцией. См. &lt;a href=&quot;/learn/articles/jquery-deferred/dom_promise.html&quot;&gt;dom_promise.html&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;-deferred-&quot;&gt;Методы deferred-объектов и их промисов&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;done&lt;/em&gt; — говорит, что делать, когда deferred будет resolved. Может быть вызван &lt;em&gt;несколько раз&lt;/em&gt; над одним и тем же 
+объектом, чтобы делать разные штуки, когда deferred будет отрезолвлен. Все вызовы &lt;code&gt;done&lt;/code&gt; — независимы. Мы не можем 
+передавать аргумент от одного вызова этого метода к другому. Все колбэки в &lt;code&gt;done&lt;/code&gt; будут вызваны с одним и тем же 
+аргументом. Для того, чтобы модифицировать контекст нужно использовать &lt;code&gt;then&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;promise.done(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;result&lt;/span&gt;)&lt;/span&gt;{
+    &lt;span class=&quot;comment&quot;&gt;// result is the value with which the deferred was resolved.&lt;/span&gt;
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;'The promise was resolved with'&lt;/span&gt;, result);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;fail&lt;/em&gt; — метод, который вызывается, когда deferred is rejected. Работает как &lt;code&gt;done&lt;/code&gt;, только для обработки ошибок:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;promise.fail(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;error&lt;/span&gt;)&lt;/span&gt;{
+    &lt;span class=&quot;comment&quot;&gt;// error is the value with which the deferred was rejected.&lt;/span&gt;
+    &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;string&quot;&gt;'The promise was rejected with'&lt;/span&gt;, error);
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;always&lt;/em&gt; - если не важно, resolved или rejected. Полезно для логирования или чтоб прибраться. В колбэк приходит 
+параметр, по которому мы не сможем понять, октлонен ли промис или зарезолвлен. Если это важно, то вместо always лучше
+использовать другие мтеоды.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;state&lt;/em&gt; может быть ‘resolved’, ‘rejected’, ‘pending’. Может быть нужно для отладки. Работает у промисов и деферредов.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Аякс в аяксе&lt;/h1&gt;
+&lt;p&gt;Почему плохо?&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;$.ajax({
+    success: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        $.ajax({
+            success: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+                $.ajax({
+                    success: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+                        &lt;span class=&quot;comment&quot;&gt;// render all data&lt;/span&gt;
+                    }
+                });
+            }
+        })
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Так мы не используем асинхронность. Посылает 3 последовательных запроса один после отработки другого. Долго.
+Плохо читается код. Сильная вложенность.&lt;/p&gt;
+&lt;h1 id=&quot;then&quot;&gt;then&lt;/h1&gt;
+&lt;p&gt;Позволяет передавать контекст последовательно между обработчиками. &lt;code&gt;then&lt;/code&gt; создает новый Deferred-объект и возвращает
+новый промис.&lt;/p&gt;
+&lt;p&gt;Пример последовательной передачи контекста при помощи &lt;code&gt;then&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;login(&lt;span class=&quot;string&quot;&gt;'user:password@server'&lt;/span&gt;)
+    .then(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;server&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; server.open(&lt;span class=&quot;string&quot;&gt;'db'&lt;/span&gt;);
+    })
+    .then(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;db&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; db.query(query);
+    })
+    .then(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;view&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; fetchRows(view);
+    }, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;handleError&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;err&lt;/span&gt;) &lt;/span&gt;{ &lt;span class=&quot;comment&quot;&gt;// Сюда свалятся все ошибки цепочки.&lt;/span&gt;
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(err);
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;См. так же &lt;a href=&quot;/learn/articles/jquery-deferred/then_example.html&quot;&gt;then_example.html&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;when&quot;&gt;when&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;$.when&lt;/code&gt; - это отдельная функция. Она над промисами и дефердами. Применяется, когда нужно исполнить действие только 
+после того, как несколько дефердов отрезолвятся.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$.when&lt;/code&gt; возвращает один deferred, который основан на нескольких. Отрезолвились те, отрезолвился и этот.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Домашняя работа&lt;/h1&gt;
+&lt;p&gt;Все необходимые файлы есть на &lt;a href=&quot;http://plnkr.co/edit/Ffm3w9nhRMpYVibRopgi&quot;&gt;Планкере&lt;/a&gt;, нужно только написать нужный JS.&lt;/p&gt;
+&lt;p&gt;Задача: Организовать подгрузку страниц аяксом с помощью промисов как показано на картинке:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/jquery-deferred/hw_deferred.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Home и About подгружают HTML-файлы, Contacts подгружает HTML-файл и еще JSON со ссылками на социальные сети. Путь к 
+json-файлу прописан в соответствующем data-атрибуте. &lt;/p&gt;
+&lt;p&gt;Контент нужно кешировать после первого запроса, чтобы не грузить его по нескольку раз, если пользователь решит 
+походить по ссылкам туда-сюда. На картинке, в панели Network можно заметить, что при повторном клике на ссылку запрос
+не отсылается.&lt;/p&gt;
+&lt;p&gt;Код должен быть архитектурно продуман и удобно организован. Напримар, страница — это объект, который создается с 
+помощью конструктора.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://vimeo.com/74925301&quot;&gt;Promise – это не больно | FrontTalks 2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/juRtEEsHI9E&quot;&gt;I .promise() to show you .when() to use Deferreds&lt;/a&gt; + &lt;a href=&quot;https://github.com/alexmcpherson/jquery-talk&quot;&gt;код и слайды&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.jquery.com/code-organization/deferreds/&quot;&gt;Deferreds, learn.jquery.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://api.jquery.com/category/deferred-object/&quot;&gt;Deferred object, api.jquery.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://habrahabr.ru/company/bankrot-pro/blog/230441/&quot;&gt;JQuery Deferred — примеры использования&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://valera-rozuvan.github.io/nintoku/jquery/promises/jquery-broken-promises-illustrated/&quot;&gt;jQuery broken promises illustrated&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>jQuery Code Organization</title>
+      <link>http://amiskov.github.io/learn//learn/articles/jquery-code-organization/</link>
+      <pubDate>Wed, 23 Sep 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/jquery-code-organization/</guid>
+      <author></author>
+      <description>&lt;p&gt;Кратко о самых простых способах организации кода.
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Основные моменты&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Код нужно дробить на модули — небольшие функциональные блоки.&lt;/li&gt;
+&lt;li&gt;Не нужно копипастить код. Для этого есть наследование.&lt;/li&gt;
+&lt;li&gt;jQuery плотно работает с DOM, однако яваскрипт-модули (приложение) — это не про DOM. Функционал не нужно 
+привязывать к DOM.&lt;/li&gt;
+&lt;li&gt;Модули должны существовать максимально обособлено (слабое зацепление). Коммуникацию между модулями нужно 
+организовывать с помощью событий или pub/sub (!!!).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;-&quot;&gt;Инкапсуляция&lt;/h1&gt;
+&lt;p&gt;Приложение нужно разделять на функциональные блоки — модули. Зачастую этого уже достаточно для грамотной организации 
+кода.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Объявление объекта&lt;/h2&gt;
+&lt;p&gt;Самый простой способ для изоляции кода — использовать объект. Мы не получим приватных методов и свойств, но объект 
+позволит нам избежать анонимных функций, выделить конфигурацию (опции), упростить поддержку кода и рефакторинг:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// An object literal&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; myFeature = {
+    myProperty: &lt;span class=&quot;string&quot;&gt;&quot;hello&quot;&lt;/span&gt;,
+
+    myMethod: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( myFeature.myProperty );
+    },
+
+    init: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; settings &lt;/span&gt;) &lt;/span&gt;{
+        myFeature.settings = settings;
+    },
+
+    readSettings: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log( myFeature.settings );
+    }
+};
+
+myFeature.myProperty === &lt;span class=&quot;string&quot;&gt;&quot;hello&quot;&lt;/span&gt;; &lt;span class=&quot;comment&quot;&gt;// true&lt;/span&gt;
+
+myFeature.myMethod(); &lt;span class=&quot;comment&quot;&gt;// &quot;hello&quot;&lt;/span&gt;
+
+myFeature.init({
+    foo: &lt;span class=&quot;string&quot;&gt;&quot;bar&quot;&lt;/span&gt;
+});
+
+myFeature.readSettings(); &lt;span class=&quot;comment&quot;&gt;// { foo: &quot;bar&quot; }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-&quot;&gt;Прием проектирования «Модуль»&lt;/h2&gt;
+&lt;p&gt;Позволяет делать приватные методы и открывать доступ только к необходимому функционалу.&lt;/p&gt;
+&lt;p&gt;Мы уже рассматривали ранее этот прием, почитать можно &lt;a href=&quot;http://learn.javascript.ru/closures-module&quot;&gt;тут&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Анонимные функции&lt;/h2&gt;
+&lt;p&gt;Анонимные функции тяжело читаемы, их неудобно поддерживать, тестироватиь, повторно использовать код.&lt;/p&gt;
+&lt;p&gt;Вместо анонимных функций нужно использовать именованные или организовывать код в виде объектов:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// BAD&lt;/span&gt;
+$( &lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt; ).ready(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    $( &lt;span class=&quot;string&quot;&gt;&quot;#magic&quot;&lt;/span&gt; ).click(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+        $( &lt;span class=&quot;string&quot;&gt;&quot;#yayeffects&quot;&lt;/span&gt; ).slideUp(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+            &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+        });
+    });
+
+    $( &lt;span class=&quot;string&quot;&gt;&quot;#happiness&quot;&lt;/span&gt; ).load( url + &lt;span class=&quot;string&quot;&gt;&quot; #unicorns&quot;&lt;/span&gt;, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+    });
+
+});
+
+&lt;span class=&quot;comment&quot;&gt;// BETTER&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; PI = {
+
+    onReady: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+        $( &lt;span class=&quot;string&quot;&gt;&quot;#magic&quot;&lt;/span&gt; ).click( PI.candyMtn );
+        $( &lt;span class=&quot;string&quot;&gt;&quot;#happiness&quot;&lt;/span&gt; ).load( PI.url + &lt;span class=&quot;string&quot;&gt;&quot; #unicorns&quot;&lt;/span&gt;, PI.unicornCb );
+    },
+
+    candyMtn: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; event &lt;/span&gt;) &lt;/span&gt;{
+        $( &lt;span class=&quot;string&quot;&gt;&quot;#yayeffects&quot;&lt;/span&gt; ).slideUp( PI.slideCb );
+    },
+
+    slideCb: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ ... },
+
+    unicornCb: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{ ... }
+
+};
+
+$( &lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt; ).ready( PI.onReady );
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;-dry-don-t-repeat-yourself-&quot;&gt;Не нужно копипастить (DRY — Don’t Repeat Yourself)&lt;/h2&gt;
+&lt;p&gt;Повторение кода очень вредно. Попробуйте что-то изментиь, придется лазить по всему коду:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// BAD&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( eventfade.data( &lt;span class=&quot;string&quot;&gt;&quot;currently&quot;&lt;/span&gt; ) !== &lt;span class=&quot;string&quot;&gt;&quot;showing&quot;&lt;/span&gt; ) {
+    eventfade.stop();
+}
+
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( eventhover.data( &lt;span class=&quot;string&quot;&gt;&quot;currently&quot;&lt;/span&gt; ) !== &lt;span class=&quot;string&quot;&gt;&quot;showing&quot;&lt;/span&gt; ) {
+    eventhover.stop();
+}
+
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( spans.data( &lt;span class=&quot;string&quot;&gt;&quot;currently&quot;&lt;/span&gt; ) !== &lt;span class=&quot;string&quot;&gt;&quot;showing&quot;&lt;/span&gt; ) {
+    spans.stop();
+}
+
+&lt;span class=&quot;comment&quot;&gt;// GOOD!!&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; elems = [ eventfade, eventhover, spans ];
+
+$.each( elems, &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt; i, elem &lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( elem.data( &lt;span class=&quot;string&quot;&gt;&quot;currently&quot;&lt;/span&gt; ) !== &lt;span class=&quot;string&quot;&gt;&quot;showing&quot;&lt;/span&gt; ) {
+        elem.stop();
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Смотреть браузер или фичу?&lt;/h1&gt;
+&lt;p&gt;Если нужно использовать какой-то функционал, котоырй не всеми поддерживается, то можно определить браузер или 
+определить, пожддерживается ли фича. Второй способ предпочтительнее.&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Минусы определения браузера&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Другие браузеры могут тоже содержать/не содержать нужную нам фичу.&lt;/li&gt;
+&lt;li&gt;Со временем фича может добавляться/меняться&lt;/li&gt;
+&lt;li&gt;Браузер может подменить строку UA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;-&quot;&gt;Определение фичи без библиотеки&lt;/h2&gt;
+&lt;p&gt;Чтобы определить, работает ли что-то в браузере, мы пробуем, и смотрим, что получилось. Это просто, но долго:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// We want to show a graph in browsers that support canvas,&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// but a data table in browsers that don't.&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; elem = &lt;span class=&quot;built_in&quot;&gt;document&lt;/span&gt;.createElement( &lt;span class=&quot;string&quot;&gt;&quot;canvas&quot;&lt;/span&gt; );
+
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( elem.getContext &amp;amp;&amp;amp; elem.getContext( &lt;span class=&quot;string&quot;&gt;&quot;2d&quot;&lt;/span&gt; ) ) {
+    showGraph();
+} &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+    showTable();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Предпочтительнее использовать библиотеку Modernizr или аналогичные:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ( Modernizr.canvas ) {
+    showGraphWithCanvas();
+} &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+    showTable();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ссылки: &lt;a href=&quot;https://learn.jquery.com/code-organization/feature-browser-detection/#other-resources&quot;&gt;https://learn.jquery.com/code-organization/feature-browser-detection/#other-resources&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     <item>
       <title>jQuery Widget Factory</title>
       <link>http://amiskov.github.io/learn//learn/articles/jquery-widget-factory/</link>

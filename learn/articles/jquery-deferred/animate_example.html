@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+    <style>
+        .box {
+            width: 200px;
+            height: 200px;
+            background: #ccccff;
+            float: left;
+            margin: 0 40px 0 0;
+        }
+    </style>
+</head>
+<body>
+<div class="box"></div>
+<button onclick="showBox();">Скрыть прямоугольник</button>
+<script>
+    function showBox() {
+//        $('.box').animate({
+//            opacity: '0'
+//        }, 1000, function () {
+//            alert('Прямоугольник скрыт')
+//        });
+
+        var promiseHide = $('.box').animate({
+            opacity: '0'
+            var animation = showBox();
+        animation.done(function() {
+            alert('Animation is done')
+        });
+        animation.done(function() {
+            alert('2')
+        });
+        }, {
+            progress: function (value, n1, n2) {
+                console.log(value, n1, n2);
+            }
+        }, 1000).promise();
+
+        var promiseShow = $('.box').animate({
+            opacity: '1'
+        }, 1000).promise();
+
+        $.when(promiseHide, promiseShow)
+                .then(function () {
+                    alert('Прямоугольник скрыт и показан заново')
+                });
+    }
+</script>
+</body>
+</html>

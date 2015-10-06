@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<div class="top-nav content-wrap"><a href="/learn/">« Назад на главную</a></div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>jQuery Code Organization - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>jQuery Code Organization</h1>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>Кратко о самых простых способах организации кода.
+<span class="more"></span></p>
+<h1 id="-">Основные&nbsp;моменты</h1>
+<ul>
+<li>Код нужно дробить на модули — небольшие функциональные&nbsp;блоки.</li>
+<li>Не нужно копипастить код. Для этого есть&nbsp;наследование.</li>
+<li>jQuery плотно работает с <span class="caps">DOM</span>, однако яваскрипт-модули (приложение) — это не про DOM. Функционал не нужно 
+привязывать к&nbsp;DOM.</li>
+<li>Модули должны существовать максимально обособлено (слабое зацепление). Коммуникацию между модулями нужно 
+организовывать с помощью событий или pub/sub&nbsp;(!!!).</li>
+</ul>
+<h1 id="-">Инкапсуляция</h1>
+<p>Приложение нужно разделять на функциональные блоки — модули. Зачастую этого уже достаточно для грамотной организации&nbsp;кода.</p>
+<h2 id="-">Объявление&nbsp;объекта</h2>
+<p>Самый простой способ для изоляции кода — использовать объект. Мы не получим приватных методов и свойств, но объект 
+позволит нам избежать анонимных функций, выделить конфигурацию (опции), упростить поддержку кода и&nbsp;рефакторинг:</p>
+<pre><code class="lang-js"><span class="comment">// An object literal</span>
+<span class="keyword">var</span> myFeature = {
+    myProperty: <span class="string">"hello"</span>,
+
+    myMethod: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="built_in">console</span>.log( myFeature.myProperty );
+    },
+
+    init: <span class="function"><span class="keyword">function</span>(<span class="params"> settings </span>) </span>{
+        myFeature.settings = settings;
+    },
+
+    readSettings: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="built_in">console</span>.log( myFeature.settings );
+    }
+};
+
+myFeature.myProperty === <span class="string">"hello"</span>; <span class="comment">// true</span>
+
+myFeature.myMethod(); <span class="comment">// "hello"</span>
+
+myFeature.init({
+    foo: <span class="string">"bar"</span>
+});
+
+myFeature.readSettings(); <span class="comment">// { foo: "bar" }</span>
+</code></pre>
+<h2 id="-">Прием проектирования&nbsp;«Модуль»</h2>
+<p>Позволяет делать приватные методы и открывать доступ только к необходимому&nbsp;функционалу.</p>
+<p>Мы уже рассматривали ранее этот прием, почитать можно <a href="http://learn.javascript.ru/closures-module">тут</a>.</p>
+<h2 id="-">Анонимные&nbsp;функции</h2>
+<p>Анонимные функции тяжело читаемы, их неудобно поддерживать, тестироватиь, повторно использовать&nbsp;код.</p>
+<p>Вместо анонимных функций нужно использовать именованные или организовывать код в виде&nbsp;объектов:</p>
+<pre><code class="lang-js"><span class="comment">// <span class="caps">BAD</span></span>
+$( <span class="built_in">document</span> ).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+    $( <span class="string">"#magic"</span> ).click(<span class="function"><span class="keyword">function</span>(<span class="params"> event </span>) </span>{
+        $( <span class="string">"#yayeffects"</span> ).slideUp(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+            <span class="comment">// ...</span>
+        });
+    });
+
+    $( <span class="string">"#happiness"</span> ).load( url + <span class="string">" #unicorns"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="comment">// ...</span>
+    });
+
+});
+
+<span class="comment">// <span class="caps">BETTER</span></span>
+<span class="keyword">var</span> <span class="caps">PI</span> = {
+
+    onReady: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        $( <span class="string">"#magic"</span> ).click( <span class="caps">PI</span>.candyMtn );
+        $( <span class="string">"#happiness"</span> ).load( <span class="caps">PI</span>.url + <span class="string">" #unicorns"</span>, <span class="caps">PI</span>.unicornCb );
+    },
+
+    candyMtn: <span class="function"><span class="keyword">function</span>(<span class="params"> event </span>) </span>{
+        $( <span class="string">"#yayeffects"</span> ).slideUp( <span class="caps">PI</span>.slideCb );
+    },
+
+    slideCb: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{ ... },
+
+    unicornCb: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{ ... }
+
+};
+
+$( <span class="built_in">document</span> ).ready( <span class="caps">PI</span>.onReady );
+</code></pre>
+<h2 id="-dry-don-t-repeat-yourself-">Не нужно копипастить (<span class="caps">DRY</span> — Don’t Repeat&nbsp;Yourself)</h2>
+<p>Повторение кода очень вредно. Попробуйте что-то изментиь, придется лазить по всему&nbsp;коду:</p>
+<pre><code class="lang-js"><span class="comment">// <span class="caps">BAD</span></span>
+<span class="keyword">if</span> ( eventfade.data( <span class="string">"currently"</span> ) !== <span class="string">"showing"</span> ) {
+    eventfade.stop();
+}
+
+<span class="keyword">if</span> ( eventhover.data( <span class="string">"currently"</span> ) !== <span class="string">"showing"</span> ) {
+    eventhover.stop();
+}
+
+<span class="keyword">if</span> ( spans.data( <span class="string">"currently"</span> ) !== <span class="string">"showing"</span> ) {
+    spans.stop();
+}
+
+<span class="comment">// <span class="caps">GOOD</span>!!</span>
+<span class="keyword">var</span> elems = [ eventfade, eventhover, spans ];
+
+$.each( elems, <span class="function"><span class="keyword">function</span>(<span class="params"> i, elem </span>) </span>{
+    <span class="keyword">if</span> ( elem.data( <span class="string">"currently"</span> ) !== <span class="string">"showing"</span> ) {
+        elem.stop();
+    }
+});
+</code></pre>
+<h1 id="-">Смотреть браузер или&nbsp;фичу?</h1>
+<p>Если нужно использовать какой-то функционал, котоырй не всеми поддерживается, то можно определить браузер или 
+определить, пожддерживается ли фича. Второй способ&nbsp;предпочтительнее.</p>
+<h2 id="-">Минусы определения&nbsp;браузера</h2>
+<ul>
+<li>Другие браузеры могут тоже содержать/не содержать нужную нам&nbsp;фичу.</li>
+<li>Со временем фича может&nbsp;добавляться/меняться</li>
+<li>Браузер может подменить строку&nbsp;<span class="caps">UA</span></li>
+</ul>
+<h2 id="-">Определение фичи без&nbsp;библиотеки</h2>
+<p>Чтобы определить, работает ли что-то в браузере, мы пробуем, и смотрим, что получилось. Это просто, но&nbsp;долго:</p>
+<pre><code class="lang-js"><span class="comment">// We want to show a graph in browsers that support canvas,</span>
+<span class="comment">// but a data table in browsers that don't.</span>
+<span class="keyword">var</span> elem = <span class="built_in">document</span>.createElement( <span class="string">"canvas"</span> );
+
+<span class="keyword">if</span> ( elem.getContext &amp;&amp; elem.getContext( <span class="string">"2d"</span> ) ) {
+    showGraph();
+} <span class="keyword">else</span> {
+    showTable();
+}
+</code></pre>
+<p>Предпочтительнее использовать библиотеку Modernizr или&nbsp;аналогичные:</p>
+<pre><code class="lang-js"><span class="keyword">if</span> ( Modernizr.canvas ) {
+    showGraphWithCanvas();
+} <span class="keyword">else</span> {
+    showTable();
+}
+</code></pre>
+<p>Ссылки: <a href="https://learn.jquery.com/code-organization/feature-browser-detection/#other-resources">https://learn.jquery.com/code-organization/feature-browser-detection/#other-resources</a></p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

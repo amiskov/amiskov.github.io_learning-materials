@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<script>
+    'use strict';
+
+    var getUser = $.get('http://jsonplaceholder.typicode.com/users/1');
+//    var tweets = getUser.then(function (user) {
+//        var name = user.name;
+//        return $.get('http://search.twitter.com?name=' + name);
+//    });
+
+    getUser.done(function() {
+        // Handler 1
+    });
+    getUser.done(function() {
+        // Handler 2
+    });
+    getUser.fail(function() {
+        // ERR 1
+    });
+    getUser.fail(function() {
+        // ERR 2
+    });
+
+
+</script>
+</body>
+</html>

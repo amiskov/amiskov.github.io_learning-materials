@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+
+Чтобы ограничить доступ из внешнего скоупа, деферд может вернуть промис, который отрезолвится в случае, когда реквест
+будет успешным и зареджектится, если возникнет ошибка.
+
+
+<script src="../../js/jquery-2.1.4.min.js"></script>
+<script>
+var promise = (function () {
+    var d = $.Deferred(); // Объект, отвечающий за выполнение чего-то в будущем
+
+    asyncProcess(function() {
+        // Прощесс пошел...
+        // Если все пройдет успешно, запустим d.resolve();
+        // Если будет ошибка, запустим d.reject();
+    });
+
+    return d.promise(); // Ограниченный интерфейс к объекту d
+})();
+
+
+// Сделать это, когда все будет хорошо
+promise.done(function (value) {
+    alert(value)
+});
+
+// Сделать это, когда будет ошибка
+promise.fail(function (value) {
+    alert(value);
+});
+
+// Сделать это в любом случае
+promise.always(function (value) {
+    alert(value);
+});
+</script>
+</body>
+</html>

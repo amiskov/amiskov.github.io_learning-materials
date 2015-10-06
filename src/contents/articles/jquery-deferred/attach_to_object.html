@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<script>
+    var obj = {
+        showName: function() {
+            alert(this.name);
+        }
+    };
+
+    //  $.get возвращает promise, но у него тоже есть метод .promise()
+    $.get('http://jsonplaceholder.typicode.com/users/1').promise(obj);
+
+    obj.done(function(data) {
+        console.dir(obj);
+        obj.showName.call(data);
+    })
+
+
+</script>
+</body>
+</html>

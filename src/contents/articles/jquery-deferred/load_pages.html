@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+    <style>
+        body {
+            font: 14px/1.4 sans-serif;
+        }
+
+        span {
+            display: inline-block;
+            padding: 3px 10px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        span.loaded {
+            border: 1px solid green;
+            background: rgba(0, 128, 0, .3);
+        }
+
+        span.loading {
+            animation: loading 1s linear infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: rotate(0deg);
+                background-color: #FFF;
+            }
+            25% {
+                transform: rotate(5deg);
+            }
+            50% {
+                transform: rotate(0deg);
+                background-color: #CCC;
+            }
+            75% {
+                transform: rotate(-5deg);
+            }
+            100% {
+                transform: rotate(0deg);
+                background-color: #FFF;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<span class="users" onclick="load('users');">Загрузить юзера</span>
+<span class="photos" onclick="load('photos');">Загрузить фотки</span>
+<span class="comments" onclick="load('comments');">Загрузить каменты</span>
+<hr>
+<span onclick="loadAll();">Загрузить все</span>
+<br>
+<br>
+<pre id="data"></pre>
+
+<script>
+    "use strict";
+    function load(page) {
+        var root = 'http://jsonplaceholder.typicode.com',
+                $button = $('.' + page);
+
+        return $.ajax({
+            url: root + '/' + page + '/1',
+            method: 'GET',
+            beforeSend: function () {
+                $button.addClass('loading');
+            }
+        }).done(function (data) {
+            console.log(data);
+            $('#data').append(JSON.stringify(data) + '\n');
+            $button.removeClass('loading').addClass('loaded');
+        });
+    }
+
+    function loadAll() {
+        $.when(load('users'), load('photos'), load('comments'))
+                .then(function () {
+                    alert('Все загрузили');
+                    $('span').removeClass('loading').addClass('loaded');
+                });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<script>
+    var d = $.Deferred();
+
+    d.done(function(value) {
+        alert(value)
+    });
+
+    d.fail(function(value) {
+        alert(value);
+    });
+
+    d.always(function(value) {
+        alert(value);
+    });
+    // Запустить в консоли d.resolve('hello') - будет алерт. Отложенное выполнение. Запускается ТОЛЬКО 1 РАЗ.
+    // Так же с методами .fail (при ошибке, когда d.reject('error') и .always (в любом случае)
+</script>
+
+
+
+</body>
+</html>

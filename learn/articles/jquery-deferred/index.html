@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<div class="top-nav content-wrap"><a href="/learn/">« Назад на главную</a></div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>jQuery Deferred/Promise - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>jQuery Deferred/Promise</h1>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>При работе с асинхронными процессами код становится сложнее. Функции обратного вызова (коллбэки) не всегда достаточно
+удобны. При использовании колбэков код может быть перегражен вложенными конструкциями и потерей производительности.
+Для решения этих проблем придумали механизм отложенного исполнения. В jQuery он реализован с помощь deferred-объектов.
+<span class="more"></span></p>
+<h1 id="deferred">Deferred</h1>
+<p>К объекту с отложенным вызовом обработчиков (deferred-объект) мы можем прикрепить код, который сработает при успешном
+или неуспешном выполении действия в&nbsp;будущем.</p>
+<p>Deferred — объект для хранения состояния. К каждому состоянию объекта можно прикрепить функционал, выполняемый 
+когда-то в&nbsp;будущем:</p>
+<pre><code class="lang-js"><span class="keyword">var</span> d = $.Deferred(); <span class="comment">// Объект, отвечающий за выполнение чего-то в будущем</span>
+
+<span class="comment">/*
+    Запускаем процесс, занимающий неопределенное время: аяксовый запрос, таймер, анимация и пр.
+    После успешного завершения процесса вызываем d.resolve(<span class="caps">DATA</span>).
+    Если возникла ошибка, вызываем d.reject(DATA).
+    Во время выполнения процесса d находится в стадии `progress'. Это можно увидеть с помощью d.state().
+*/</span>
+
+<span class="comment">// Сделать это, когда все будет хорошо</span>
+d.done(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>{
+    alert(value)
+});
+
+<span class="comment">// Сделать это, когда будет ошибка</span>
+d.fail(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>{
+    alert(value);
+});
+
+<span class="comment">// Сделать это в любом случае</span>
+d.always(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>{
+    alert(value);
+});
+</code></pre>
+<p>Этот код работает, но наш объект <code>d</code> открыт внешнему миру. Любой код, которому доступен <code>d</code> может изменить его 
+состояние. Это потенциальная проблема. Ее можно решить, ограничив доступ к методам <code>resolve</code> и <code>reject</code> нашего&nbsp;deferred-объекта.</p>
+<h1 id="promise">Promise</h1>
+<p>Зачастую нам не нужно давать возможность изменять состояние deferred-объекта. Мы чаще хотим просто дать возможность 
+прикреплять обработчики. Для этого реализован метод <code>d.promise()</code>. Он вернет deferred-объект без возможности 
+зарезолвить или зареджектить его. Можно будет только прикрепить к нему обработчики, а менять его будет&nbsp;нельзя.</p>
+<p>Метод <code>$.ajax</code> возвращает промис. И мы можем наряду с <code>success</code> и <code>error</code> использовать <code>.done</code> и <code>.fail</code>. Это 
+даст возможность избавиться от вложенных методов и прикрепить несколько обработчиков. Код станет читабельнее и&nbsp;гибче.</p>
+<pre><code class="lang-js"><span class="keyword">var</span> promise = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
+    <span class="keyword">var</span> d = $.Deferred(); <span class="comment">// Объект, отвечающий за выполнение чего-то в будущем</span>
+
+    asyncProcess(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="comment">// Прощесс пошел...</span>
+        <span class="comment">// Если все пройдет успешно, запустим d.resolve();</span>
+        <span class="comment">// Если будет ошибка, запустим d.reject();</span>
+    });
+
+    <span class="keyword">return</span> d.promise(); <span class="comment">// Вернуть не объект d, а ограниченный интерфейс к нему — promise</span>
+})();
+
+
+<span class="comment">// Сделать это, когда все будет хорошо</span>
+promise.done(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>{
+    alert(value)
+});
+
+<span class="comment">// Сделать это, когда будет ошибка</span>
+promise.fail(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>{
+    alert(value);
+});
+
+<span class="comment">// Сделать это в любом случае</span>
+promise.always(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>{
+    alert(value);
+});
+</code></pre>
+<p>Promise is a read-only jQuery Deferred&nbsp;object.</p>
+<h1 id="-deferred-promise">Терминология: Deferred и&nbsp;Promise</h1>
+<p>Все делает&nbsp;Deferred.</p>
+<p>Promise — это неразрушающий интерфейс к объекту Deferred. Лучше не давать внешнему коду лезть в deferred, чтобы ничто 
+левое не запустило <code>resolve</code> или <code>reject</code>. Промис как секретарь фильтрует только неизменяющие 
+запросы к deferred. См. <a href="/learn/articles/jquery-deferred/deferred_vs_promise.html">deferred_vs_promise.html</a></p>
+<p>Мы пришли в ресторан, свободных столов нет. Система ресторана может прислать смс, когда освободится стол, который нам&nbsp;понравился.</p>
+<p>Мы можем заказать стол на будущее. Оставить номер телефона и система сама пришлет нам смс, когда стол освободится.
+Официант создаст для нас Deferred, зарегистрировав наш заказ. Но он не пустит нас к компьютеру, чтобы мы не нажали 
+кнопку “Стол свободен” раньше времени. Он только добавит наш телефон в систему — это наш единственный&nbsp;интерфейс.</p>
+<p>Смс соответствуюет Promise.
+Пока стол будет занят, мы можем прогуляться, выпить чего-нибудь в баре, а не тупо стоять в очереди. А когда стол 
+освободится, то promise станет resolved и нам придет смс. Мы никак не можем повлиять на&nbsp;сообщение.</p>
+<p>Физическая очередь ожидания — это синхронное решение. Оставь телефон и делай что хочешь — это асинхронное&nbsp;решение.</p>
+<h1 id="-jquery-">Какие функции jQuery возвращают&nbsp;промис?</h1>
+<p><code>$.ajax</code> возвращает&nbsp;промис.</p>
+<p><code>.animate.promise()</code> возвращает&nbsp;промис.</p>
+<p>У коллекции элементов есть метод <code>$(&#39;div&#39;).promise()</code>, который возвращает промис. Используется для отслеживания 
+окончания анимации над всей коллекцией. См. <a href="/learn/articles/jquery-deferred/dom_promise.html">dom_promise.html</a>.</p>
+<h1 id="-deferred-">Методы deferred-объектов и их&nbsp;промисов</h1>
+<p><em>done</em> — говорит, что делать, когда deferred будет resolved. Может быть вызван <em>несколько раз</em> над одним и тем же 
+объектом, чтобы делать разные штуки, когда deferred будет отрезолвлен. Все вызовы <code>done</code> — независимы. Мы не можем 
+передавать аргумент от одного вызова этого метода к другому. Все колбэки в <code>done</code> будут вызваны с одним и тем же 
+аргументом. Для того, чтобы модифицировать контекст нужно использовать <code>then</code>.</p>
+<pre><code class="lang-js">promise.done(<span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>{
+    <span class="comment">// result is the value with which the deferred was resolved.</span>
+    <span class="built_in">console</span>.log(<span class="string">'The promise was resolved with'</span>, result);
+});
+</code></pre>
+<p><em>fail</em> — метод, который вызывается, когда deferred is rejected. Работает как <code>done</code>, только для обработки&nbsp;ошибок:</p>
+<pre><code class="lang-js">promise.fail(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>)</span>{
+    <span class="comment">// error is the value with which the deferred was rejected.</span>
+    <span class="built_in">console</span>.log(<span class="string">'The promise was rejected with'</span>, error);
+});
+</code></pre>
+<p><em>always</em> - если не важно, resolved или rejected. Полезно для логирования или чтоб прибраться. В колбэк приходит 
+параметр, по которому мы не сможем понять, октлонен ли промис или зарезолвлен. Если это важно, то вместо always лучше
+использовать другие&nbsp;мтеоды.</p>
+<p><em>state</em> может быть ‘resolved’, ‘rejected’, ‘pending’. Может быть нужно для отладки. Работает у промисов и&nbsp;деферредов.</p>
+<h1 id="-">Аякс в&nbsp;аяксе</h1>
+<p>Почему&nbsp;плохо?</p>
+<pre><code class="lang-js">$.ajax({
+    success: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        $.ajax({
+            success: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+                $.ajax({
+                    success: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+                        <span class="comment">// render all data</span>
+                    }
+                });
+            }
+        })
+    }
+});
+</code></pre>
+<p>Так мы не используем асинхронность. Посылает 3 последовательных запроса один после отработки другого. Долго.
+Плохо читается код. Сильная&nbsp;вложенность.</p>
+<h1 id="then">then</h1>
+<p>Позволяет передавать контекст последовательно между обработчиками. <code>then</code> создает новый Deferred-объект и возвращает
+новый&nbsp;промис.</p>
+<p>Пример последовательной передачи контекста при помощи <code>then</code>:</p>
+<pre><code class="lang-js">login(<span class="string">'user:password@server'</span>)
+    .then(<span class="function"><span class="keyword">function</span>(<span class="params">server</span>) </span>{
+        <span class="keyword">return</span> server.open(<span class="string">'db'</span>);
+    })
+    .then(<span class="function"><span class="keyword">function</span>(<span class="params">db</span>) </span>{
+        <span class="keyword">return</span> db.query(query);
+    })
+    .then(<span class="function"><span class="keyword">function</span>(<span class="params">view</span>) </span>{
+        <span class="keyword">return</span> fetchRows(view);
+    }, <span class="function"><span class="keyword">function</span> <span class="title">handleError</span>(<span class="params">err</span>) </span>{ <span class="comment">// Сюда свалятся все ошибки цепочки.</span>
+        <span class="built_in">console</span>.log(err);
+    });
+</code></pre>
+<p>См. так же <a href="/learn/articles/jquery-deferred/then_example.html">then_example.html</a>.</p>
+<h1 id="when">when</h1>
+<p><code>$.when</code> - это отдельная функция. Она над промисами и дефердами. Применяется, когда нужно исполнить действие только 
+после того, как несколько дефердов&nbsp;отрезолвятся.</p>
+<p><code>$.when</code> возвращает один deferred, который основан на нескольких. Отрезолвились те, отрезолвился и&nbsp;этот.</p>
+<h1 id="-">Домашняя&nbsp;работа</h1>
+<p>Все необходимые файлы есть на <a href="http://plnkr.co/edit/Ffm3w9nhRMpYVibRopgi">Планкере</a>, нужно только написать нужный&nbsp;<span class="caps">JS</span>.</p>
+<p>Задача: Организовать подгрузку страниц аяксом с помощью промисов как показано на&nbsp;картинке:</p>
+<p><img src="/learn/articles/jquery-deferred/hw_deferred.gif" alt=""></p>
+<p>Home и About подгружают <span class="caps">HTML</span>-файлы, Contacts подгружает HTML-файл и еще JSON со ссылками на социальные сети. Путь к 
+json-файлу прописан в соответствующем&nbsp;data-атрибуте. </p>
+<p>Контент нужно кешировать после первого запроса, чтобы не грузить его по нескольку раз, если пользователь решит 
+походить по ссылкам туда-сюда. На картинке, в панели Network можно заметить, что при повторном клике на ссылку запрос
+не&nbsp;отсылается.</p>
+<p>Код должен быть архитектурно продуман и удобно организован. Напримар, страница — это объект, который создается с 
+помощью&nbsp;конструктора.</p>
+<h1 id="-">Материалы</h1>
+<ul>
+<li><a href="https://vimeo.com/74925301">Promise – это не больно | FrontTalks&nbsp;2013</a></li>
+<li><a href="https://youtu.be/juRtEEsHI9E">I .promise() to show you .when() to use Deferreds</a> + <a href="https://github.com/alexmcpherson/jquery-talk">код и&nbsp;слайды</a></li>
+<li><a href="https://learn.jquery.com/code-organization/deferreds/">Deferreds,&nbsp;learn.jquery.com</a></li>
+<li><a href="http://api.jquery.com/category/deferred-object/">Deferred object,&nbsp;api.jquery.com</a></li>
+<li><a href="http://habrahabr.ru/company/bankrot-pro/blog/230441/">JQuery Deferred — примеры&nbsp;использования</a></li>
+<li><a href="http://valera-rozuvan.github.io/nintoku/jquery/promises/jquery-broken-promises-illustrated/">jQuery broken promises&nbsp;illustrated</a></li>
+</ul>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

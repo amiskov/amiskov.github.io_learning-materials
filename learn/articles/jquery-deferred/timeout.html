@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../../js/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<script>
+
+    // Добавить в wait метод cancel
+    (function() {
+        var d = $.Deferred();
+        function wait(timeout) {
+            var timerId = setTimeout(d.resolve, timeout);
+            return d.promise();
+        }
+        wait.cancel = function() {
+            clearTimeout(timerId);
+            d.reject();
+        };
+        window.wait = wait;
+    })();
+
+
+//    function wait(timeout) {
+//        var d = $.Deferred();
+//        setTimeout(d.resolve, timeout);
+//        return d.promise();
+//    }
+
+    // В другом синтаксисе
+    function wait2(timeout) {
+        return $.Deferred(function (d) {
+            setTimeout(d.resolve, timeout);
+        }).promise();
+    }
+
+    wait(2000).done(function(a) {
+        console.log('2000');
+    });
+
+
+</script>
+</body>
+</html>
