@@ -1,7 +1,7 @@
 ---
 title: jQuery Deferred/Promise
 author: amiskov
-date: 2015-09-30 10:30
+date: 2015-10-07 10:30
 template: article.jade
 ---
 
