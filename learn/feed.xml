@@ -14,7 +14,7 @@
       <pubDate>Wed, 14 Oct 2015 10:30:00 +0300</pubDate>
       <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/webpack/</guid>
       <author></author>
-      <description>&lt;p&gt;Вебпак — сборщик модулей. Любой ресурс для Вебпака является модулейм — js-файл, картинка, шрифт, less, CSS, HTML и пр. Вебпак позволяет организовать зависимости и асинхронную подгрузку.&lt;/p&gt;
+      <description>&lt;p&gt;Вебпак — это сборщик модулей. Любой ресурс для Вебпака является модулейм — js-файл, картинка, шрифт, less, CSS, HTML и пр. Вебпак позволяет организовать зависимости и асинхронную подгрузку.&lt;/p&gt;
 &lt;p&gt;По этому материалу есть &lt;a href=&quot;http://amiskov.github.io/learn/articles/webpack/#-homework-&quot;&gt;домашнее задание&lt;/a&gt;.
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;h1 id=&quot;-&quot;&gt;Система модулей&lt;/h1&gt;
@@ -229,15 +229,17 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 &lt;p&gt;&lt;code&gt;webpack --json --profile &amp;gt; stats.json&lt;/code&gt; — вывести статистику в json-файл с учетом временных параметров.&lt;/p&gt;
 &lt;p&gt;Проверить: &lt;a href=&quot;http://webpack.github.io/analyse/&quot;&gt;http://webpack.github.io/analyse/&lt;/a&gt;&lt;/p&gt;
 &lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/petehunt/webpack-howto&quot;&gt;https://github.com/petehunt/webpack-howto&lt;/a&gt; + доклад посмотреть
-&lt;a href=&quot;https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed&quot;&gt;https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed&lt;/a&gt;
-&lt;a href=&quot;http://survivejs.com/webpack_react/webpack_compared/&quot;&gt;http://survivejs.com/webpack_react/webpack_compared/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://dontkry.com/posts/code/single-page-modules-with-webpack.html&quot;&gt;http://dontkry.com/posts/code/single-page-modules-with-webpack.html&lt;/a&gt;
-&lt;a href=&quot;https://www.youtube.com/watch?v=TaWKUpahFZM&quot;&gt;https://www.youtube.com/watch?v=TaWKUpahFZM&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.javascript.ru/webpack-screencast&quot;&gt;Скринкаст Webpack&lt;/a&gt; от Ильи Кантора. Обязательно к просмотру.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=TaWKUpahFZM&quot;&gt;Getting Started with webpack&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://dontkry.com/posts/code/single-page-modules-with-webpack.html&quot;&gt;http://dontkry.com/posts/code/single-page-modules-with-webpack.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[Webpack Howto)(&lt;a href=&quot;https://github.com/petehunt/webpack-howto&quot;&gt;https://github.com/petehunt/webpack-howto&lt;/a&gt;) от Пита Ханта из Инстаграмма + &lt;a href=&quot;http://youtu.be/VkTCL6Nqm6Y&quot;&gt;доклад&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed&quot;&gt;Why can’t anyone write a simple webpack tutorial&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h1 id=&quot;-homework-&quot;&gt;Домашняя работа &lt;a href=&quot;http://amiskov.github.io/learn/articles/webpack/#homework&quot;&gt;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;На странице есть слайдер с довольно большими картинками. Слайдер реализован с помощью jQuery-плагина. Нам нужно, чтобы все, что касается слайдера (стили, картинки, скрипты) грузилось асинхронно и не влияло на загрузку основной страницы.&lt;/p&gt;
-&lt;p&gt;Задача: организовать асинхронную подгрузку слайдера на Вебпаке.&lt;/p&gt;
-&lt;p&gt;Пример работы: &lt;a href=&quot;http://amiskov.github.io/examples/webpack-slider/&quot;&gt;http://amiskov.github.io/examples/webpack-slider/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;На странице есть слайдер с довольно большими картинками. Слайдер реализован с помощью jQuery-плагина (&lt;a href=&quot;http://kenwheeler.github.io/slick/&quot;&gt;Slick&lt;/a&gt;). Нам нужно, чтобы все, что касается слайдера (стили, картинки, скрипты) грузилось асинхронно и не влияло на загрузку основного контента.&lt;/p&gt;
+&lt;p&gt;Пример реализации: &lt;a href=&quot;http://amiskov.github.io/examples/webpack-slider/&quot;&gt;http://amiskov.github.io/examples/webpack-slider/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Скелет проекта есть на &lt;a href=&quot;https://github.com/amiskov/webpack-slider&quot;&gt;Гитхабе&lt;/a&gt;. Вы просто запускаете &lt;code&gt;npm install&lt;/code&gt;, скачиваются необходимые модули, в том числе jQuery и Slick. Остается только закодить слайдер.&lt;/p&gt;
 </description>
     </item>
     <item>

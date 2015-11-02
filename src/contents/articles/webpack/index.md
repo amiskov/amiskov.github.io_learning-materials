@@ -5,7 +5,7 @@ date: 2015-10-14 10:30
 template: article.jade
 ---
 
-Вебпак — сборщик модулей. Любой ресурс для Вебпака является модулейм — js-файл, картинка, шрифт, less, CSS, HTML и пр. Вебпак позволяет организовать зависимости и асинхронную подгрузку.
+Вебпак — это сборщик модулей. Любой ресурс для Вебпака является модулейм — js-файл, картинка, шрифт, less, CSS, HTML и пр. Вебпак позволяет организовать зависимости и асинхронную подгрузку.
 
 По этому материалу есть [домашнее задание](./#-homework-).
 <span class="more"></span>
@@ -312,16 +312,16 @@ module.exports = {
 Проверить: http://webpack.github.io/analyse/
 
 # Материалы
-https://github.com/petehunt/webpack-howto + доклад посмотреть
-https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed
-http://survivejs.com/webpack_react/webpack_compared/
-
-http://dontkry.com/posts/code/single-page-modules-with-webpack.html
-https://www.youtube.com/watch?v=TaWKUpahFZM
+* [Скринкаст Webpack](https://learn.javascript.ru/webpack-screencast) от Ильи Кантора. Обязательно к просмотру.
+* [Getting Started with webpack](https://www.youtube.com/watch?v=TaWKUpahFZM)
+* http://dontkry.com/posts/code/single-page-modules-with-webpack.html
+* [Webpack Howto)(https://github.com/petehunt/webpack-howto) от Пита Ханта из Инстаграмма + [доклад](http://youtu.be/VkTCL6Nqm6Y)
+* [Why can't anyone write a simple webpack tutorial](https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed)
 
 # Домашняя работа [](#homework)
-На странице есть слайдер с довольно большими картинками. Слайдер реализован с помощью jQuery-плагина. Нам нужно, чтобы все, что касается слайдера (стили, картинки, скрипты) грузилось асинхронно и не влияло на загрузку основной страницы.
+На странице есть слайдер с довольно большими картинками. Слайдер реализован с помощью jQuery-плагина ([Slick](http://kenwheeler.github.io/slick/)). Нам нужно, чтобы все, что касается слайдера (стили, картинки, скрипты) грузилось асинхронно и не влияло на загрузку основного контента.
 
-Задача: организовать асинхронную подгрузку слайдера на Вебпаке.
+Пример реализации: http://amiskov.github.io/examples/webpack-slider/
 
-Пример работы: http://amiskov.github.io/examples/webpack-slider/
+Скелет проекта есть на [Гитхабе](https://github.com/amiskov/webpack-slider). Вы просто запускаете `npm install`, скачиваются необходимые модули, в том числе jQuery и Slick. Остается только закодить слайдер.
+
