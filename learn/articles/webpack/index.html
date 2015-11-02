@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<div class="top-nav content-wrap"><a href="/learn/">« Назад на главную</a></div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Webpack - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Webpack</h1>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>Вебпак — сборщик модулей. Любой ресурс для Вебпака является модулейм — js-файл, картинка, шрифт, less, <span class="caps">CSS</span>, HTML и пр. Вебпак позволяет организовать зависимости и асинхронную&nbsp;подгрузку.</p>
+<p>По этому материалу есть <a href="/learn/articles/webpack/#-homework-">домашнее задание</a>.
+<span class="more"></span></p>
+<h1 id="-">Система&nbsp;модулей</h1>
+<p>Для Вебпака любой ресурс — это модуль. <span class="caps">JS</span>, CSS, картинка, шрифт и пр. По умолчанию Вебпак обрабатывает js-модули, для других ресурсов нужно использовать&nbsp;лоадеры:</p>
+<pre><code class="lang-js"><span class="comment">// файл simple-product.js</span>
+<span class="keyword">let</span> $ = <span class="built_in">require</span>(<span class="string">'jquery'</span>); <span class="comment">// пакет из node_modules</span>
+<span class="keyword">let</span> Product = <span class="built_in">require</span>(<span class="string">'./product'</span>); <span class="comment">// наш файл</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">SimpleProduct</span> <span class="keyword">extends</span> <span class="title">Product</span> </span>{
+    <span class="comment">// ...</span>
+}
+</code></pre>
+<h2 id="-">Лоадеры</h2>
+<p>Вебпак позволяет работать с картинками, <span class="caps">CSS</span>, шрифтами  и пр. ресурсами как с модулями (их так же можно реквайрить и сохранять в&nbsp;переменные).</p>
+<p>Если просто написать <code>require(&#39;./some.css&#39;)</code>, то при сборке будет ошибка. Вебпак хавает из коробки только js. Для того, чтобы это заработал, например, css-модуль, надо пропустить его подключение через&nbsp;лоадер.</p>
+<p><code>css-loader</code> сделает возможной подгрузку <span class="caps">CSS</span>-модуля (обернет CSS-файл в js). Содержимое будет можно зареквайрить, сохранить в переменную, но стиль не&nbsp;применится.</p>
+<p>Чтобы стиль применился, нужно использовать <code>style-loader</code>, который уже встроит стиль в&nbsp;страницу.</p>
+<p>Получаем:</p>
+<pre><code class="lang-js"><span class="built_in">require</span>(<span class="string">'style!css!./some.css'</span>); <span class="comment">// Стили подгрузятся как модуль и применятся на странице</span>
+</code></pre>
+<p>Любые подключения шрифтов, картинок и пр. в <span class="caps">CSS</span>-файлах Вебпак рассматривает как подключение модуля. Поэтому без соответствующих лоадеров будет&nbsp;ошибка.</p>
+<p><code>file-loader</code> переносит ресурс в папку со сборкой, <code>url-loader</code> делает так же, но, если размер ресурса (картинки) достаточно мал, может запаковать его в base-64 и встроить в&nbsp;<span class="caps">CSS</span>.</p>
+<p>Не нужно каждый раз писать руками <code>style!css!less</code>, эту настройку лучше задать в&nbsp;конфиге.</p>
+<p>Соглашение:
+<code>test</code> используется для првоерки расширения.
+<code>include</code> - для проверки путей.
+<a href="http://webpack.github.io/docs/configuration.html#module-loaders">http://webpack.github.io/docs/configuration.html#module-loaders</a></p>
+<p><a href="https://webpack.github.io/docs/list-of-loaders.html">Список лоадеров</a> для Вебпака на официальном&nbsp;сате.</p>
+<h2 id="preloaders">PreLoaders</h2>
+<p>Иногда нужно работать с кодом до того, как его модифицировать. Например, проверить <span class="caps">JS</span> с помощью линтера. Для этих 
+целей предусмотрен механизм прелоадеров. Они запускаются перед&nbsp;лоадерами.</p>
+<p>Пример подключения <a href="https://github.com/MoOx/eslint-loader">ESLint</a>:</p>
+<pre><code class="lang-js"><span class="built_in">module</span>.exports = {
+  <span class="comment">// ...</span>
+  <span class="built_in">module</span>: {
+    preLoaders: [
+      {test: <span class="regexp">/\.js$/</span>, loader: <span class="string">"eslint-loader"</span>, exclude: <span class="regexp">/node_modules/</span>}
+    ]
+  }
+  <span class="comment">// ...</span>
+}
+</code></pre>
+<h2 id="-require-ensure-">Асинхронная подгрузка модулей (<code>require.ensure</code>)</h2>
+<p>Вебпак дополняет синтаксис CommonJS для работы с модулями своим методом <code>.ensure</code>. Этот метод позволяет организовать асинхронную&nbsp;подгрузку:</p>
+<pre><code class="lang-js"><span class="built_in">require</span>.ensure([<span class="string">'./lib'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">require</span>) </span>{ <span class="comment">// Аргумент — функция реквайра</span>
+  <span class="keyword">var</span> lib = <span class="built_in">require</span>(<span class="string">'./lib'</span>); <span class="comment">// загрузится отдельным запросом</span>
+});
+</code></pre>
+<p>Можно и без явного указания массива модулей и&nbsp;аргумента:</p>
+<pre><code class="lang-js"><span class="built_in">require</span>.ensure([], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{ 
+  <span class="keyword">var</span> lib = <span class="built_in">require</span>(<span class="string">'./lib'</span>); <span class="comment">// Вебпак найдет реквары тут и дальше сам разберется</span>
+});
+</code></pre>
+<p>Удобно использовать, например, с jQuery-плагинами, которые что-то отрисовывают не сразу. Например, для слайдера с большими картинками можно асинхронно подключить нужный модуль с плагином, стилями и картинками, а потом после загрузки уже его&nbsp;инициализировать.</p>
+<p>Если нужно объединить несколько подключений <code>require.ensure</code> в один файл (схожий функционал), то третьим параметром можно передать название такого функционала. Все <code>require.ensure</code> с таким именем объединятся в один&nbsp;файл:</p>
+<pre><code class="lang-js"><span class="comment">// login.js</span>
+$logoutButton.click = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+    <span class="built_in">require</span>.ensure([], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> login = <span class="built_in">require</span>(<span class="string">'./login'</span>);
+        <span class="comment">// ...</span>
+    }, <span class="string">'auth'</span>);
+};
+
+<span class="comment">// logout.js</span>
+$logoutButton.click = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+    <span class="built_in">require</span>.ensure([], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="keyword">var</span> login = <span class="built_in">require</span>(<span class="string">'./logout'</span>);
+        <span class="comment">// ...</span>
+    }, <span class="string">'auth'</span>);
+};
+</code></pre>
+<p>Вебпак создаст файл <code>auth.js</code> и будет его подгружать динамечески, когда&nbsp;понадобиться.</p>
+<h2 id="bundle-loader">Bundle&nbsp;loader</h2>
+<p>Позволяет загружать <code>require.esure([выражение])</code>.</p>
+<h1 id="-commonschunkplugin-">Выделение общего кода&nbsp;(CommonsChunkPlugin)</h1>
+<p>Вебпак позволяет выделить общий код из всех точек входа с помощью <code>CommonsChunkPlugin</code>.</p>
+<h1 id="-jquery-">Подключение jQuery и других библиотек с глобальными&nbsp;переменными</h1>
+<p>Самый простой способ подключить такую библиотеку — просто отдельный тег <code>&lt;script&gt;</code>. Но с Вебпаком можно сделать более
+ интересные&nbsp;вещи.</p>
+<h2 id="script-loader">script-loader</h2>
+<p><code>script-loader</code> сэмулирует такое поключение библиотеки отдельных тегом <code>&lt;script src=&quot;path/to/jquery.js&quot;&gt;&lt;/script&gt;</code>, но при этом библиотека будет включена в сборочный файл, а мы сэкономим один&nbsp;запрос:</p>
+<pre><code class="lang-js"><span class="comment">// index.js</span>
+<span class="built_in">require</span>(<span class="string">'script!jquery'</span>); <span class="comment">// Взять jquery из node_modules и пропустить через script-loader</span>
+</code></pre>
+<p>Далее <code>jQuery</code> и <code>$</code> будут доступны в глобальной области видимости во всех&nbsp;модулях.</p>
+<h2 id="provideplugin">ProvidePlugin</h2>
+<p>Как вариант, можно использовать <code>ProvidePlugin</code>, который автоматически будет подключать модуль, если найдет переменную. Например, вот эта настройка говорит, что нужно сделать <code>require(&#39;jquery&#39;)</code>, если найдется в файле <code>$</code>,
+<code>jQuery</code> или <code>window.jQuery</code>:</p>
+<pre><code class="lang-js">plugins: [ 
+  <span class="keyword">new</span> webpack.ProvidePlugin({ 
+      $: ‘jquery’, 
+      jQuery: ‘jquery’, 
+      ‘<span class="built_in">window</span>.jQuery’: ‘jquery’
+    })
+]
+</code></pre>
+<h2 id="externals">Externals</h2>
+<p>Если библиотека jQuery уже подключена отдельно (например, через <span class="caps">CDN</span>), а мы хотим делать <code>require(&#39;jquery&#39;)</code>, то можно об этом сказать Вбпаку с помощью <code>externals</code>:</p>
+<pre><code class="lang-js">externals: {
+    jquery: <span class="string">'jQuery'</span>,
+    $: <span class="string">'jQuery'</span>
+}
+</code></pre>
+<p>и дальше уже можно делать <code>require(&#39;jquery&#39;)</code>.</p>
+<p>Подробнее: <a href="https://webpack.github.io/docs/library-and-externals.html">https://webpack.github.io/docs/library-and-externals.html</a></p>
+<h1 id="config-files">Config&nbsp;Files</h1>
+<p>Конфигурационный файл Вебпака — это CommonJS-модуль, который возвращает&nbsp;объект.</p>
+<p>Пример:</p>
+<pre><code class="lang-js"><span class="built_in">module</span>.exports = {
+    entry: [<span class="string">"./utils.js"</span>, <span class="string">"./app.js"</span>], <span class="comment">// сольются в бандле</span>
+    output: {
+        filename: <span class="string">"bundle.js"</span>
+    },
+    {   <span class="comment">// Обработка картинок</span>
+        test: <span class="regexp">/\.(jp?g|gif|png)$/</span>,
+        exclude: <span class="regexp">/node_modules/</span>,
+        loader: <span class="string">'url-loader?limit=1024&amp;name=[path][name].[hash].[ext]'</span>
+        <span class="comment">// [hash] — автоматически генерируемый код. </span>
+        <span class="comment">// Нужен для лучшего кеширования.</span>
+    }
+}
+</code></pre>
+<p>Теперь в терминале можно просто сказать <code>webpack</code> и все настройки возьмутся из&nbsp;конфига.</p>
+<p>Конфиг можно реквайрить в другие конфиги. Например, в конфиг для проакшена можно зареквайрить конфиг для&nbsp;дева.</p>
+<h1 id="command-line-interface-cli-">Command Line Interface&nbsp;(<span class="caps">CLI</span>)</h1>
+<p>Установка Вебпака на уровне системы (чтобы запускать из любого места на&nbsp;диске):</p>
+<pre><code>npm install webpack -g
+</code></pre><p>Пример использования: <code>webpack ./app.js bundle.js</code>. Вебпак подключит все зависимости из <code>app.js</code>, сделает с ними так, как прописано в конфиге и сохранит результат в <code>bundle.js</code>.</p>
+<h1 id="watch-mode">Watch&nbsp;mode</h1>
+<p>Включить режим пересборки при изменении файлов можно в командной строке: <code>webpack --watch</code> или в файле конфига инструкцией <code>watch: true</code>.</p>
+<h1 id="webpack-dev-server">Webpack Dev&nbsp;Server</h1>
+<p>В Вебпак встроен веб-сервер для удобства разработки. Туда же включен и&nbsp;ливрелоад.</p>
+<p>Сервер нужно установить отдельно: <code>npm install webpack-dev-server -g</code>. После установки мы можем его запускать: <code>webpack-dev-server</code>.</p>
+<p>Вебпак-сервер предложит смотреть страницу по адресу <code>http://localhost:8080/webpack-dev-server/</code>. Там будет панелька 
+сверху, а разрабатываемый сайт будет исполняться во&nbsp;фрейме.</p>
+<p>Если запустить просто <code>http://localhost:8080/</code>, лишней панельки не будет, но сервер будет работать без ливрелоада.
+Это можно исправить, запустив веб-сервер с флагом <code>inline</code>: <code>webpack-dev-server --inline</code>. </p>
+<h1 id="-">Скрипты&nbsp;запуска</h1>
+<p>Для сокращенного синтаксиса запуска Вебпака с параметрами можно использовать <span class="caps">NPM</span>. В <code>package.json</code> есть свойство <code>&quot;scripts&quot;: {}</code></p>
+<p>Исполнить их можно командой <code>npm run scriptname</code>.&nbsp;Пример:</p>
+<pre><code class="lang-js"><span class="string">"scripts"</span>: {
+    <span class="string">"server"</span>: <span class="string">"webpack-dev-server --hot --inline --devtool eval --progress --colors"</span>,
+    <span class="string">"dev"</span>:    <span class="string">"env <span class="caps">DEV</span>=true server"</span>,
+    <span class="string">"prod"</span>:   <span class="string">"webpack -p --config webpack.config.production.js"</span>
+},
+</code></pre>
+<p>Запустить скрипты из командной строки можно с помощью <code>npm run</code>. </p>
+<p>Сборка для продакшена: <code>npm run prod</code>. Вебпак возьмет настройки из файла <code>webpack.production.js</code>.
+Флаг <code>-p</code> (он же <code>--optimize-minimize</code>) включает минификацию и обфускацию кода (работает из&nbsp;коробки).</p>
+<p>Запустить дев-сервер: <code>npm run server</code>. Установится переменная окружения <code>DEV=true</code> и запустится сервер с полезными 
+при работе&nbsp;параметрами.</p>
+<p>Подробнее: <a href="http://jaketrent.com/post/list-npm-scripts/">http://jaketrent.com/post/list-npm-scripts/</a></p>
+<h1 id="-">Минификация</h1>
+<p>Можно настроить Uglify вручную и только на продакшене через <code>NODE_ENV</code>.</p>
+<h1 id="-">Переменные&nbsp;окружения</h1>
+<p>Так работает на Винде и на Юниксе: <code>npm run env NODE_ENV=production</code>.</p>
+<p>Так только на Юниксе: <code>npm run NODE_ENV=production</code></p>
+<p>Так только на Винде: <code>npm run set NODE_ENV=production</code></p>
+<p>Так переменная сохранится в настройках терминала: <code>export NODE_ENV=production</code></p>
+<p>Подробнее: <a href="https://docs.npmjs.com/cli/run-script">https://docs.npmjs.com/cli/run-script</a></p>
+<h1 id="-">Плагины</h1>
+<p>Модифицировать процесс сборки можно с помощью плагинов. Есть плагины, которые генерируют html-файлы, объявляют глобальные переменные, выносят код в отдельные файлы, оптимизируют модули и пр. См. <a href="https://webpack.github.io/docs/list-of-plugins.html">список плагинов</a> на сайте&nbsp;Вебпака.</p>
+<p>Например, у нас есть модуль <code>simpleProduct.js</code>:</p>
+<pre><code class="lang-js"><span class="built_in">require</span>(<span class="string">'./simple_product.less'</span>);
+
+<span class="keyword">var</span> Product = <span class="built_in">require</span>(<span class="string">'./product.js'</span>);
+<span class="keyword">var</span> simpleProduct = <span class="keyword">new</span> Product();
+</code></pre>
+<p>Здесь первой строкой подулючаются стили. Вебпак приготовит свой js-бандл при сборке и добавит их прямо в&nbsp;js-файл. </p>
+<p>Если нам нужно эти стили вынести в файл и подключить отедльно, можно использовать <code>ExtractTextPlugin</code>:</p>
+<pre><code class="lang-js"><span class="comment">// webpack.config.js</span>
+<span class="keyword">var</span> ExtractTextPlugin = <span class="built_in">require</span>(<span class="string">"extract-text-webpack-plugin"</span>),
+<span class="built_in">module</span>.exports = {
+    <span class="comment">// ...</span>
+    <span class="built_in">module</span>: {
+        loaders: [
+            {
+                test: <span class="regexp">/simple_product.less$/</span>,
+                exclude: <span class="regexp">/node_modules/</span>,
+                loader: ExtractTextPlugin.extract(<span class="string">'style-loader'</span>, <span class="string">'css-loader!autoprefixer-loader!less-loader'</span>)
+            }
+            <span class="comment">// ...</span>
+        ]
+    },
+    plugins: [
+        <span class="keyword">new</span> ExtractTextPlugin(<span class="string">'[name].css'</span>)
+    ]
+};
+</code></pre>
+<p>С помощью плагинов можно сильно изменить процесс сборки. Вебпак позволит сделать&nbsp;многое.</p>
+<p><a href="https://webpack.github.io/docs/stylesheets.html#separate-css-bundle">Подробнее</a> про вынос стилей в отдельынй&nbsp;файл.</p>
+<p>О плагинах: <a href="http://webpack.github.io/docs/plugins.html">http://webpack.github.io/docs/plugins.html</a></p>
+<h1 id="source-maps">Source&nbsp;maps</h1>
+<p>Сорсмапы встроены в Вебпак. Включить их можно параметром: <code>webpack -d</code>.</p>
+<h1 id="-multiple-bundles-">Несколько точек входа (multiple&nbsp;bundles)</h1>
+<p>Для сайтов, которые состоят более чем из одной страницы, хорошим тоном будет раскидать функциональность по отдельным файлам. Например, на Хомпейдже нам не нужен скрипт для валидации формы изменения пароля для залогиненого&nbsp;пользователя:</p>
+<pre><code class="lang-js"><span class="built_in">module</span>.exports = {
+    entry: {
+        home: <span class="string">'./src/home.js'</span>,
+        account: <span class="string">'./src/account.js'</span>,
+        checkout: <span class="string">'./src/checkout.js'</span>
+        <span class="comment">// ...</span>
+    },
+    output: {
+        filename: [name].js <span class="comment">// назвать файлы как и точки входа</span>
+        path: __dirname + <span class="string">'/dist'</span>, <span class="comment">// и положить в директорию /dist</span>
+    }
+};
+</code></pre>
+<p>Зависимость от точки входа запрещена. Реквайрить <code>about.js</code> из <code>home.js</code> не выйдет. Надо, чтобы <code>about.js</code> в этом случае был не точкой входа, а&nbsp;модулем.</p>
+<h1 id="-">Статистика</h1>
+<p><code>webpack --json --profile &gt; stats.json</code> — вывести статистику в json-файл с учетом временных&nbsp;параметров.</p>
+<p>Проверить: <a href="http://webpack.github.io/analyse/">http://webpack.github.io/analyse/</a></p>
+<h1 id="-">Материалы</h1>
+<p><a href="https://github.com/petehunt/webpack-howto">https://github.com/petehunt/webpack-howto</a> + доклад посмотреть
+<a href="https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed">https://medium.com/@dtothefp/why-can-t-anyone-write-a-simple-webpack-tutorial-d0b075db35ed</a>
+<a href="http://survivejs.com/webpack_react/webpack_compared/">http://survivejs.com/webpack_react/webpack_compared/</a></p>
+<p><a href="http://dontkry.com/posts/code/single-page-modules-with-webpack.html">http://dontkry.com/posts/code/single-page-modules-with-webpack.html</a>
+<a href="https://www.youtube.com/watch?v=TaWKUpahFZM">https://www.youtube.com/watch?v=TaWKUpahFZM</a></p>
+<h1 id="-homework-">Домашняя работа <a href="/learn/articles/webpack/#homework"></a></h1>
+<p>На странице есть слайдер с довольно большими картинками. Слайдер реализован с помощью jQuery-плагина. Нам нужно, чтобы все, что касается слайдера (стили, картинки, скрипты) грузилось асинхронно и не влияло на загрузку основной&nbsp;страницы.</p>
+<p>Задача: организовать асинхронную подгрузку слайдера на&nbsp;Вебпаке.</p>
+<p>Пример работы: <a href="http://amiskov.github.io/examples/webpack-slider/">http://amiskov.github.io/examples/webpack-slider/</a></p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>
