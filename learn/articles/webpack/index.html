@@ -35,13 +35,13 @@
 <h2 id="-">Лоадеры</h2>
 <p>Вебпак позволяет работать с картинками, <span class="caps">CSS</span>, шрифтами  и другими ресурсами как с модулями (реквайрить, сохранять в&nbsp;переменные).</p>
 <p>Если просто написать <code>require(&#39;./some.css&#39;)</code>, то при сборке будет ошибка. Вебпак из коробки понимает только js-модули. Для того, чтобы заработал, например, css-модуль, надо пропустить его через соответствующий&nbsp;лоадер.</p>
-<p><code>css-loader</code> сделает возможной подгрузку <span class="caps">CSS</span>-модуля (обернет CSS-файл в js). Содержимое будет можно будет зареквайрить, сохранить в переменную, но стиль не&nbsp;применится.</p>
+<p><code>css-loader</code> сделает возможной подгрузку <span class="caps">CSS</span>-модуля (вернет содержимое в виде  js-структуры). Его можно будет зареквайрить, сохранить в переменную, но стиль не&nbsp;применится.</p>
 <p>Чтобы стиль применился, нужно использовать <code>style-loader</code>, который уже встроит стиль в&nbsp;страницу.</p>
 <p>Получаем:</p>
 <pre><code class="lang-js"><span class="built_in">require</span>(<span class="string">'style!css!./some.css'</span>); <span class="comment">// Стили подгрузятся и применятся на странице</span>
 </code></pre>
 <p>Восклицательный знак отделяет лоадеры друг-от-друга и применяется&nbsp;справа-налево.</p>
-<p>Любые подключения шрифтов и картинок в <span class="caps">CSS</span>-файлах Вебпак рассматривает как подключение модулей, поэтому без соответствующих лоадеров не&nbsp;обойтись.</p>
+<p>Любые подключения шрифтов и картинок в <span class="caps">CSS</span>-файлах Вебпак рассматривает как подключение модулей и заменяет их на <code>require(&#39;...&#39;)</code>, поэтому без соответствующих лоадеров не&nbsp;обойтись.</p>
 <p><code>file-loader</code> переносит ресурс в папку со сборкой, <code>url-loader</code> делает так же, но, если размер ресурса (картинки) достаточно мал, может запаковать его в base-64 и встроить в&nbsp;<span class="caps">CSS</span>.</p>
 <p>Не нужно каждый раз писать руками <code>style!css!less</code>, эту настройку лучше задать в&nbsp;конфиге.</p>
 <pre><code class="lang-js"><span class="built_in">module</span>.exports = {
@@ -114,12 +114,17 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
 <p>Вебпак создаст файл <code>auth.js</code> и будет его подгружать динамечески, когда&nbsp;понадобиться.</p>
 <h1 id="-jquery-">Подключение jQuery и других библиотек с глобальными&nbsp;переменными</h1>
 <p>Самый простой способ подключить такую библиотеку — просто отдельный тег <code>&lt;script&gt;</code>. Но с Вебпаком можно сделать более интересные&nbsp;вещи.</p>
-<h2 id="script-loader">script-loader</h2>
-<p><code>script-loader</code> сэмулирует поключение библиотеки отдельных тегом <code>&lt;script src=&quot;path/to/jquery.js&quot;&gt;&lt;/script&gt;</code>, но при этом библиотека будет включена в сборочный файл и мы сэкономим один&nbsp;запрос:</p>
-<pre><code class="lang-js"><span class="comment">// index.js</span>
-<span class="built_in">require</span>(<span class="string">'script!jquery'</span>); <span class="comment">// Взять jquery из node_modules и пропустить через script-loader</span>
+<h2 id="externals">externals</h2>
+<p>Если библиотека уже подключена, например, с <span class="caps">CDN</span>, а модули ее реквайрят, то будет ошибка. При подключении в файле <code>require(&#39;jquery&#39;)</code> Вебпак будет искать ее код в проекте, но не найдет. Чтобы сказать сборщику, что библиотека уже подключена, используется свойство <code>externals</code>:</p>
+<pre><code class="lang-js"><span class="comment">// webpack.config.js</span>
+<span class="built_in">module</span>.exports = {
+    <span class="comment">// ...</span>
+    externals: {
+        <span class="string">'jquery'</span>: <span class="string">'jQuery'</span>
+    }
+};
 </code></pre>
-<p><code>jQuery</code> и <code>$</code> будут доступны в глобальной области видимости, как если бы библиотеку подключили&nbsp;отдельно.</p>
+<p>См. так же <a href="https://webpack.github.io/docs/library-and-externals.html">документацию</a> и <a href="https://youtu.be/RdZkFNzST3c">скринкаст</a>.</p>
 <h2 id="provideplugin">ProvidePlugin</h2>
 <p>Можно использовать <code>ProvidePlugin</code>, который автоматически будет подключать модуль, если найдет переменную. Например, вот эта настройка говорит, что нужно сделать <code>require(&#39;jquery&#39;)</code>, если найдется в файле <code>$</code>, <code>jQuery</code> или <code>window.jQuery</code>:</p>
 <pre><code class="lang-js">plugins: [ 
@@ -130,7 +135,7 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
     })
 ]
 </code></pre>
-<h2 id="externals">Externals</h2>
+<h2 id="externals">externals</h2>
 <p>Если библиотека jQuery уже подключена отдельно (например, через <span class="caps">CDN</span>), а мы хотим делать <code>require(&#39;jquery&#39;)</code>, то можно об этом сказать Вбпаку с помощью <code>externals</code>:</p>
 <pre><code class="lang-js">externals: {
     jquery: <span class="string">'jQuery'</span>,
@@ -141,8 +146,15 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
 <p>Подробнее: <a href="https://webpack.github.io/docs/library-and-externals.html">https://webpack.github.io/docs/library-and-externals.html</a></p>
 <h2 id="expose-loader">expose-loader</h2>
 <p>Позволяет указать при подключении, какие переменные открыть&nbsp;глобально:</p>
-<pre><code class="lang-js"><span class="built_in">require</span>(<span class="string">'expose?$!jquery'</span>);
+<pre><code class="lang-js"><span class="built_in">require</span>(<span class="string">'expose?$!expose?jQuery!jquery'</span>);
 </code></pre>
+<h2 id="script-loader">script-loader</h2>
+<p><code>script-loader</code> сэмулирует поключение библиотеки отдельных тегом <code>&lt;script src=&quot;path/to/jquery.js&quot;&gt;&lt;/script&gt;</code>, но при этом библиотека будет включена в сборочный файл и мы сэкономим один&nbsp;запрос:</p>
+<pre><code class="lang-js"><span class="comment">// index.js</span>
+<span class="built_in">require</span>(<span class="string">'script!jquery'</span>); <span class="comment">// Взять jquery из node_modules и пропустить через script-loader</span>
+</code></pre>
+<p><code>jQuery</code> и <code>$</code> будут доступны в глобальной области видимости, как если бы библиотеку подключили&nbsp;отдельно.</p>
+<p><em>Ахтунг!</em> При использовании <code>script-loader</code> код вставляется в страницу как есть. Оне будет минифицирован при сборке и сорс-мапы для него не сгенерируются. По возможности стоит&nbsp;избегать.</p>
 <h1 id="config-files">Config&nbsp;Files</h1>
 <p>Конфигурационный файл Вебпака — это CommonJS-модуль, который возвращает&nbsp;объект.</p>
 <p>Пример:</p>
@@ -166,6 +178,12 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
 <p>Установка Вебпака на уровне системы (чтобы запускать из любого места на&nbsp;диске):</p>
 <pre><code>npm install webpack -g
 </code></pre><p>Пример использования: <code>webpack ./app.js bundle.js</code>. Вебпак подключит все зависимости из <code>app.js</code>, сделает с ними так, как прописано в конфиге и сохранит результат в <code>bundle.js</code>.</p>
+<p><code>--display-modules</code> — показать все собираемые&nbsp;модули.</p>
+<p><code>--profile</code> — показать время, затраченное на сборку каждого&nbsp;модуля.</p>
+<p><code>--display-reasons</code> — показать подключаемые&nbsp;зависимости</p>
+<h2 id="-">Статистика</h2>
+<p><code>webpack --json --profile &gt; stats.json</code> — вывести статистику в json-файл с учетом временных&nbsp;параметров.</p>
+<p>Проанализировать статистику можно тут: <a href="http://webpack.github.io/analyse/">http://webpack.github.io/analyse/</a></p>
 <h1 id="watch-mode">Watch&nbsp;mode</h1>
 <p>Включить режим пересборки при изменении файлов можно в командной строке: <code>webpack --watch</code> или в файле конфига инструкцией <code>watch: true</code>.</p>
 <h1 id="webpack-dev-server">Webpack Dev&nbsp;Server</h1>
@@ -258,7 +276,8 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
     entry: {
         home: <span class="string">'./src/home.js'</span>,
         account: <span class="string">'./src/account.js'</span>,
-        checkout: <span class="string">'./src/checkout.js'</span>
+        checkout: <span class="string">'./src/checkout.js'</span>,
+        styles: <span class="string">'./src/less/all.less'</span> <span class="comment">// стили тоже могут быть точкой входа</span>
         <span class="comment">// ...</span>
     },
     output: {
@@ -268,11 +287,9 @@ $logoutButton.click = <span class="function"><span class="keyword">function</spa
 };
 </code></pre>
 <p>Зависимость от точки входа запрещена. Реквайрить <code>account.js</code> из <code>home.js</code> не выйдет. Надо, чтобы <code>account.js</code> в этом случае был не точкой входа, а&nbsp;модулем.</p>
+<p>Точкой входа могут быть не только js-файлы. Например, стили можно так же подключить в <code>entry</code>. В этом случает сгенерируется файл стилей и соответствующий ему файл js, так работает&nbsp;Вебпак.</p>
 <h2 id="-commonschunkplugin-">Выделение общего кода&nbsp;(CommonsChunkPlugin)</h2>
 <p>Вебпак позволяет выделить общий код из всех точек входа с помощью <code>CommonsChunkPlugin</code>.</p>
-<h1 id="-">Статистика</h1>
-<p><code>webpack --json --profile &gt; stats.json</code> — вывести статистику в json-файл с учетом временных&nbsp;параметров.</p>
-<p>Проанализировать статистику можно тут: <a href="http://webpack.github.io/analyse/">http://webpack.github.io/analyse/</a></p>
 <h1 id="-">Материалы</h1>
 <ul>
 <li><a href="https://learn.javascript.ru/webpack-screencast">Скринкаст Webpack</a> от Ильи Кантора. Обязательно к&nbsp;просмотру.</li>

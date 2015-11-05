@@ -27,13 +27,13 @@
 &lt;h2 id=&quot;-&quot;&gt;Лоадеры&lt;/h2&gt;
 &lt;p&gt;Вебпак позволяет работать с картинками, CSS, шрифтами  и другими ресурсами как с модулями (реквайрить, сохранять в переменные).&lt;/p&gt;
 &lt;p&gt;Если просто написать &lt;code&gt;require(&amp;#39;./some.css&amp;#39;)&lt;/code&gt;, то при сборке будет ошибка. Вебпак из коробки понимает только js-модули. Для того, чтобы заработал, например, css-модуль, надо пропустить его через соответствующий лоадер.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;css-loader&lt;/code&gt; сделает возможной подгрузку CSS-модуля (обернет CSS-файл в js). Содержимое будет можно будет зареквайрить, сохранить в переменную, но стиль не применится.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;css-loader&lt;/code&gt; сделает возможной подгрузку CSS-модуля (вернет содержимое в виде  js-структуры). Его можно будет зареквайрить, сохранить в переменную, но стиль не применится.&lt;/p&gt;
 &lt;p&gt;Чтобы стиль применился, нужно использовать &lt;code&gt;style-loader&lt;/code&gt;, который уже встроит стиль в страницу.&lt;/p&gt;
 &lt;p&gt;Получаем:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'style!css!./some.css'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// Стили подгрузятся и применятся на странице&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Восклицательный знак отделяет лоадеры друг-от-друга и применяется справа-налево.&lt;/p&gt;
-&lt;p&gt;Любые подключения шрифтов и картинок в CSS-файлах Вебпак рассматривает как подключение модулей, поэтому без соответствующих лоадеров не обойтись.&lt;/p&gt;
+&lt;p&gt;Любые подключения шрифтов и картинок в CSS-файлах Вебпак рассматривает как подключение модулей и заменяет их на &lt;code&gt;require(&amp;#39;...&amp;#39;)&lt;/code&gt;, поэтому без соответствующих лоадеров не обойтись.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;file-loader&lt;/code&gt; переносит ресурс в папку со сборкой, &lt;code&gt;url-loader&lt;/code&gt; делает так же, но, если размер ресурса (картинки) достаточно мал, может запаковать его в base-64 и встроить в CSS.&lt;/p&gt;
 &lt;p&gt;Не нужно каждый раз писать руками &lt;code&gt;style!css!less&lt;/code&gt;, эту настройку лучше задать в конфиге.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;module&lt;/span&gt;.exports = {
@@ -106,12 +106,17 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 &lt;p&gt;Вебпак создаст файл &lt;code&gt;auth.js&lt;/code&gt; и будет его подгружать динамечески, когда понадобиться.&lt;/p&gt;
 &lt;h1 id=&quot;-jquery-&quot;&gt;Подключение jQuery и других библиотек с глобальными переменными&lt;/h1&gt;
 &lt;p&gt;Самый простой способ подключить такую библиотеку — просто отдельный тег &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt;. Но с Вебпаком можно сделать более интересные вещи.&lt;/p&gt;
-&lt;h2 id=&quot;script-loader&quot;&gt;script-loader&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;script-loader&lt;/code&gt; сэмулирует поключение библиотеки отдельных тегом &lt;code&gt;&amp;lt;script src=&amp;quot;path/to/jquery.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;, но при этом библиотека будет включена в сборочный файл и мы сэкономим один запрос:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// index.js&lt;/span&gt;
-&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'script!jquery'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// Взять jquery из node_modules и пропустить через script-loader&lt;/span&gt;
+&lt;h2 id=&quot;externals&quot;&gt;externals&lt;/h2&gt;
+&lt;p&gt;Если библиотека уже подключена, например, с CDN, а модули ее реквайрят, то будет ошибка. При подключении в файле &lt;code&gt;require(&amp;#39;jquery&amp;#39;)&lt;/code&gt; Вебпак будет искать ее код в проекте, но не найдет. Чтобы сказать сборщику, что библиотека уже подключена, используется свойство &lt;code&gt;externals&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// webpack.config.js&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;module&lt;/span&gt;.exports = {
+    &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
+    externals: {
+        &lt;span class=&quot;string&quot;&gt;'jquery'&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;'jQuery'&lt;/span&gt;
+    }
+};
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;jQuery&lt;/code&gt; и &lt;code&gt;$&lt;/code&gt; будут доступны в глобальной области видимости, как если бы библиотеку подключили отдельно.&lt;/p&gt;
+&lt;p&gt;См. так же &lt;a href=&quot;https://webpack.github.io/docs/library-and-externals.html&quot;&gt;документацию&lt;/a&gt; и &lt;a href=&quot;https://youtu.be/RdZkFNzST3c&quot;&gt;скринкаст&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&quot;provideplugin&quot;&gt;ProvidePlugin&lt;/h2&gt;
 &lt;p&gt;Можно использовать &lt;code&gt;ProvidePlugin&lt;/code&gt;, который автоматически будет подключать модуль, если найдет переменную. Например, вот эта настройка говорит, что нужно сделать &lt;code&gt;require(&amp;#39;jquery&amp;#39;)&lt;/code&gt;, если найдется в файле &lt;code&gt;$&lt;/code&gt;, &lt;code&gt;jQuery&lt;/code&gt; или &lt;code&gt;window.jQuery&lt;/code&gt;:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;plugins: [ 
@@ -122,7 +127,7 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
     })
 ]
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&quot;externals&quot;&gt;Externals&lt;/h2&gt;
+&lt;h2 id=&quot;externals&quot;&gt;externals&lt;/h2&gt;
 &lt;p&gt;Если библиотека jQuery уже подключена отдельно (например, через CDN), а мы хотим делать &lt;code&gt;require(&amp;#39;jquery&amp;#39;)&lt;/code&gt;, то можно об этом сказать Вбпаку с помощью &lt;code&gt;externals&lt;/code&gt;:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;externals: {
     jquery: &lt;span class=&quot;string&quot;&gt;'jQuery'&lt;/span&gt;,
@@ -133,8 +138,15 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 &lt;p&gt;Подробнее: &lt;a href=&quot;https://webpack.github.io/docs/library-and-externals.html&quot;&gt;https://webpack.github.io/docs/library-and-externals.html&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&quot;expose-loader&quot;&gt;expose-loader&lt;/h2&gt;
 &lt;p&gt;Позволяет указать при подключении, какие переменные открыть глобально:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'expose?$!jquery'&lt;/span&gt;);
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'expose?$!expose?jQuery!jquery'&lt;/span&gt;);
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;script-loader&quot;&gt;script-loader&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;script-loader&lt;/code&gt; сэмулирует поключение библиотеки отдельных тегом &lt;code&gt;&amp;lt;script src=&amp;quot;path/to/jquery.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;, но при этом библиотека будет включена в сборочный файл и мы сэкономим один запрос:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// index.js&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'script!jquery'&lt;/span&gt;); &lt;span class=&quot;comment&quot;&gt;// Взять jquery из node_modules и пропустить через script-loader&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;jQuery&lt;/code&gt; и &lt;code&gt;$&lt;/code&gt; будут доступны в глобальной области видимости, как если бы библиотеку подключили отдельно.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Ахтунг!&lt;/em&gt; При использовании &lt;code&gt;script-loader&lt;/code&gt; код вставляется в страницу как есть. Оне будет минифицирован при сборке и сорс-мапы для него не сгенерируются. По возможности стоит избегать.&lt;/p&gt;
 &lt;h1 id=&quot;config-files&quot;&gt;Config Files&lt;/h1&gt;
 &lt;p&gt;Конфигурационный файл Вебпака — это CommonJS-модуль, который возвращает объект.&lt;/p&gt;
 &lt;p&gt;Пример:&lt;/p&gt;
@@ -158,6 +170,12 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 &lt;p&gt;Установка Вебпака на уровне системы (чтобы запускать из любого места на диске):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;npm install webpack -g
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Пример использования: &lt;code&gt;webpack ./app.js bundle.js&lt;/code&gt;. Вебпак подключит все зависимости из &lt;code&gt;app.js&lt;/code&gt;, сделает с ними так, как прописано в конфиге и сохранит результат в &lt;code&gt;bundle.js&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--display-modules&lt;/code&gt; — показать все собираемые модули.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--profile&lt;/code&gt; — показать время, затраченное на сборку каждого модуля.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--display-reasons&lt;/code&gt; — показать подключаемые зависимости&lt;/p&gt;
+&lt;h2 id=&quot;-&quot;&gt;Статистика&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;webpack --json --profile &amp;gt; stats.json&lt;/code&gt; — вывести статистику в json-файл с учетом временных параметров.&lt;/p&gt;
+&lt;p&gt;Проанализировать статистику можно тут: &lt;a href=&quot;http://webpack.github.io/analyse/&quot;&gt;http://webpack.github.io/analyse/&lt;/a&gt;&lt;/p&gt;
 &lt;h1 id=&quot;watch-mode&quot;&gt;Watch mode&lt;/h1&gt;
 &lt;p&gt;Включить режим пересборки при изменении файлов можно в командной строке: &lt;code&gt;webpack --watch&lt;/code&gt; или в файле конфига инструкцией &lt;code&gt;watch: true&lt;/code&gt;.&lt;/p&gt;
 &lt;h1 id=&quot;webpack-dev-server&quot;&gt;Webpack Dev Server&lt;/h1&gt;
@@ -250,7 +268,8 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
     entry: {
         home: &lt;span class=&quot;string&quot;&gt;'./src/home.js'&lt;/span&gt;,
         account: &lt;span class=&quot;string&quot;&gt;'./src/account.js'&lt;/span&gt;,
-        checkout: &lt;span class=&quot;string&quot;&gt;'./src/checkout.js'&lt;/span&gt;
+        checkout: &lt;span class=&quot;string&quot;&gt;'./src/checkout.js'&lt;/span&gt;,
+        styles: &lt;span class=&quot;string&quot;&gt;'./src/less/all.less'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;// стили тоже могут быть точкой входа&lt;/span&gt;
         &lt;span class=&quot;comment&quot;&gt;// ...&lt;/span&gt;
     },
     output: {
@@ -260,11 +279,9 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 };
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Зависимость от точки входа запрещена. Реквайрить &lt;code&gt;account.js&lt;/code&gt; из &lt;code&gt;home.js&lt;/code&gt; не выйдет. Надо, чтобы &lt;code&gt;account.js&lt;/code&gt; в этом случае был не точкой входа, а модулем.&lt;/p&gt;
+&lt;p&gt;Точкой входа могут быть не только js-файлы. Например, стили можно так же подключить в &lt;code&gt;entry&lt;/code&gt;. В этом случает сгенерируется файл стилей и соответствующий ему файл js, так работает Вебпак.&lt;/p&gt;
 &lt;h2 id=&quot;-commonschunkplugin-&quot;&gt;Выделение общего кода (CommonsChunkPlugin)&lt;/h2&gt;
 &lt;p&gt;Вебпак позволяет выделить общий код из всех точек входа с помощью &lt;code&gt;CommonsChunkPlugin&lt;/code&gt;.&lt;/p&gt;
-&lt;h1 id=&quot;-&quot;&gt;Статистика&lt;/h1&gt;
-&lt;p&gt;&lt;code&gt;webpack --json --profile &amp;gt; stats.json&lt;/code&gt; — вывести статистику в json-файл с учетом временных параметров.&lt;/p&gt;
-&lt;p&gt;Проанализировать статистику можно тут: &lt;a href=&quot;http://webpack.github.io/analyse/&quot;&gt;http://webpack.github.io/analyse/&lt;/a&gt;&lt;/p&gt;
 &lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://learn.javascript.ru/webpack-screencast&quot;&gt;Скринкаст Webpack&lt;/a&gt; от Ильи Кантора. Обязательно к просмотру.&lt;/li&gt;
