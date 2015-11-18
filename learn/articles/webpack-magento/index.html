@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<div class="top-nav content-wrap"><a href="/learn/">« Назад на главную</a></div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Webpack в проектах на Magento - Занятия по фронтэнду
+    </title>
+    <link rel="alternate" href="http://amiskov.github.io/learn//feed.xml" type="application/rss+xml" title="тезисы, примеры и домашние задания">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Anonymous+Pro:400,700,400italic,700italic|Merriweather:400,700,300">
+    <link rel="stylesheet" href="/learn/css/main.css">
+    <script src="/learn/js/jquery-2.1.4.min.js"></script>
+    <script src="/learn/js/script.js"></script>
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <h1>Webpack в проектах на Magento</h1>
+      </div>
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p><a href="https://webpack.github.io/docs/webpack-dev-server.html">Webpack Dev Server</a> позволяет очень быстро собирать и отдавать статические ресурсы в процессе разработки. Для комфортной работы важно, чтобы изменения были видны моментально. В заметке рассматривается настройка Magento и <span class="caps">WDS</span> для совместной работы: Magento отдает данные и HTML, WDS занимается CSS, JS, картинками, шрифтами и прочими модулями из сборки.
+<span class="more"></span></p>
+<h1 id="-">Конфиг</h1>
+<p>Файл <code>webpack.config.js</code> лучше поместить в корне проекта. Так на всех проектах к нему будет один путь. Если конфиг будет в папке с темой, то к нему надо еще&nbsp;добраться.</p>
+<p><code>package.json</code> так же лучше поместить в корень проекта. Таким образом папка <code>node_modules</code> будет одна на весь проект. К тому же в разделе <code>scripts</code> удобно хранить команды запуска сборки (об этом&nbsp;ниже).</p>
+<h1 id="-">Зависимости&nbsp;модулей</h1>
+<p>В каждом модуле подключаются все его зависимости. Напирмер, jQuery и любые другие библиотеки и плагины. Так модуль можно будет перенести, переписать на <span class="caps">ES6</span> и т. д. Общие зависимости можно вынести через <a href="https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin"><code>CommonsChunkPlugin</code></a>.</p>
+<h1 id="-">Точки&nbsp;входа</h1>
+<p>Точки входа логично делать в соответствии с разделами сайта. Каждому <span class="caps">JS</span>-модулю будет соответствовать&nbsp;CSS-файл:</p>
+<pre><code class="lang-js">    entry: {
+        common: <span class="string">'./src/common'</span>, <span class="comment">// Нужен на всех страницах</span>
+        home: <span class="string">'./src/home'</span> <span class="comment">// Подключается только для главной</span>
+        <span class="comment">//account</span>
+        <span class="comment">//category</span>
+        <span class="comment">//product</span>
+        <span class="comment">//cms</span>
+        <span class="comment">//checkout</span>
+        <span class="comment">//cart</span>
+        <span class="comment">//stores</span>
+        <span class="comment">//certificates</span>
+        <span class="comment">//diagnostic</span>
+        <span class="comment">//faq</span>
+        <span class="comment">//news + blog + video</span>
+    },
+</code></pre>
+<h1 id="-wds-magento">Настройка <span class="caps">WDS</span> и&nbsp;Magento</h1>
+<p><span class="caps">WDS</span> по умолчанию запустится на хосте <code>http://localhost:8080</code>. Проект на Мадженто будет работать по другому адресу, типа, <code>http://my-project.local</code>.</p>
+<p>Чтобы Мадженто запрашивала статические ресурсы с <span class="caps">WDS</span> достаточно в админке прописать нужный «Базовый путь к оболочке (Skin)» в разделе Система/Конфигурация/Общие -&nbsp;Интернет:</p>
+<p><img src="/learn/articles/webpack-magento/mg_skin_url.png" alt=""></p>
+<p>Таким образом мы имеем 2 разных домена с перекрестными запросами. Мадженто запрашивает стили с <span class="caps">WDS</span>, WDS отдает CSS, а вместе с ним шрифты, картинки и пр., а это уже <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">Cross-Origin Resource Sharing</a> и браузер будет блокировать подгрузку&nbsp;ресурсов.</p>
+<p>Чтобы сказать браузеру, что все ок, нужно добавить вот такую настройку в <span class="caps">WDS</span> (ниже будет пример конфига&nbsp;целиком):</p>
+<pre><code class="lang-js">headers: {
+    <span class="comment">// Handling issue with <span class="caps">CORS</span> font loading</span>
+    <span class="string">"Access-Control-Allow-Origin"</span>: <span class="string">"*"</span>
+}
+</code></pre>
+<p>Нужно так же указать <code>publicPath</code> для <code>dev</code> и <code>prod</code> сборки. Его можно отдавать с помощью функции в зависимости от переменной окружения (см. <code>getPublicPath</code> ниже).</p>
+<p>Следует обратить внимание на сборку ресурсов для продакшена. На продакшене нам нужны оптимизированные, отдельные файлы <span class="caps">CSS</span>. Для разработки, наоборот, важна прежде всего скорость, поэтому оптимизация и вынесение стилей ни к&nbsp;чему.</p>
+<p>Для вынесения <span class="caps">CSS</span> в отдельные файлы можно использовать <a href="https://github.com/webpack/extract-text-webpack-plugin"><code>ExtractTextPlugin</code></a>. Каждой точке сборки будет соответствовать свой&nbsp;<span class="caps">CSS</span>-файл.</p>
+<p>Пример конфига для работы с <span class="caps">WDS</span> и&nbsp;Magento:</p>
+<pre><code class="lang-js"><span class="keyword">var</span> NODE_ENV = process.env.NODE_ENV || <span class="string">'development'</span>,
+    path = <span class="built_in">require</span>(<span class="string">'path'</span>),
+    webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>),
+    Clean = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>),
+    ExtractTextPlugin = <span class="built_in">require</span>(<span class="string">'extract-text-webpack-plugin'</span>),
+    WebpackNotifierPlugin = <span class="built_in">require</span>(<span class="string">'webpack-notifier'</span>);
+
+<span class="function"><span class="keyword">function</span> <span class="title">getPublicPath</span>(<span class="params"></span>) </span>{
+    <span class="keyword">return</span> NODE_ENV == <span class="string">'development'</span>
+
+        <span class="comment">// Absolute url for development</span>
+        ? <span class="string">'http://localhost:8080/skin/frontend/laroche/oggetto/public/'</span>
+
+        <span class="comment">//Relative path for production</span>
+        : <span class="string">'/'</span>;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">getExtractLoaders</span>(<span class="params"></span>) </span>{
+    <span class="keyword">return</span> NODE_ENV == <span class="string">'development'</span>
+
+        <span class="comment">// Serve fonts and images from less files as modules in development mode.</span>
+        ? <span class="string">'css!autoprefixer?{browsers:["last 2 version", "<span class="caps">IE</span> 9"]}!less'</span>
+
+        <span class="comment">// Do nothing while building production version.</span>
+        : <span class="string">'raw!autoprefixer?{browsers:["last 2 version", "<span class="caps">IE</span> 9"]}!less'</span>;
+}
+
+<span class="built_in">module</span>.exports = {
+    context: path.resolve(<span class="string">'skin/frontend/laroche/oggetto'</span>),
+
+    entry: {
+        app: <span class="string">'./src/app'</span>
+        <span class="comment">//home: './src/home'</span>
+    },
+
+    output: {
+        path: path.resolve(<span class="string">'skin/frontend/laroche/oggetto/public'</span>),
+        publicPath: getPublicPath(),
+        filename: <span class="string">'js/[name].js'</span>
+    },
+
+    externals: {
+        <span class="string">"jquery"</span>: <span class="string">"jQuery"</span>
+    },
+
+    <span class="built_in">module</span>: {
+        loaders: [
+            {
+                test: <span class="regexp">/\.less$/</span>,
+                loader: ExtractTextPlugin.extract(<span class="string">"style"</span>, getExtractLoaders())
+            },
+            {
+                test: <span class="regexp">/\.css$/</span>,
+                loader: <span class="string">'style!css'</span>
+            },
+
+            <span class="comment">// Webpack handles fonts and images only in development mode (see .less settings above)</span>
+            {
+                test: <span class="regexp">/\.(svg|eot|ttf|woff)/</span>,
+                loader: <span class="string">'file?name=[path][name].[ext]'</span>
+            },
+            {
+                test: <span class="regexp">/\.(?:png|jpg|gif)$/</span>,
+                loader: <span class="string">'file?name=[path][name].[ext]'</span>
+            }
+        ]
+    },
+
+    devServer: {
+        headers: {
+            <span class="comment">// Handling issue with <span class="caps">CORS</span> font loading</span>
+            <span class="string">"Access-Control-Allow-Origin"</span>: <span class="string">"*"</span>
+        }
+    },
+
+    plugins: [
+        <span class="keyword">new</span> Clean([<span class="string">'public'</span>]),
+
+        <span class="keyword">new</span> ExtractTextPlugin(<span class="string">'css/all.css'</span>, { <span class="comment">// [name].css after code splitting</span>
+            allChunks: <span class="literal">true</span>,
+            disable: NODE_ENV == <span class="string">'development'</span> <span class="comment">// Save separate files only for production build</span>
+        }),
+
+        <span class="keyword">new</span> webpack.NoErrorsPlugin(),
+
+        <span class="keyword">new</span> WebpackNotifierPlugin()
+    ]
+};
+</code></pre>
+<h1 id="-">Скрипты&nbsp;сборки</h1>
+<p>В <code>package.json</code> удобно хранить команды запуска сборки. Можно сделать как-то&nbsp;так:</p>
+<pre><code class="lang-js"><span class="string">"scripts"</span>: {
+    <span class="string">"start"</span>: <span class="string">"webpack-dev-server --hot --inline --devtool eval --progress --colors"</span>,
+    <span class="string">"dev"</span>: <span class="string">"env NODE_ENV=development npm start"</span>,
+    <span class="string">"prod"</span>: <span class="string">"env NODE_ENV=production webpack -p"</span>,
+    <span class="string">"build"</span>: <span class="string">"env NODE_ENV=production webpack -d"</span>
+}
+</code></pre>
+<p><code>npm start</code> — запуск Webpack Development Server с настройками для удобной разработки. Эта команда будет использована далее в скрипте <code>dev</code>.</p>
+<p><code>npm run dev</code> — основная команда запуска окружения для локальной разработки. Нужно указать в админке путь к папке skin как <code>http://localhost:8080/skin</code>, иначе файлы будут браться с файловой системы (см. выше). При dev-сборке (<code>NODE_ENV=development</code>) стили пропускаются через <code>css-loader</code> и картинки со шрифтами обрабатываются Вебпаком. Их не видно на файловой системе, они хранятся в&nbsp;ОЗУ.</p>
+<p><code>npm run prod</code> — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты, они останутся лежать где и лежали. Вместо <code>css-loader</code> используется <code>raw-loader</code>.</p>
+<p><code>npm run build</code> — быстрая сборка с сорс-мапами. Аналогична сборке для продакшена, но никакие ресурсы не оптимизируются. Удобно, когда нужно что-то посмотреть на файловой системе и отладить. Это простая статическая сборка без&nbsp;оптимизации.</p>
+<h1 id="-skin-url">Быстрая смена skin&nbsp;url</h1>
+<p>Нужно написать скрипт (на <span class="caps">PHP</span>?), который будет менять skin url в Мадженте из командной строки. Так удобней переключаться между дев и прод сборкой, чем каждый раз менять url в&nbsp;админке.</p>
+<h1 id="-">Подключение скриптов и&nbsp;стилей</h1>
+<p>Скрипты и стили для разных страниц рекомендуется подключать внизу страницы в соответствующих xml-файлах. Например, <code>common.css</code> подключаем в <code>page.xml</code>, <code>home.css</code> подключаем в <code>cms.xml</code> и т.&nbsp;д.</p>
+<p>Чтобы это заработало нужно в <code>page.xml</code> добавить блок <code>foot</code>:</p>
+<pre><code class="lang-xml"><span class="tag">&lt;<span class="title">block</span> <span class="attribute">type</span>=<span class="value">"page/html"</span> <span class="attribute">name</span>=<span class="value">"root"</span> <span class="attribute">output</span>=<span class="value">"toHtml"</span> <span class="attribute">template</span>=<span class="value">"page/3columns.phtml"</span>&gt;</span>
+    <span class="comment">&lt;!-- This line is for attaching resources into footer: --&gt;</span>
+    <span class="tag">&lt;<span class="title">block</span> <span class="attribute">type</span>=<span class="value">"page/html_head"</span> <span class="attribute">name</span>=<span class="value">"foot"</span> <span class="attribute">as</span>=<span class="value">"foot"</span> <span class="attribute">template</span>=<span class="value">"page/html/foot.phtml"</span>/&gt;</span>
+<span class="tag">&lt;/<span class="title">block</span>&gt;</span>
+</code></pre>
+<p>Далее, подключить его в файлах <code>1collumn.phtml</code> и&nbsp;пр.:</p>
+<pre><code class="lang-php"><span class="preprocessor">&lt;?php</span> <span class="keyword">echo</span> <span class="variable">$this</span>-&gt;getChildHtml(<span class="string">'foot'</span>) <span class="preprocessor">?&gt;</span>
+</code></pre>
+<p>Сам файл <code>foot.phtml</code> представляет собой урезанный <code>head.phtml</code>. В нем остаются только инструкции подключения статических&nbsp;ресурсов:</p>
+<pre><code class="lang-xml"><span class="php"><span class="preprocessor">&lt;?php</span> <span class="keyword">echo</span> <span class="variable">$this</span>-&gt;getCssJsHtml() <span class="preprocessor">?&gt;</span></span>
+<span class="php"><span class="preprocessor">&lt;?php</span> <span class="keyword">echo</span> <span class="variable">$this</span>-&gt;getChildHtml() <span class="preprocessor">?&gt;</span></span>
+<span class="php"><span class="preprocessor">&lt;?php</span> <span class="keyword">echo</span> <span class="variable">$this</span>-&gt;getIncludes() <span class="preprocessor">?&gt;</span></span>
+</code></pre>
+<p>Теперь можно подключать нужные файлы стилей и скриптов на отдельных страницах в соответствующих xml-файлах. Например, подключим <code>home.js</code> и <code>home.css</code> для&nbsp;главной:</p>
+<pre><code class="lang-xml">    <span class="tag">&lt;<span class="title">cms_index_index</span> <span class="attribute">translate</span>=<span class="value">"label"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">label</span>&gt;</span><span class="caps">CMS</span> Home Page<span class="tag">&lt;/<span class="title">label</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">reference</span> <span class="attribute">name</span>=<span class="value">"foot"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">action</span> <span class="attribute">method</span>=<span class="value">"addItem"</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">type</span>&gt;</span>skin_js<span class="tag">&lt;/<span class="title">type</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">name</span>&gt;</span>public/home.js<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">action</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">reference</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">reference</span> <span class="attribute">name</span>=<span class="value">"foot"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">action</span> <span class="attribute">method</span>=<span class="value">"addItem"</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">type</span>&gt;</span>skin_css<span class="tag">&lt;/<span class="title">type</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">name</span>&gt;</span>public/home.css<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">action</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">reference</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">cms_index_index</span>&gt;</span>
+</code></pre>
+<p><a href="http://magento.stackexchange.com/questions/1579/magento-adding-css-and-js-includes-to-the-footer">Источник</a>.</p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/learn/">« Назад на главную</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Andrey Miskov &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+  </body>
+</html>

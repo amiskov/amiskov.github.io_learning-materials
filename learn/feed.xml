@@ -5,9 +5,195 @@
     <atom:link href="http://amiskov.github.io/learn//feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://amiskov.github.io/learn/</link>
     <description>тезисы, примеры и домашние задания</description>
-    <pubDate>Wed, 14 Oct 2015 10:30:00 +0300</pubDate>
+    <pubDate>Wed, 18 Nov 2015 10:30:00 +0300</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Webpack в проектах на Magento</title>
+      <link>http://amiskov.github.io/learn//learn/articles/webpack-magento/</link>
+      <pubDate>Wed, 18 Nov 2015 10:30:00 +0300</pubDate>
+      <guid isPermaLink="true">http://amiskov.github.io/learn//learn/articles/webpack-magento/</guid>
+      <author></author>
+      <description>&lt;p&gt;&lt;a href=&quot;https://webpack.github.io/docs/webpack-dev-server.html&quot;&gt;Webpack Dev Server&lt;/a&gt; позволяет очень быстро собирать и отдавать статические ресурсы в процессе разработки. Для комфортной работы важно, чтобы изменения были видны моментально. В заметке рассматривается настройка Magento и WDS для совместной работы: Magento отдает данные и HTML, WDS занимается CSS, JS, картинками, шрифтами и прочими модулями из сборки.
+&lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Конфиг&lt;/h1&gt;
+&lt;p&gt;Файл &lt;code&gt;webpack.config.js&lt;/code&gt; лучше поместить в корне проекта. Так на всех проектах к нему будет один путь. Если конфиг будет в папке с темой, то к нему надо еще добраться.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;package.json&lt;/code&gt; так же лучше поместить в корень проекта. Таким образом папка &lt;code&gt;node_modules&lt;/code&gt; будет одна на весь проект. К тому же в разделе &lt;code&gt;scripts&lt;/code&gt; удобно хранить команды запуска сборки (об этом ниже).&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Зависимости модулей&lt;/h1&gt;
+&lt;p&gt;В каждом модуле подключаются все его зависимости. Напирмер, jQuery и любые другие библиотеки и плагины. Так модуль можно будет перенести, переписать на ES6 и т. д. Общие зависимости можно вынести через &lt;a href=&quot;https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin&quot;&gt;&lt;code&gt;CommonsChunkPlugin&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Точки входа&lt;/h1&gt;
+&lt;p&gt;Точки входа логично делать в соответствии с разделами сайта. Каждому JS-модулю будет соответствовать CSS-файл:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;    entry: {
+        common: &lt;span class=&quot;string&quot;&gt;'./src/common'&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;// Нужен на всех страницах&lt;/span&gt;
+        home: &lt;span class=&quot;string&quot;&gt;'./src/home'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;// Подключается только для главной&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//account&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//category&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//product&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//cms&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//checkout&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//cart&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//stores&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//certificates&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//diagnostic&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//faq&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//news + blog + video&lt;/span&gt;
+    },
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-wds-magento&quot;&gt;Настройка WDS и Magento&lt;/h1&gt;
+&lt;p&gt;WDS по умолчанию запустится на хосте &lt;code&gt;http://localhost:8080&lt;/code&gt;. Проект на Мадженто будет работать по другому адресу, типа, &lt;code&gt;http://my-project.local&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Чтобы Мадженто запрашивала статические ресурсы с WDS достаточно в админке прописать нужный «Базовый путь к оболочке (Skin)» в разделе Система/Конфигурация/Общие - Интернет:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/learn/articles/webpack-magento/mg_skin_url.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Таким образом мы имеем 2 разных домена с перекрестными запросами. Мадженто запрашивает стили с WDS, WDS отдает CSS, а вместе с ним шрифты, картинки и пр., а это уже &lt;a href=&quot;https://en.wikipedia.org/wiki/Cross-origin_resource_sharing&quot;&gt;Cross-Origin Resource Sharing&lt;/a&gt; и браузер будет блокировать подгрузку ресурсов.&lt;/p&gt;
+&lt;p&gt;Чтобы сказать браузеру, что все ок, нужно добавить вот такую настройку в WDS (ниже будет пример конфига целиком):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;headers: {
+    &lt;span class=&quot;comment&quot;&gt;// Handling issue with CORS font loading&lt;/span&gt;
+    &lt;span class=&quot;string&quot;&gt;&quot;Access-Control-Allow-Origin&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;*&quot;&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Нужно так же указать &lt;code&gt;publicPath&lt;/code&gt; для &lt;code&gt;dev&lt;/code&gt; и &lt;code&gt;prod&lt;/code&gt; сборки. Его можно отдавать с помощью функции в зависимости от переменной окружения (см. &lt;code&gt;getPublicPath&lt;/code&gt; ниже).&lt;/p&gt;
+&lt;p&gt;Следует обратить внимание на сборку ресурсов для продакшена. На продакшене нам нужны оптимизированные, отдельные файлы CSS. Для разработки, наоборот, важна прежде всего скорость, поэтому оптимизация и вынесение стилей ни к чему.&lt;/p&gt;
+&lt;p&gt;Для вынесения CSS в отдельные файлы можно использовать &lt;a href=&quot;https://github.com/webpack/extract-text-webpack-plugin&quot;&gt;&lt;code&gt;ExtractTextPlugin&lt;/code&gt;&lt;/a&gt;. Каждой точке сборки будет соответствовать свой CSS-файл.&lt;/p&gt;
+&lt;p&gt;Пример конфига для работы с WDS и Magento:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; NODE_ENV = process.env.NODE_ENV || &lt;span class=&quot;string&quot;&gt;'development'&lt;/span&gt;,
+    path = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'path'&lt;/span&gt;),
+    webpack = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'webpack'&lt;/span&gt;),
+    Clean = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'clean-webpack-plugin'&lt;/span&gt;),
+    ExtractTextPlugin = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'extract-text-webpack-plugin'&lt;/span&gt;),
+    WebpackNotifierPlugin = &lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;'webpack-notifier'&lt;/span&gt;);
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;getPublicPath&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; NODE_ENV == &lt;span class=&quot;string&quot;&gt;'development'&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;// Absolute url for development&lt;/span&gt;
+        ? &lt;span class=&quot;string&quot;&gt;'http://localhost:8080/skin/frontend/laroche/oggetto/public/'&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;//Relative path for production&lt;/span&gt;
+        : &lt;span class=&quot;string&quot;&gt;'/'&lt;/span&gt;;
+}
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;getExtractLoaders&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; NODE_ENV == &lt;span class=&quot;string&quot;&gt;'development'&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;// Serve fonts and images from less files as modules in development mode.&lt;/span&gt;
+        ? &lt;span class=&quot;string&quot;&gt;'css!autoprefixer?{browsers:[&quot;last 2 version&quot;, &quot;IE 9&quot;]}!less'&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;// Do nothing while building production version.&lt;/span&gt;
+        : &lt;span class=&quot;string&quot;&gt;'raw!autoprefixer?{browsers:[&quot;last 2 version&quot;, &quot;IE 9&quot;]}!less'&lt;/span&gt;;
+}
+
+&lt;span class=&quot;built_in&quot;&gt;module&lt;/span&gt;.exports = {
+    context: path.resolve(&lt;span class=&quot;string&quot;&gt;'skin/frontend/laroche/oggetto'&lt;/span&gt;),
+
+    entry: {
+        app: &lt;span class=&quot;string&quot;&gt;'./src/app'&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//home: './src/home'&lt;/span&gt;
+    },
+
+    output: {
+        path: path.resolve(&lt;span class=&quot;string&quot;&gt;'skin/frontend/laroche/oggetto/public'&lt;/span&gt;),
+        publicPath: getPublicPath(),
+        filename: &lt;span class=&quot;string&quot;&gt;'js/[name].js'&lt;/span&gt;
+    },
+
+    externals: {
+        &lt;span class=&quot;string&quot;&gt;&quot;jquery&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;jQuery&quot;&lt;/span&gt;
+    },
+
+    &lt;span class=&quot;built_in&quot;&gt;module&lt;/span&gt;: {
+        loaders: [
+            {
+                test: &lt;span class=&quot;regexp&quot;&gt;/\.less$/&lt;/span&gt;,
+                loader: ExtractTextPlugin.extract(&lt;span class=&quot;string&quot;&gt;&quot;style&quot;&lt;/span&gt;, getExtractLoaders())
+            },
+            {
+                test: &lt;span class=&quot;regexp&quot;&gt;/\.css$/&lt;/span&gt;,
+                loader: &lt;span class=&quot;string&quot;&gt;'style!css'&lt;/span&gt;
+            },
+
+            &lt;span class=&quot;comment&quot;&gt;// Webpack handles fonts and images only in development mode (see .less settings above)&lt;/span&gt;
+            {
+                test: &lt;span class=&quot;regexp&quot;&gt;/\.(svg|eot|ttf|woff)/&lt;/span&gt;,
+                loader: &lt;span class=&quot;string&quot;&gt;'file?name=[path][name].[ext]'&lt;/span&gt;
+            },
+            {
+                test: &lt;span class=&quot;regexp&quot;&gt;/\.(?:png|jpg|gif)$/&lt;/span&gt;,
+                loader: &lt;span class=&quot;string&quot;&gt;'file?name=[path][name].[ext]'&lt;/span&gt;
+            }
+        ]
+    },
+
+    devServer: {
+        headers: {
+            &lt;span class=&quot;comment&quot;&gt;// Handling issue with CORS font loading&lt;/span&gt;
+            &lt;span class=&quot;string&quot;&gt;&quot;Access-Control-Allow-Origin&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;*&quot;&lt;/span&gt;
+        }
+    },
+
+    plugins: [
+        &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Clean([&lt;span class=&quot;string&quot;&gt;'public'&lt;/span&gt;]),
+
+        &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; ExtractTextPlugin(&lt;span class=&quot;string&quot;&gt;'css/all.css'&lt;/span&gt;, { &lt;span class=&quot;comment&quot;&gt;// [name].css after code splitting&lt;/span&gt;
+            allChunks: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;,
+            disable: NODE_ENV == &lt;span class=&quot;string&quot;&gt;'development'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;// Save separate files only for production build&lt;/span&gt;
+        }),
+
+        &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; webpack.NoErrorsPlugin(),
+
+        &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; WebpackNotifierPlugin()
+    ]
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;-&quot;&gt;Скрипты сборки&lt;/h1&gt;
+&lt;p&gt;В &lt;code&gt;package.json&lt;/code&gt; удобно хранить команды запуска сборки. Можно сделать как-то так:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;scripts&quot;&lt;/span&gt;: {
+    &lt;span class=&quot;string&quot;&gt;&quot;start&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;webpack-dev-server --hot --inline --devtool eval --progress --colors&quot;&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;&quot;dev&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;env NODE_ENV=development npm start&quot;&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;&quot;prod&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;env NODE_ENV=production webpack -p&quot;&lt;/span&gt;,
+    &lt;span class=&quot;string&quot;&gt;&quot;build&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;env NODE_ENV=production webpack -d&quot;&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;npm start&lt;/code&gt; — запуск Webpack Development Server с настройками для удобной разработки. Эта команда будет использована далее в скрипте &lt;code&gt;dev&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm run dev&lt;/code&gt; — основная команда запуска окружения для локальной разработки. Нужно указать в админке путь к папке skin как &lt;code&gt;http://localhost:8080/skin&lt;/code&gt;, иначе файлы будут браться с файловой системы (см. выше). При dev-сборке (&lt;code&gt;NODE_ENV=development&lt;/code&gt;) стили пропускаются через &lt;code&gt;css-loader&lt;/code&gt; и картинки со шрифтами обрабатываются Вебпаком. Их не видно на файловой системе, они хранятся в ОЗУ.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm run prod&lt;/code&gt; — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты, они останутся лежать где и лежали. Вместо &lt;code&gt;css-loader&lt;/code&gt; используется &lt;code&gt;raw-loader&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm run build&lt;/code&gt; — быстрая сборка с сорс-мапами. Аналогична сборке для продакшена, но никакие ресурсы не оптимизируются. Удобно, когда нужно что-то посмотреть на файловой системе и отладить. Это простая статическая сборка без оптимизации.&lt;/p&gt;
+&lt;h1 id=&quot;-skin-url&quot;&gt;Быстрая смена skin url&lt;/h1&gt;
+&lt;p&gt;Нужно написать скрипт (на PHP?), который будет менять skin url в Мадженте из командной строки. Так удобней переключаться между дев и прод сборкой, чем каждый раз менять url в админке.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Подключение скриптов и стилей&lt;/h1&gt;
+&lt;p&gt;Скрипты и стили для разных страниц рекомендуется подключать внизу страницы в соответствующих xml-файлах. Например, &lt;code&gt;common.css&lt;/code&gt; подключаем в &lt;code&gt;page.xml&lt;/code&gt;, &lt;code&gt;home.css&lt;/code&gt; подключаем в &lt;code&gt;cms.xml&lt;/code&gt; и т. д.&lt;/p&gt;
+&lt;p&gt;Чтобы это заработало нужно в &lt;code&gt;page.xml&lt;/code&gt; добавить блок &lt;code&gt;foot&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-xml&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;page/html&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;root&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;output&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;toHtml&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;template&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;page/3columns.phtml&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- This line is for attaching resources into footer: --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;page/html_head&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;foot&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;as&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;foot&quot;&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;template&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;page/html/foot.phtml&quot;&lt;/span&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;block&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Далее, подключить его в файлах &lt;code&gt;1collumn.phtml&lt;/code&gt; и пр.:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-php&quot;&gt;&lt;span class=&quot;preprocessor&quot;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;variable&quot;&gt;$this&lt;/span&gt;-&amp;gt;getChildHtml(&lt;span class=&quot;string&quot;&gt;'foot'&lt;/span&gt;) &lt;span class=&quot;preprocessor&quot;&gt;?&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Сам файл &lt;code&gt;foot.phtml&lt;/code&gt; представляет собой урезанный &lt;code&gt;head.phtml&lt;/code&gt;. В нем остаются только инструкции подключения статических ресурсов:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-xml&quot;&gt;&lt;span class=&quot;php&quot;&gt;&lt;span class=&quot;preprocessor&quot;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;variable&quot;&gt;$this&lt;/span&gt;-&amp;gt;getCssJsHtml() &lt;span class=&quot;preprocessor&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;php&quot;&gt;&lt;span class=&quot;preprocessor&quot;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;variable&quot;&gt;$this&lt;/span&gt;-&amp;gt;getChildHtml() &lt;span class=&quot;preprocessor&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;php&quot;&gt;&lt;span class=&quot;preprocessor&quot;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;variable&quot;&gt;$this&lt;/span&gt;-&amp;gt;getIncludes() &lt;span class=&quot;preprocessor&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Теперь можно подключать нужные файлы стилей и скриптов на отдельных страницах в соответствующих xml-файлах. Например, подключим &lt;code&gt;home.js&lt;/code&gt; и &lt;code&gt;home.css&lt;/code&gt; для главной:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-xml&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;cms_index_index&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;translate&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;label&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;CMS Home Page&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;label&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;reference&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;foot&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;action&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;method&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;addItem&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;type&lt;/span&gt;&amp;gt;&lt;/span&gt;skin_js&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;type&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;public/home.js&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;action&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;reference&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;reference&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;name&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;foot&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;action&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;method&lt;/span&gt;=&lt;span class=&quot;value&quot;&gt;&quot;addItem&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;type&lt;/span&gt;&amp;gt;&lt;/span&gt;skin_css&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;type&lt;/span&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;title&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;public/home.css&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;name&lt;/span&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;action&lt;/span&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;reference&lt;/span&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;cms_index_index&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&quot;http://magento.stackexchange.com/questions/1579/magento-adding-css-and-js-includes-to-the-footer&quot;&gt;Источник&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     <item>
       <title>Webpack</title>
       <link>http://amiskov.github.io/learn//learn/articles/webpack/</link>
@@ -282,6 +468,8 @@ $logoutButton.click = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quo
 &lt;p&gt;Точкой входа могут быть не только js-файлы. Например, стили можно так же подключить в &lt;code&gt;entry&lt;/code&gt;. В этом случает сгенерируется файл стилей и соответствующий ему файл js, так работает Вебпак.&lt;/p&gt;
 &lt;h2 id=&quot;-commonschunkplugin-&quot;&gt;Выделение общего кода (CommonsChunkPlugin)&lt;/h2&gt;
 &lt;p&gt;Вебпак позволяет выделить общий код из всех точек входа с помощью &lt;code&gt;CommonsChunkPlugin&lt;/code&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;webpack-dev-server&quot;&gt;Webpack Dev Server&lt;/h1&gt;
+&lt;p&gt;WDS не сохраняет сборку в файлы на диске, а хранит ее в ОЗУ с помощью Node Memory FS. Это быстрее, чем работа с ПЗУ.&lt;/p&gt;
 &lt;h1 id=&quot;-&quot;&gt;Материалы&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://learn.javascript.ru/webpack-screencast&quot;&gt;Скринкаст Webpack&lt;/a&gt; от Ильи Кантора. Обязательно к просмотру.&lt;/li&gt;

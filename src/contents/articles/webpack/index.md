@@ -387,6 +387,8 @@ module.exports = {
 ## Выделение общего кода (CommonsChunkPlugin)
 Вебпак позволяет выделить общий код из всех точек входа с помощью `CommonsChunkPlugin`.
 
+# Webpack Dev Server
+WDS не сохраняет сборку в файлы на диске, а хранит ее в ОЗУ с помощью Node Memory FS. Это быстрее, чем работа с ПЗУ.
 
 # Материалы
 * [Скринкаст Webpack](https://learn.javascript.ru/webpack-screencast) от Ильи Кантора. Обязательно к просмотру.
