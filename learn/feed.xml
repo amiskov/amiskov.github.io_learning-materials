@@ -16,7 +16,7 @@
       <author></author>
       <description>&lt;p&gt;&lt;a href=&quot;https://webpack.github.io/docs/webpack-dev-server.html&quot;&gt;Webpack Dev Server&lt;/a&gt; позволяет очень быстро собирать и отдавать статические ресурсы в процессе разработки. Для комфортной работы важно, чтобы изменения были видны моментально. В заметке рассматривается настройка Magento и WDS для совместной работы: Magento отдает данные и HTML, WDS занимается CSS, JS, картинками, шрифтами и прочими модулями из сборки.
 &lt;span class=&quot;more&quot;&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;h1 id=&quot;-&quot;&gt;Конфиг&lt;/h1&gt;
+&lt;h1 id=&quot;-&quot;&gt;Где хранить конфиги&lt;/h1&gt;
 &lt;p&gt;Файл &lt;code&gt;webpack.config.js&lt;/code&gt; лучше поместить в корне проекта. Так на всех проектах к нему будет один путь. Если конфиг будет в папке с темой, то к нему надо еще добраться.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;package.json&lt;/code&gt; так же лучше поместить в корень проекта. Таким образом папка &lt;code&gt;node_modules&lt;/code&gt; будет одна на весь проект. К тому же в разделе &lt;code&gt;scripts&lt;/code&gt; удобно хранить команды запуска сборки (об этом ниже).&lt;/p&gt;
 &lt;h1 id=&quot;-&quot;&gt;Зависимости модулей&lt;/h1&gt;
