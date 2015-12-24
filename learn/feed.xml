@@ -26,18 +26,22 @@
 &lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;    entry: {
         common: &lt;span class=&quot;string&quot;&gt;'./src/common'&lt;/span&gt;, &lt;span class=&quot;comment&quot;&gt;// Нужен на всех страницах&lt;/span&gt;
         home: &lt;span class=&quot;string&quot;&gt;'./src/home'&lt;/span&gt; &lt;span class=&quot;comment&quot;&gt;// Подключается только для главной&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//account&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//category&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//product&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//cms&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//checkout&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//cart&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//stores&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//certificates&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//diagnostic&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//faq&lt;/span&gt;
-        &lt;span class=&quot;comment&quot;&gt;//news + blog + video&lt;/span&gt;
-    },
+        &lt;span class=&quot;comment&quot;&gt;//checkout - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//diagnostic - не могу зайти&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;//video - Стоит ли выносить?&lt;/span&gt;
+
+        &lt;span class=&quot;comment&quot;&gt;//cart - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//category - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//stores - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//cms - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//certificates - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//account - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//product - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//faq - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//news - done&lt;/span&gt;
+        &lt;span class=&quot;comment&quot;&gt;//blog - done&lt;/span&gt;
+    }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id=&quot;-wds-magento&quot;&gt;Настройка WDS и Magento&lt;/h1&gt;
 &lt;p&gt;WDS по умолчанию запустится на хосте &lt;code&gt;http://localhost:8080&lt;/code&gt;. Проект на Мадженто будет работать по другому адресу, типа, &lt;code&gt;http://my-project.local&lt;/code&gt;.&lt;/p&gt;
@@ -154,7 +158,10 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;npm start&lt;/code&gt; — запуск Webpack Development Server с настройками для удобной разработки. Эта команда будет использована далее в скрипте &lt;code&gt;dev&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;npm run dev&lt;/code&gt; — основная команда запуска окружения для локальной разработки. Нужно указать в админке путь к папке skin как &lt;code&gt;http://localhost:8080/skin&lt;/code&gt;, иначе файлы будут браться с файловой системы (см. выше). При dev-сборке (&lt;code&gt;NODE_ENV=development&lt;/code&gt;) стили пропускаются через &lt;code&gt;css-loader&lt;/code&gt; и картинки со шрифтами обрабатываются Вебпаком. Их не видно на файловой системе, они хранятся в ОЗУ.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;npm run prod&lt;/code&gt; — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты, они останутся лежать где и лежали. Вместо &lt;code&gt;css-loader&lt;/code&gt; используется &lt;code&gt;raw-loader&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;npm run prod&lt;/code&gt; — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты,
+они останутся лежать где и лежали. Вместо &lt;code&gt;css-loader&lt;/code&gt; используется &lt;code&gt;raw-loader&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;При использовании &lt;code&gt;raw-loader&lt;/code&gt; урлы в CSS никак не обрабатываются, поэтому возникает проблема с динамической 
+подгрузкой модулей (&lt;code&gt;require_ensure&lt;/code&gt;). &lt;/p&gt;
 &lt;p&gt;&lt;code&gt;npm run build&lt;/code&gt; — быстрая сборка с сорс-мапами. Аналогична сборке для продакшена, но никакие ресурсы не оптимизируются. Удобно, когда нужно что-то посмотреть на файловой системе и отладить. Это простая статическая сборка без оптимизации.&lt;/p&gt;
 &lt;h1 id=&quot;-skin-url&quot;&gt;Быстрая смена skin url&lt;/h1&gt;
 &lt;p&gt;Нужно написать скрипт (на PHP?), который будет менять skin url в Мадженте из командной строки. Так удобней переключаться между дев и прод сборкой, чем каждый раз менять url в админке.&lt;/p&gt;
@@ -192,6 +199,25 @@
     &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;title&quot;&gt;cms_index_index&lt;/span&gt;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;a href=&quot;http://magento.stackexchange.com/questions/1579/magento-adding-css-and-js-includes-to-the-footer&quot;&gt;Источник&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id=&quot;less-&quot;&gt;LESS-файлы&lt;/h1&gt;
+&lt;p&gt;Если у файла стилей точки входа есть свои зависимости (один файл и больше), то их следует поместить в каталог под с названием таким же, как точка входа. Например, в &lt;code&gt;account.less&lt;/code&gt; импортируются другие less-файлы: &lt;code&gt;account-register.less&lt;/code&gt;, &lt;code&gt;account-forgotpassword.less&lt;/code&gt; и другие. Так вот эти файлы нужно положить в папку &lt;code&gt;account&lt;/code&gt; и из нее уже подключать их в главный файл стилей для точки входа:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cms/
+    cms-404.less
+    cms-service.less
+    ...
+cms.less
+account
+    account-login.less
+    account-logout.less
+    ...
+account.less
+product.less
+checkout.less
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;В &lt;code&gt;account.less&lt;/code&gt; сначала идут стили общие для всех страниц аккаунта, потом, внизу, импортятся все нужные файлы, расширяющие эти стили.&lt;/p&gt;
+&lt;p&gt;Таким образом мы один раз будем импортировать общие файлы с миксинами и переменными (&lt;code&gt;fonts.less&lt;/code&gt;, &lt;code&gt;mixin_vars.less&lt;/code&gt;). Иначе нам пришлось бы их импортировать в каждом модуле.&lt;/p&gt;
+&lt;h1 id=&quot;-&quot;&gt;Косяки&lt;/h1&gt;
+&lt;p&gt;Из-за фолбэк системы 404 &lt;/p&gt;
 </description>
     </item>
     <item>

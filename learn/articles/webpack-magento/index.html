@@ -34,18 +34,22 @@
 <pre><code class="lang-js">    entry: {
         common: <span class="string">'./src/common'</span>, <span class="comment">// Нужен на всех страницах</span>
         home: <span class="string">'./src/home'</span> <span class="comment">// Подключается только для главной</span>
-        <span class="comment">//account</span>
-        <span class="comment">//category</span>
-        <span class="comment">//product</span>
-        <span class="comment">//cms</span>
-        <span class="comment">//checkout</span>
-        <span class="comment">//cart</span>
-        <span class="comment">//stores</span>
-        <span class="comment">//certificates</span>
-        <span class="comment">//diagnostic</span>
-        <span class="comment">//faq</span>
-        <span class="comment">//news + blog + video</span>
-    },
+        <span class="comment">//checkout - done</span>
+        <span class="comment">//diagnostic - не могу зайти</span>
+
+        <span class="comment">//video - Стоит ли выносить?</span>
+
+        <span class="comment">//cart - done</span>
+        <span class="comment">//category - done</span>
+        <span class="comment">//stores - done</span>
+        <span class="comment">//cms - done</span>
+        <span class="comment">//certificates - done</span>
+        <span class="comment">//account - done</span>
+        <span class="comment">//product - done</span>
+        <span class="comment">//faq - done</span>
+        <span class="comment">//news - done</span>
+        <span class="comment">//blog - done</span>
+    }
 </code></pre>
 <h1 id="-wds-magento">Настройка <span class="caps">WDS</span> и&nbsp;Magento</h1>
 <p><span class="caps">WDS</span> по умолчанию запустится на хосте <code>http://localhost:8080</code>. Проект на Мадженто будет работать по другому адресу, типа, <code>http://my-project.local</code>.</p>
@@ -162,7 +166,10 @@
 </code></pre>
 <p><code>npm start</code> — запуск Webpack Development Server с настройками для удобной разработки. Эта команда будет использована далее в скрипте <code>dev</code>.</p>
 <p><code>npm run dev</code> — основная команда запуска окружения для локальной разработки. Нужно указать в админке путь к папке skin как <code>http://localhost:8080/skin</code>, иначе файлы будут браться с файловой системы (см. выше). При dev-сборке (<code>NODE_ENV=development</code>) стили пропускаются через <code>css-loader</code> и картинки со шрифтами обрабатываются Вебпаком. Их не видно на файловой системе, они хранятся в&nbsp;ОЗУ.</p>
-<p><code>npm run prod</code> — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты, они останутся лежать где и лежали. Вместо <code>css-loader</code> используется <code>raw-loader</code>.</p>
+<p><code>npm run prod</code> — собрать проект для продакшена. Будут сгенерированы css и js-файлы. Вебпак не обрабатывает картинки и шрифты,
+они останутся лежать где и лежали. Вместо <code>css-loader</code> используется <code>raw-loader</code>.</p>
+<p>При использовании <code>raw-loader</code> урлы в <span class="caps">CSS</span> никак не обрабатываются, поэтому возникает проблема с динамической 
+подгрузкой модулей (<code>require_ensure</code>). </p>
 <p><code>npm run build</code> — быстрая сборка с сорс-мапами. Аналогична сборке для продакшена, но никакие ресурсы не оптимизируются. Удобно, когда нужно что-то посмотреть на файловой системе и отладить. Это простая статическая сборка без&nbsp;оптимизации.</p>
 <h1 id="-skin-url">Быстрая смена skin&nbsp;url</h1>
 <p>Нужно написать скрипт (на <span class="caps">PHP</span>?), который будет менять skin url в Мадженте из командной строки. Так удобней переключаться между дев и прод сборкой, чем каждый раз менять url в&nbsp;админке.</p>
@@ -200,6 +207,25 @@
     <span class="tag">&lt;/<span class="title">cms_index_index</span>&gt;</span>
 </code></pre>
 <p><a href="http://magento.stackexchange.com/questions/1579/magento-adding-css-and-js-includes-to-the-footer">Источник</a>.</p>
+<h1 id="less-"><span class="caps">LESS</span>-файлы</h1>
+<p>Если у файла стилей точки входа есть свои зависимости (один файл и больше), то их следует поместить в каталог под с названием таким же, как точка входа. Например, в <code>account.less</code> импортируются другие less-файлы: <code>account-register.less</code>, <code>account-forgotpassword.less</code> и другие. Так вот эти файлы нужно положить в папку <code>account</code> и из нее уже подключать их в главный файл стилей для точки&nbsp;входа:</p>
+<pre><code>cms/
+    cms-404.less
+    cms-service.less
+    ...
+cms.less
+account
+    account-login.less
+    account-logout.less
+    ...
+account.less
+product.less
+checkout.less
+...
+</code></pre><p>В <code>account.less</code> сначала идут стили общие для всех страниц аккаунта, потом, внизу, импортятся все нужные файлы, расширяющие эти&nbsp;стили.</p>
+<p>Таким образом мы один раз будем импортировать общие файлы с миксинами и переменными (<code>fonts.less</code>, <code>mixin_vars.less</code>). Иначе нам пришлось бы их импортировать в каждом&nbsp;модуле.</p>
+<h1 id="-">Косяки</h1>
+<p>Из-за фолбэк системы&nbsp;404 </p>
 </section>
         </article>
       </div>
